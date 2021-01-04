@@ -15,7 +15,8 @@
   },
   "main": "main/background.js",
   "dependencies": {
-    "vue": "^3.0.5"
+    "vue": "^3.0.5",
+    "vue-i18n": "^9.0.0-beta.18"
   },
   "devDependencies": {
     "@types/electron-devtools-installer": "^2.2.0",
@@ -25,7 +26,7 @@
     "@vue/cli-plugin-e2e-cypress": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
-    "@vue/cli-plugin-unit-jest": "~4.5.0",
+    "@vue/cli-plugin-unit-jest": "^5.0.0-alpha.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
     "@vue/eslint-config-standard": "^5.1.2",
@@ -41,6 +42,8 @@
     "eslint-plugin-vue": "^7.0.0-0",
     "pug": "^3.0.0",
     "pug-plain-loader": "^1.1.0",
+    "sass": "^1.32.0",
+    "sass-loader": "^10.1.0",
     "spectron": "^13.0.0",
     "typescript": "~3.9.3",
     "vue-cli-plugin-electron-builder": "~2.0.0-rc.5",
