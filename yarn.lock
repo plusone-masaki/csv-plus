@@ -2376,6 +2376,11 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
 
+base26@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/base26/-/base26-0.1.0.tgz#38dbe74a46c54eb49b4e962f8446e1fbc2400075"
+  integrity sha512-fu39ovAEARSpkOZJQjbQagPdW4sEz3d1owQx3oZey5b0GaTtsLddOfKYx+LEif9U20Xn9SlJ4zayERt0qXyhDQ==
+
 base64-js@^1.0.2, base64-js@^1.3.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"

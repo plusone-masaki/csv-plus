@@ -1,27 +1,23 @@
 <template lang="pug">
 td.content-cell(
+  v-text="value"
+  :contenteditable="state.editable"
   :tabindex="tabindex"
-  ref="td"
+  ref="input"
+  @input="onInput"
   @dblclick="onEdit"
-  @keydown.prevent.enter="onEdit"
-  @keydown.up.exact="move('up', $event)"
-  @keydown.down.exact="move('down', $event)"
-  @keydown.left.exact="move('left', $event)"
-  @keydown.right.exact="move('right', $event)"
+  @blur="onBlur"
+  @keydown.enter.exact="onEditFromEnter"
+  @keydown.ctrl.enter="onBreak"
+  @keydown.up.exact="onMove('up', $event)"
+  @keydown.down.exact="onMove('down', $event)"
+  @keydown.left.exact="onMove('left', $event)"
+  @keydown.right.exact="onMove('right', $event)"
 )
-  div(:style="{ height: '14px' }")
-    textarea.content-cell__textarea(
-      v-model="inputValue"
-      ref="input"
-      tabindex="-1"
-      @keydown.stop
-      @keydown.enter.exact.stop="onBlur"
-      @keydown.ctrl.enter.stop="onBreak"
-    )
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, reactive, ref, nextTick } from 'vue'
 
 type Props = {
   value: string|number;
@@ -36,9 +32,12 @@ export default defineComponent({
   },
   emits: ['update:value', 'move'],
   setup (props: Props, { emit }) {
+    const state = reactive({
+      editable: false,
+    })
+
     const refs = {
-      input: ref<HTMLInputElement>(),
-      td: ref<HTMLTableCellElement>(),
+      input: ref<HTMLTableCellElement>(),
     }
 
     const compute = {
@@ -52,28 +51,63 @@ export default defineComponent({
 
     const methods = {
       onEdit: () => {
-        refs.input.value!.focus()
+        state.editable = !state.editable
+      },
+
+      onEditFromEnter: () => {
+        state.editable = !state.editable
+        const selector = window.getSelection()
+        if (state.editable && refs.input.value) {
+          refs.input.value.focus()
+          const range = document.createRange()
+          range.selectNodeContents(refs.input.value)
+          range.collapse(false)
+
+          selector!.removeAllRanges()
+          selector!.addRange(range)
+        } else {
+          selector!.removeAllRanges()
+        }
       },
 
       onBlur: () => {
-        refs.td.value!.focus()
+        state.editable = false
       },
 
-      onInput: () => {
-        refs.input.value!.focus()
+      onBreak: (e: KeyboardEvent & { target: HTMLInputElement }) => {
+        const selector = window.getSelection()
+        if (selector) {
+          const range = selector.getRangeAt(0)
+          const lineFeed = document.createTextNode('\n')
+          range.deleteContents()
+          range.insertNode(lineFeed)
+          const offset = range.startOffset + 1
+          emit('update:value', e.target.innerText)
+          nextTick(() => {
+            // カーソルを元の位置に戻す
+            if (refs.input.value?.firstChild) {
+              range.setStart(refs.input.value.firstChild, offset)
+              range.collapse(true)
+              selector.removeAllRanges()
+              selector.addRange(range)
+            }
+          })
+        }
       },
 
-      onBreak: () => {
-        emit('update:value', props.value + '\n')
+      onInput: (e: InputEvent & { target: HTMLInputElement }) => {
+        emit('update:value', e.target.innerText)
       },
 
-      move: (to: string, e: KeyboardEvent & { currentTarget: HTMLTableCellElement }) => {
+      onMove: (to: string, e: KeyboardEvent & { currentTarget: HTMLTableCellElement }) => {
+        if (state.editable) return
         const tabindex = Number(e.currentTarget.getAttribute('tabindex'))
         emit('move', { to, tabindex })
       },
     }
 
     return {
+      state,
       ...refs,
       ...methods,
       ...compute,
@@ -84,17 +118,18 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .content-cell
-  background: #ccc
-  padding: 0
+  background: rgba(255, 255, 255, 0.33)
+  min-height: 16px
+  overflow-y: visible
+  padding: 0 2px
+  position: relative
+  vertical-align: top
+  white-space: pre
 
-  &__textarea
-    background: transparent
-    border: none
-    height: 100%
-    left: 1px
-    pointer-events: none
-    position: relative
-    resize: none
-    top: -1px
-    width: calc(100% - 6px)
+  &:focus
+    outline: #3232ff 2px solid
+    z-index: 2
+
+  &[contenteditable="true"]
+    background: rgba(255, 255, 255, 0.67)
 </style>

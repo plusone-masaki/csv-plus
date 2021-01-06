@@ -1,7 +1,7 @@
 <template lang="pug">
 tr.content-row
   th.content-row__header {{ index + 1 }}
-  ContentCell(
+  content-cell(
     v-for="i in value.length"
     v-model:value="values[i - 1]"
     :tabindex="index * value.length + i"
@@ -12,12 +12,7 @@ tr.content-row
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import ContentCell from '@/renderer/components/Grids/ContentCell.vue'
-
-type Props = {
-  index: number;
-  value: unknown[];
-}
+import ContentCell from './ContentCell.vue'
 
 export default defineComponent({
   name: 'ContentRow',
@@ -28,7 +23,7 @@ export default defineComponent({
     index: { type: Number, required: true },
     value: { type: Array, default: () => [] },
   },
-  setup (props: Props, { emit }) {
+  setup (props, { emit }) {
     const compute = {
       values: computed({
         get: () => props.value,
@@ -54,7 +49,7 @@ export default defineComponent({
             break
         }
 
-        const el = document.querySelector(`td[tabindex="${nextIndex}"]`) as HTMLTableCellElement|null
+        const el = document.querySelector(`.content-cell[tabindex="${nextIndex}"]`) as HTMLTableCellElement|null
         if (el) el.focus()
       },
     }

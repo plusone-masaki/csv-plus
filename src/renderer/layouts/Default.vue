@@ -2,20 +2,20 @@
 .wrapper
   header
   main
-    table(style="height:1px;width: 100%;border-spacing: 1px")
-      ContentRow(v-for="(_, index) in items" v-model:value="items[index]" :index="index")
+    grid-table(:data="data")
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from 'vue'
 import ContentRow from '@/renderer/components/Grids/ContentRow.vue'
+import GridTable from '@/renderer/components/Grids/GridTable.vue'
 
 export default defineComponent({
   name: 'DefaultLayout',
-  components: { ContentRow },
+  components: { GridTable, ContentRow },
   setup () {
     const state = reactive({
-      items: [
+      data: [
         [1, 2, 3, 4],
         [2, 2, 3, 4],
         [3, 2, 3, 4],
