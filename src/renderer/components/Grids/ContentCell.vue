@@ -7,7 +7,7 @@ td.content-cell(
   @input="onInput"
   @dblclick="onEdit"
   @blur="onBlur"
-  @keydown.enter.exact="onEditFromEnter"
+  @keydown.prevent.enter.exact="onEditFromEnter"
   @keydown.ctrl.enter="onBreak"
   @keydown.up.exact="onMove('up', $event)"
   @keydown.down.exact="onMove('down', $event)"
@@ -75,6 +75,8 @@ export default defineComponent({
       },
 
       onBreak: (e: KeyboardEvent & { target: HTMLInputElement }) => {
+        if (!state.editable) return
+
         const selector = window.getSelection()
         if (selector) {
           const range = selector.getRangeAt(0)
