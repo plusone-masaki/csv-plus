@@ -2,7 +2,8 @@
 tr.header-row
   th.header-cell
   th.header-cell(
-    v-for="header in headers"
+    v-for="(header, i) in headers"
+    :data-cols="i + 1"
   )
     | {{ header }}
 </template>
@@ -35,7 +36,11 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .header-cell
-  background: #000
+  background: #333
+  box-sizing: border-box
   color: #eee
+  min-width: 120px
+  padding: 2px
+  user-select: none
   width: 48px
 </style>

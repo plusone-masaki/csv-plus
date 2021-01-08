@@ -1,18 +1,17 @@
 <template lang="pug">
 .wrapper
-  header
+  header {{ state.data }}
   main
-    grid-table(:data="data")
+    grid-table(v-model="state.data")
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue'
-import ContentRow from '@/renderer/components/Grids/ContentRow.vue'
-import GridTable from '@/renderer/components/Grids/GridTable.vue'
+import { defineComponent, reactive } from 'vue'
+import GridTable from '@/renderer/components/GridTable.vue'
 
 export default defineComponent({
   name: 'DefaultLayout',
-  components: { GridTable, ContentRow },
+  components: { GridTable },
   setup () {
     const state = reactive({
       data: [
@@ -24,7 +23,7 @@ export default defineComponent({
     })
 
     return {
-      ...toRefs(state),
+      state,
     }
   },
 })
@@ -32,8 +31,10 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .wrapper
+  box-sizing: border-box
   display: grid
   grid-auto-flow: column dense
   grid-template-rows: 100px 1fr
   min-height: 100vh
+  padding: 16px
 </style>

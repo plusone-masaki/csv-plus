@@ -1,12 +1,13 @@
 <template lang="pug">
 table.grid-table
   header-row(
-    v-model:length="length"
+    :length="length"
   )
   content-row(
     v-for="(_, index) in data"
-    v-model:value="data[index]"
+    v-model="data[index]"
     :index="index"
+    :length="length"
   )
 </template>
 
@@ -35,5 +36,6 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .grid-table
-  border-spacing: 1px
+  border-spacing: 2px
+  box-sizing: border-box
 </style>

@@ -1,12 +1,16 @@
 <template lang="pug">
 tr.content-row
-  th.content-row__header {{ index + 1 }}
+  th.content-row__header(
+    :data-rows="rows"
+  )
+    | {{ rows }}
   content-cell(
-    v-for="i in value.length"
-    v-model:value="values[i - 1]"
-    :tabindex="index * value.length + i"
+    v-for="i in length"
+    v-model="values[i - 1]"
+    :tabindex="index * modelValue.length + i"
+    :rows="rows"
+    :cols="i"
     :key="i"
-    @move="onMove"
   )
 </template>
 
@@ -19,44 +23,24 @@ export default defineComponent({
   components: {
     ContentCell,
   },
+  emits: ['input'],
   props: {
+    modelValue: { type: Array, default: () => [] },
     index: { type: Number, required: true },
-    value: { type: Array, default: () => [] },
+    length: { type: Number, required: true },
   },
   setup (props, { emit }) {
     const compute = {
       values: computed({
-        get: () => props.value,
-        set: (value: unknown[]) => emit('update:value', value),
+        get: () => props.modelValue,
+        set: (value: unknown[]) => emit('input', value),
       }),
-    }
 
-    const methods = {
-      onMove: (params: { to: string; tabindex: number }) => {
-        let nextIndex = params.tabindex
-        switch (params.to) {
-          case 'up':
-            nextIndex -= props.value.length
-            break
-          case 'down':
-            nextIndex += props.value.length
-            break
-          case 'left':
-            if (params.tabindex % props.value.length !== 1) nextIndex--
-            break
-          case 'right':
-            if (params.tabindex % props.value.length) nextIndex++
-            break
-        }
-
-        const el = document.querySelector(`.content-cell[tabindex="${nextIndex}"]`) as HTMLTableCellElement|null
-        if (el) el.focus()
-      },
+      rows: computed(() => props.index + 1),
     }
 
     return {
       ...compute,
-      ...methods,
     }
   },
 })
@@ -67,7 +51,8 @@ export default defineComponent({
   height: 1px
 
   &__header
-    background: #000
+    background: #333
     color: #eee
+    user-select: none
     width: 48px
 </style>
