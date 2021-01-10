@@ -1,2 +1,2 @@
 import './config/menu'
-import './bootstrap'
+import './system/bootstrap'

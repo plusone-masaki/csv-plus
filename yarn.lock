@@ -3056,6 +3056,11 @@ chardet@^0.7.0:
   resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.7.0.tgz#90094849f0937f2eedc2425d0d28a9e5f0cbad9e"
   integrity sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
 
+chardet@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/chardet/-/chardet-1.3.0.tgz#a56ed2d9e4517a7128721340a0cb9a10a8fac238"
+  integrity sha512-cyTQGGptIjIT+CMGT5J/0l9c6Fb+565GCFjjeUTKxUO7w3oR+FcNCMEKTn5xtVKaLFmladN7QF68IiQsv5Fbdw==
+
 check-more-types@2.24.0:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/check-more-types/-/check-more-types-2.24.0.tgz#1420ffb10fd444dcfc79b43891bbfffd32a84600"
@@ -3920,6 +3925,31 @@ csstype@^2.6.8:
   version "2.6.14"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.14.tgz#004822a4050345b55ad4dcc00be1d9cf2f4296de"
   integrity sha512-2mSc+VEpGPblzAxyeR+vZhJKgYg0Og0nnRi7pmRXFYYxSfnOnW8A5wwQb4n4cE2nIOzqKOAzLCaEX6aBmNEv8A==
+
+csv-generate@^3.2.4:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/csv-generate/-/csv-generate-3.3.0.tgz#0e25658f1bb9806d94fec7b270896a35c7eedf1a"
+  integrity sha512-EXSru4QwEWKwM7wwsJbhrZC+mHEJrhQFoXlohHs80CAU8Qhlv9gaw1sjzNiC3Hr3oUx5skDmEiAlz+tnKWV0RA==
+
+csv-parse@^4.8.8:
+  version "4.14.2"
+  resolved "https://registry.yarnpkg.com/csv-parse/-/csv-parse-4.14.2.tgz#c1329cff95a99b8773a92c4e62f8bff114b34726"
+  integrity sha512-YE2xlTKtM035/94llhgsp9qFQxGi47EkQJ1pZ+mLT/98GpIsbjkMGAb7Rmu9hNxVfYFOLf10hP+rPVqnoccLgw==
+
+csv-stringify@^5.3.6:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/csv-stringify/-/csv-stringify-5.6.0.tgz#3dcde51da7561f5052220f1847bfd4db7618fcfa"
+  integrity sha512-E0LNLevBrwaJ1WKsl4HUPOmK96WyhizTfY79mJgfr2dsIb6zyJd3B9+lToO7gSkTaKi8CIo0Pd0vDGfa0whozg==
+
+csv@^5.3.2:
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/csv/-/csv-5.3.2.tgz#50b344e25dfbb8c62684a1bcec18c22468b2161e"
+  integrity sha512-odDyucr9OgJTdGM2wrMbJXbOkJx3nnUX3Pt8SFOwlAMOpsUQlz1dywvLMXJWX/4Ib0rjfOsaawuuwfI5ucqBGQ==
+  dependencies:
+    csv-generate "^3.2.4"
+    csv-parse "^4.8.8"
+    csv-stringify "^5.3.6"
+    stream-transform "^2.0.1"
 
 cyclist@^1.0.1:
   version "1.0.1"
@@ -8416,6 +8446,11 @@ mixin-deep@^1.2.0:
     for-in "^1.0.2"
     is-extendable "^1.0.1"
 
+mixme@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/mixme/-/mixme-0.4.0.tgz#a1aee27f0d63cc905e1cc6ddc98abf94d414435e"
+  integrity sha512-B4Sm1CDC5+ov5AYxSkyeT5HLtiDgNOLKwFlq34wr8E2O3zRdTvQiLzo599Jt9cir6VJrSenOlgvdooVYCQJIYw==
+
 mkdirp-classic@^0.5.2:
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/mkdirp-classic/-/mkdirp-classic-0.5.3.tgz#fa10c9115cc6d8865be221ba47ee9bed78601113"
@@ -11267,6 +11302,13 @@ stream-to-observable@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/stream-to-observable/-/stream-to-observable-0.1.0.tgz#45bf1d9f2d7dc09bed81f1c307c430e68b84cffe"
   integrity sha1-Rb8dny19wJvtgfHDB8Qw5ouEz/4=
+
+stream-transform@^2.0.1:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/stream-transform/-/stream-transform-2.0.4.tgz#911ff7556d1e25c237e95d783f6739d9e0b4a61c"
+  integrity sha512-LQXH1pUksoef5Ijo6+2ihnjLLZtZuoqu1vhut6a7xZ77nrLA/shbbx2FAzVC/nkb6wwrPzOO98700mv4HDQcWg==
+  dependencies:
+    mixme "^0.4.0"
 
 strict-uri-encode@^1.0.0:
   version "1.1.0"

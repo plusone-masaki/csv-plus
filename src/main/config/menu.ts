@@ -1,7 +1,10 @@
 import Electron, { app, Menu } from 'electron'
 // import { i18next } from '@/plugins/i18n'
+import FileMenu from '@/main/menu/FileMenu'
 
 const isMac = process.platform === 'darwin'
+
+const fileMenu = new FileMenu()
 
 const template: Array<Electron.MenuItemConstructorOptions|Electron.MenuItem> = isMac
   ? [
@@ -33,6 +36,7 @@ const template: Array<Electron.MenuItemConstructorOptions|Electron.MenuItem> = i
         {
           label: 'ファイルを開く',
           accelerator: 'Ctrl+O',
+          click: fileMenu.open,
         },
         { type: 'separator' },
         {

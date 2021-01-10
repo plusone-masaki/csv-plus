@@ -14,12 +14,11 @@ export default defineComponent({
   components: { GridTable },
   setup () {
     const state = reactive({
-      data: [
-        [1, 2, 3, 4],
-        [2, 2, 3, 4],
-        [3, 2, 3, 4],
-        [4, 2, 3, 4],
-      ],
+      data: [] as string[],
+    })
+
+    window.ipcRenderer.on('csv-loaded', (e: Event, data: string[]) => {
+      state.data = data
     })
 
     return {

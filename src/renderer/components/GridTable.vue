@@ -28,8 +28,10 @@ export default defineComponent({
       table: null,
       settings: {
         data: csvData,
-        rowHeaders: true,
         colHeaders: true,
+        rowHeaders: true,
+        manualColumnResize: true,
+        manualRowResize: true,
         filters: true,
         dropdownMenu: true,
         language: 'ja-JP',
@@ -39,9 +41,7 @@ export default defineComponent({
 
     onMounted(() => {
       const container = document.getElementById('grid-table')
-      if (container) {
-        state.table = new HandsOnTable(container, state.settings)
-      }
+      if (container) state.table = new HandsOnTable(container, state.settings)
     })
 
     return {
