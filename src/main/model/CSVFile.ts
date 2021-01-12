@@ -3,6 +3,7 @@ import { BrowserWindow } from 'electron'
 import csvParse from 'csv-parse'
 import chardet from 'chardet'
 import { Match } from 'chardet/lib/match'
+import { Iconv } from 'iconv'
 import * as channels from '@/common/channels'
 
 const MAX_PRELOAD_FILESIZE = 200 * 1024
@@ -15,7 +16,6 @@ export default class CSVFile {
     CSVFile.parse(path, {
       bom: true,
       delimiter: CSVFile.guessDelimiter(path),
-      encoding: null,
 
       // eslint-disable-next-line
       relax_column_count: true,
@@ -78,13 +78,16 @@ export default class CSVFile {
     }
   }
 
-  private static parse (path: string, options: csvParse.Options) {
+  private static async parse (path: string, options: csvParse.Options) {
     try {
+      const encoding = await this.detectEncoding(path)
+      const iconv = new Iconv(encoding, 'UTF-8')
+
       fs.createReadStream(path)
-        .pipe(csvParse(options, (error: Error | undefined, buffers: Buffer[]) => {
+        .pipe(iconv)
+        .pipe(csvParse(options, (error: Error | undefined, data: string[][]) => {
           if (error) throw error
           const win = BrowserWindow.getFocusedWindow()
-          const data =
           const payload: channels.FILE_LOADED = { path, data }
           if (win) win.webContents.send(channels.FILE_LOADED, payload)
         }))

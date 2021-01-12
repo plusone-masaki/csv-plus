@@ -1,6 +1,10 @@
 <template lang="pug">
 Layout
   template(v-slot:header)
+    navigation-tabs(
+      v-model="state.tabs"
+      v-model:tab="tab"
+    )
     | {{ data }}
   grid-table(v-model="data")
 </template>
@@ -11,11 +15,12 @@ import { computed, defineComponent, reactive } from 'vue'
 import { vueI18n } from '@/plugins/i18n'
 import Layout from '@/renderer/layouts/Default.vue'
 import GridTable from '@/renderer/components/GridTable.vue'
+import NavigationTabs from '@/renderer/components/Tabs/NavigationTabs.vue'
 import * as channels from '@/common/channels'
 
 type State = {
   tab: string;
-  tabs: Array<{ label: string; key: string }>;
+  tabs: Array<{ label?: string; key: string; dirty: boolean }>;
   data: { [key: string]: number[][]|string[][] };
 }
 
@@ -24,6 +29,7 @@ export default defineComponent({
   components: {
     Layout,
     GridTable,
+    NavigationTabs,
   },
   setup () {
     const { t } = vueI18n
@@ -34,6 +40,7 @@ export default defineComponent({
         {
           label: t('tabs.new_tab'),
           key: 'newTab',
+          dirty: false,
         },
       ],
       data: {
@@ -49,6 +56,7 @@ export default defineComponent({
       state.tabs.push({
         label: file.path,
         key: file.path,
+        dirty: false,
       })
       state.data[file.path] = file.data
       state.tab = file.path
