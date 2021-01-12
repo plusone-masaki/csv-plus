@@ -28,6 +28,7 @@ export default defineComponent({
 .tag
   color: aliceblue
   background: transparent
+  display: inline-block
 
   &:hover
     background: rgba(255, 255, 255, 0.08)

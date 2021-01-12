@@ -3,7 +3,7 @@ div#grid-table
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed, onMounted } from 'vue'
+import { defineComponent, reactive, computed, onMounted, watch } from 'vue'
 import HandsOnTable from 'handsontable'
 import 'handsontable/dist/handsontable.full.min.css'
 import 'handsontable/languages/ja-JP'
@@ -38,6 +38,15 @@ export default defineComponent({
         licenseKey: 'non-commercial-and-evaluation',
       },
     })
+
+    watch(
+      csvData,
+      () => {
+        const container = document.getElementById('grid-table')
+        if (container) state.table = new HandsOnTable(container, state.settings)
+      },
+      { immediate: true },
+    )
 
     onMounted(() => {
       const container = document.getElementById('grid-table')

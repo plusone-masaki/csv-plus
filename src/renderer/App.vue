@@ -3,9 +3,10 @@ Layout
   template(v-slot:header)
     navigation-tabs(
       v-model="state.tabs"
-      v-model:tab="tab"
+      v-model:tab="state.tab"
     )
-    | {{ data }}
+    | {{ tab }} {{ data }}
+
   grid-table(v-model="data")
 </template>
 

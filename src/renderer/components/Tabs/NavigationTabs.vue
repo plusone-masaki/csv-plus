@@ -1,13 +1,12 @@
 <template lang="pug">
-nav.tags
-  vue-draggable(v-model="value" item-key="key")
-    template(#item="{ element }")
-      navigation-tab(
-        :label="element.label"
-        :active="_tab === element.key"
-        :is-dirty="element.dirty"
-        @click="_tab = element.key"
-      )
+vue-draggable.tags(v-model="value" item-key="key")
+  template(#item="{ element }")
+    navigation-tab(
+      :label="element.label"
+      :active="_tab === element.key"
+      :is-dirty="element.dirty"
+      @click="_tab = element.key"
+    )
 </template>
 
 <script lang="ts">
@@ -47,6 +46,8 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-
+<style lang="sass" scoped>
+::v-deep
+  .tabs
+    display: flex
 </style>
