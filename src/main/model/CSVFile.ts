@@ -1,29 +1,28 @@
 import fs from 'fs'
+import { BrowserWindow } from 'electron'
 import csvParse from 'csv-parse'
 import chardet from 'chardet'
 import { Match } from 'chardet/lib/match'
-import File from './interface/File'
+import * as channels from '@/common/channels'
 
-const MAX_PRELOAD_FILESIZE = 1024 * 1024
+const MAX_PRELOAD_FILESIZE = 200 * 1024
 const DEFAULT_ENCODING = 'UTF-8'
 
-type Callback = (data: any[]) => void
-
-export default class CSVFile extends File {
-  public static async open (path: string, callback?: Callback) {
+export default class CSVFile {
+  public static async open (path: string) {
     if (!await CSVFile.isFile(path)) return
 
-    const delimiter = CSVFile.guessDelimiter(path)
-    const encoding = await CSVFile.detectEncoding(path)
-
     CSVFile.parse(path, {
-      delimiter,
-      encoding,
+      bom: true,
+      delimiter: CSVFile.guessDelimiter(path),
+      encoding: null,
+
+      // eslint-disable-next-line
       relax_column_count: true,
-    }, callback)
+    })
   }
 
-  public static save<T> (path: string, data: Array<T>) {}
+  // public static save<T> (path: string, data: Array<T>) {}
 
   /**
    * 渡された文字列がファイルパスかどうかチェックする
@@ -43,7 +42,7 @@ export default class CSVFile extends File {
 
   /**
    * 文字コード判別
-   * 最大1MBまでファイルを読み込んで判定する
+   * ファイルの一部を読み込んで判定する
    *
    * @private
    * @param {string} path
@@ -54,8 +53,8 @@ export default class CSVFile extends File {
 
     if (typeof encoding === 'string') return encoding
 
-    if (!!encoding) {
-      const match = encoding.reduce((acc: Match, encode: Match) => acc && acc.confidence > encode.confidence ? acc : encode)
+    if (encoding) {
+      const match = encoding.reduce((acc: Match, encode: Match) => acc && acc.confidence >= encode.confidence ? acc : encode)
       return match.name
     }
 
@@ -79,11 +78,18 @@ export default class CSVFile extends File {
     }
   }
 
-  private static parse (path: string, options: csvParse.Options, callback?: Callback) {
-    fs.createReadStream(path)
-      .pipe(csvParse(options, (error: Error | undefined, data: any[]) => {
-        if (error) throw error
-        if (callback) callback(data)
-      }))
+  private static parse (path: string, options: csvParse.Options) {
+    try {
+      fs.createReadStream(path)
+        .pipe(csvParse(options, (error: Error | undefined, buffers: Buffer[]) => {
+          if (error) throw error
+          const win = BrowserWindow.getFocusedWindow()
+          const data =
+          const payload: channels.FILE_LOADED = { path, data }
+          if (win) win.webContents.send(channels.FILE_LOADED, payload)
+        }))
+    } catch (e) {
+      console.error(e)
+    }
   }
 }

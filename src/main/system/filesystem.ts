@@ -1,17 +1,11 @@
-import { app, BrowserWindow, ipcRenderer } from 'electron'
-import CSVFile from '@/main/model/CSVFile'
+import { app, BrowserWindow } from 'electron'
+import * as channels from '@/common/channels'
 
 export default (window: BrowserWindow) => {
-  const csvLoaded = (data: any[]) => {
-    console.log(data)
-    window.webContents.send('csv-loaded', data)
-  }
-
   const argv = process.argv
   if (argv.length) {
     const path = argv[argv.length - 1]
-    if (path)
-    CSVFile.open(path, csvLoaded)
+    if (path) window.webContents.send(channels.FILE_OPEN, path)
   }
 
   /**
@@ -22,6 +16,6 @@ export default (window: BrowserWindow) => {
    */
   app.on('open-file', (e, path) => {
     e.preventDefault()
-    CSVFile.open(path, csvLoaded)
+    window.webContents.send(channels.FILE_OPEN, path)
   })
 }

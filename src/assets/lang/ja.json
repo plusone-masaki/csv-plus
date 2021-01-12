@@ -5,5 +5,8 @@
     "view": "表示",
     "settings": "設定",
     "help": "ヘルプ"
+  },
+  "tabs": {
+    "new_tab": "新しいタブ"
   }
 }

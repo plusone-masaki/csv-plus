@@ -1,30 +1,16 @@
 <template lang="pug">
 .wrapper
-  header {{ state.data }}
+  header
+    slot(name="header")
   main
-    grid-table(v-model="state.data")
+    slot
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from 'vue'
-import GridTable from '@/renderer/components/GridTable.vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'DefaultLayout',
-  components: { GridTable },
-  setup () {
-    const state = reactive({
-      data: [] as string[],
-    })
-
-    window.ipcRenderer.on('csv-loaded', (e: Event, data: string[]) => {
-      state.data = data
-    })
-
-    return {
-      state,
-    }
-  },
 })
 </script>
 

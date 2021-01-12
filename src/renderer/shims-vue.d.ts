@@ -8,9 +8,3 @@ declare module '*.json' {
   const data: any
   export default data
 }
-
-
-interface Window {
-  ipcRenderer: any
-}
-declare const window: Window
