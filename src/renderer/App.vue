@@ -1,33 +1,42 @@
 <template lang="pug">
 Layout
-  template(v-slot:header)
+  template(v-slot:nav)
     navigation-tabs(
       v-model="state.tabs"
       v-model:tab="state.tab"
     )
-    | {{ tab }} {{ data }}
 
-  grid-table(v-model="data")
+  template(v-slot:header)
+    control-panel
+
+  grid-table(
+    :data="state.data[state.tab]"
+    :tab="state.tab"
+    @edit="onEdit"
+  )
 </template>
 
 <script lang="ts">
 import { ipcRenderer, IpcRendererEvent } from 'electron'
-import { computed, defineComponent, reactive } from 'vue'
+import { defineComponent, reactive } from 'vue'
+import HandsOnTable from 'handsontable'
 import { vueI18n } from '@/plugins/i18n'
 import Layout from '@/renderer/layouts/Default.vue'
-import GridTable from '@/renderer/components/GridTable.vue'
 import NavigationTabs from '@/renderer/components/Tabs/NavigationTabs.vue'
+import ControlPanel from '@/renderer/components/ControlPanel.vue'
+import GridTable from '@/renderer/components/GridTable.vue'
 import * as channels from '@/common/channels'
 
 type State = {
   tab: string;
   tabs: Array<{ label?: string; key: string; dirty: boolean }>;
-  data: { [key: string]: number[][]|string[][] };
+  data: { [key: string]: HandsOnTable.CellValue[][] | HandsOnTable.RowObject[] };
 }
 
 export default defineComponent({
   name: 'App',
   components: {
+    ControlPanel,
     Layout,
     GridTable,
     NavigationTabs,
@@ -45,13 +54,17 @@ export default defineComponent({
         },
       ],
       data: {
-        newTab: [
-          ['', '', '', ''],
-          ['', '', '', ''],
-          ['', '', '', ''],
-        ],
+        newTab: HandsOnTable.helper.createEmptySpreadsheetData(10, 6),
       },
     })
+
+    const methods = {
+      t,
+      onEdit: () => {
+        const tab = state.tabs.find(t => t.key === state.tab)
+        if (tab) tab.dirty = true
+      },
+    }
 
     ipcRenderer.on(channels.FILE_LOADED, (e: IpcRendererEvent, file: channels.FILE_LOADED) => {
       state.tabs.push({
@@ -63,17 +76,9 @@ export default defineComponent({
       state.tab = file.path
     })
 
-    const data = computed<number[][]|string[][]>({
-      get: () => state.data[state.tab],
-      set: data => {
-        state.data[state.tab] = data
-      },
-    })
-
     return {
-      t,
       state,
-      data,
+      ...methods,
     }
   },
 })

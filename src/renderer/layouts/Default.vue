@@ -1,8 +1,10 @@
 <template lang="pug">
 .wrapper
-  header
+  nav
+    slot(name="nav")
+  header.header
     slot(name="header")
-  main
+  main.main
     slot
 </template>
 
@@ -19,7 +21,14 @@ export default defineComponent({
   box-sizing: border-box
   display: grid
   grid-auto-flow: column dense
-  grid-template-rows: 100px 1fr
+  grid-template-rows: min-content min-content 1fr
   min-height: 100vh
+
+.header
   padding: 16px
+.main
+  box-sizing: inherit
+  padding: 8px 16px
+  position: relative
+  width: 100vw
 </style>

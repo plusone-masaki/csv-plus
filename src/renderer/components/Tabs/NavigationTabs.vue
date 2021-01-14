@@ -1,16 +1,20 @@
 <template lang="pug">
-vue-draggable.tags(v-model="value" item-key="key")
+vue-draggable.tabs(v-model="value" item-key="key")
   template(#item="{ element }")
     navigation-tab(
       :label="element.label"
-      :active="_tab === element.key"
+      :active="activeTab === element.key"
       :is-dirty="element.dirty"
-      @click="_tab = element.key"
+      @click="activeTab = element.key"
     )
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import {
+  PropType,
+  computed,
+  defineComponent,
+} from 'vue'
 import VueDraggable from 'vuedraggable'
 import NavigationTab from '@/renderer/components/Tabs/NavigationTab.vue'
 
@@ -24,17 +28,17 @@ export default defineComponent({
   name: 'NavigationTabs',
   components: { NavigationTab, VueDraggable },
   props: {
-    modelValue: { type: Array, required: true },
-    tab: { type: String, required: true },
+    modelValue: { type: Array as PropType<Tab[]>, required: true },
+    tab: { type: String as PropType<string>, required: true },
   },
   setup (props, { emit }) {
     const methods = {
       value: computed<Tab[]>({
-        get: () => props.modelValue as Tab[],
+        get: () => props.modelValue,
         set: (value: Tab[]) => emit('change', value),
       }),
-      _tab: computed<string>({
-        get: () => props.tab as string,
+      activeTab: computed<string>({
+        get: () => props.tab,
         set: (value: string) => emit('update:tab', value),
       }),
     }
@@ -47,7 +51,8 @@ export default defineComponent({
 </script>
 
 <style lang="sass" scoped>
-::v-deep
-  .tabs
-    display: flex
+.tabs
+  border-bottom: #666 solid 2px
+  display: flex
+  padding: 8px 4px 0
 </style>

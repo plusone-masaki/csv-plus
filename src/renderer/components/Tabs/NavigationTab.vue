@@ -7,18 +7,25 @@ div.tag(
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import {
+  PropType,
+  defineComponent,
+} from 'vue'
 
 export default defineComponent({
   name: 'NavigationTab',
   props: {
-    active: { type: Boolean, default: false },
-    label: { type: String, required: true },
-    isDirty: { type: Boolean, default: false },
+    active: { type: Boolean as PropType<boolean>, default: false },
+    label: { type: String as PropType<string>, required: true },
+    isDirty: { type: Boolean as PropType<boolean>, default: false },
   },
   setup (props, { emit }) {
-    return {
+    const methods = {
       onClick: () => emit('click'),
+    }
+
+    return {
+      ...methods,
     }
   },
 })
@@ -26,10 +33,19 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .tag
-  color: aliceblue
   background: transparent
+  border-radius: 10px 10px 0 0
+  color: #cccccc
   display: inline-block
+  padding: 8px 16px
+  transition: .2s ease
+  user-select: none
 
-  &:hover
+  &.active
+    background: #666
+    color: aliceblue
+
+  &:not(.active):hover
     background: rgba(255, 255, 255, 0.08)
+    color: aliceblue
 </style>

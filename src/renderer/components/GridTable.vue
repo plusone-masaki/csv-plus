@@ -1,9 +1,16 @@
 <template lang="pug">
 div#grid-table
+  div#grid-table__content
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed, onMounted, watch } from 'vue'
+import {
+  PropType,
+  defineComponent,
+  reactive,
+  onMounted,
+  watch,
+} from 'vue'
 import HandsOnTable from 'handsontable'
 import 'handsontable/dist/handsontable.full.min.css'
 import 'handsontable/languages/ja-JP'
@@ -16,18 +23,14 @@ type State = {
 export default defineComponent({
   name: 'GridTable',
   props: {
-    modelValue: { type: Array, required: true },
+    data: { type: Array as PropType<HandsOnTable.CellValue[][] | HandsOnTable.RowObject[]>, required: true },
+    tab: { type: String as PropType<string>, required: true },
   },
-  setup (props, { emit }) {
-    const csvData = computed<HandsOnTable.CellValue[][]|HandsOnTable.RowObject[]>({
-      get: () => props.modelValue as HandsOnTable.CellValue[][]|HandsOnTable.RowObject[],
-      set: value => emit('input', value),
-    })
-
+  setup (props) {
     const state: State = reactive({
       table: null,
       settings: {
-        data: csvData,
+        data: props.data,
         colHeaders: true,
         rowHeaders: true,
         manualColumnResize: true,
@@ -39,23 +42,17 @@ export default defineComponent({
       },
     })
 
-    watch(
-      csvData,
-      () => {
-        const container = document.getElementById('grid-table')
-        if (container) state.table = new HandsOnTable(container, state.settings)
-      },
-      { immediate: true },
-    )
+    watch(() => props.tab, () => {
+      if (state.table) state.table.loadData(props.data)
+    })
 
     onMounted(() => {
-      const container = document.getElementById('grid-table')
+      const container = document.getElementById('grid-table__content')
       if (container) state.table = new HandsOnTable(container, state.settings)
     })
 
     return {
       state,
-      csvData,
     }
   },
 })
@@ -63,5 +60,9 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 #grid-table
+  box-sizing: inherit
   position: relative
+  overflow: hidden
+  height: 100%
+  width: 100%
 </style>
