@@ -35,7 +35,7 @@ export default defineComponent({
     const methods = {
       value: computed<Tab[]>({
         get: () => props.modelValue,
-        set: (value: Tab[]) => emit('change', value),
+        set: (value: Tab[]) => emit('update:modelValue', value),
       }),
       activeTab: computed<string>({
         get: () => props.tab,

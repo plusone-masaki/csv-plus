@@ -3,7 +3,8 @@ div.tag(
   :class="{ active }"
   @click.stop="onClick"
 )
-  | {{ isDirty ? '*' : '' }} {{ label || t('tabs.new_tab') }}
+  span.dirty {{ isDirty ? '*' : ' ' }}
+  span {{ label || t('tabs.new_tab') }}
 </template>
 
 <script lang="ts">
@@ -34,10 +35,10 @@ export default defineComponent({
 <style lang="sass" scoped>
 .tag
   background: transparent
-  border-radius: 10px 10px 0 0
+  border-radius: 4px 4px 0 0
   color: #cccccc
   display: inline-block
-  padding: 8px 16px
+  padding: 8px 16px 8px 8px
   transition: .2s ease
   user-select: none
 
@@ -48,4 +49,8 @@ export default defineComponent({
   &:not(.active):hover
     background: rgba(255, 255, 255, 0.08)
     color: aliceblue
+
+  .dirty
+    display: inline-block
+    width: 8px
 </style>

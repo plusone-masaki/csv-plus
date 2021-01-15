@@ -8,6 +8,7 @@ Layout
 
   template(v-slot:header)
     control-panel
+    | {{ state.tabs }}
 
   grid-table(
     :data="state.data[state.tab]"

@@ -15,20 +15,20 @@ import HandsOnTable from 'handsontable'
 import 'handsontable/dist/handsontable.full.min.css'
 import 'handsontable/languages/ja-JP'
 
-type State = {
-  table: HandsOnTable|null;
-  settings: HandsOnTable.GridSettings;
-}
-
 export default defineComponent({
   name: 'GridTable',
   props: {
     data: { type: Array as PropType<HandsOnTable.CellValue[][] | HandsOnTable.RowObject[]>, required: true },
     tab: { type: String as PropType<string>, required: true },
   },
-  setup (props) {
-    const state: State = reactive({
-      table: null,
+  setup (props, { emit }) {
+    const onEdit = (_: HandsOnTable.CellValue[][], src: HandsOnTable.ChangeSource) => {
+      if (['loadData'].includes(src)) return
+      emit('edit')
+    }
+
+    const state = reactive({
+      table: null as HandsOnTable|null,
       settings: {
         data: props.data,
         colHeaders: true,
@@ -39,7 +39,8 @@ export default defineComponent({
         dropdownMenu: true,
         language: 'ja-JP',
         licenseKey: 'non-commercial-and-evaluation',
-      },
+        afterChange: onEdit,
+      } as HandsOnTable.GridSettings,
     })
 
     watch(() => props.tab, () => {
