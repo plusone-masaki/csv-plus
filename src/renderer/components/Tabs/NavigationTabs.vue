@@ -52,7 +52,20 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .tabs
-  border-bottom: rgba(255, 255, 255, 0.33) solid 2px
+  box-sizing: border-box
+  cursor: pointer
   display: flex
+  overflow-x: scroll
   padding: 8px 4px 0
+  width: 100vw
+
+  &::-webkit-scrollbar
+    height: 4px
+    transition: background-color .3s ease
+
+  &::-webkit-scrollbar-track
+    background-color: rgba(255, 255, 255, 0.33)
+
+  &:hover::-webkit-scrollbar-thumb
+    background-color: rgba(0, 0, 0, 0.33)
 </style>

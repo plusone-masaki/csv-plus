@@ -34,7 +34,9 @@ export default defineComponent({
         manualColumnResize: true,
         manualRowResize: true,
         filters: true,
-        dropdownMenu: true,
+        copyPaste: true,
+        contextMenu: true,
+        dragToScroll: true,
         language: 'ja-JP',
         licenseKey: 'non-commercial-and-evaluation',
         afterChange: (_: HandsOnTable.CellValue[][], src: HandsOnTable.ChangeSource) => {
