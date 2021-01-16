@@ -8,11 +8,11 @@ Layout
 
   template(v-slot:header)
     control-panel
-    | {{ state.tabs }}
 
   grid-table(
-    :data="state.data[state.tab]"
-    :tab="state.tab"
+    v-for="tab in state.tabs"
+    v-show="tab.key === state.tab"
+    :data="tab.data"
     @edit="onEdit"
   )
 </template>
@@ -30,8 +30,12 @@ import * as channels from '@/common/channels'
 
 type State = {
   tab: string;
-  tabs: Array<{ label?: string; key: string; dirty: boolean }>;
-  data: { [key: string]: HandsOnTable.CellValue[][] | HandsOnTable.RowObject[] };
+  tabs: Array<{
+    label?: string;
+    key: string;
+    dirty: boolean;
+    data: HandsOnTable.CellValue[][] | HandsOnTable.RowObject[];
+  }>;
 }
 
 export default defineComponent({
@@ -52,11 +56,9 @@ export default defineComponent({
           label: t('tabs.new_tab'),
           key: 'newTab',
           dirty: false,
+          data: HandsOnTable.helper.createEmptySpreadsheetData(10, 6),
         },
       ],
-      data: {
-        newTab: HandsOnTable.helper.createEmptySpreadsheetData(10, 6),
-      },
     })
 
     const methods = {
@@ -69,11 +71,11 @@ export default defineComponent({
 
     ipcRenderer.on(channels.FILE_LOADED, (e: IpcRendererEvent, file: channels.FILE_LOADED) => {
       state.tabs.push({
-        label: file.path,
+        label: file.path.split('/').pop(),
         key: file.path,
         dirty: false,
+        data: file.data,
       })
-      state.data[file.path] = file.data
       state.tab = file.path
     })
 

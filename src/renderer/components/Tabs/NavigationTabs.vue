@@ -52,7 +52,7 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .tabs
-  border-bottom: #666 solid 2px
+  border-bottom: rgba(255, 255, 255, 0.33) solid 2px
   display: flex
   padding: 8px 4px 0
 </style>

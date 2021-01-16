@@ -1,11 +1,11 @@
 import { app, BrowserWindow } from 'electron'
-import * as channels from '@/common/channels'
+import CSVFile from '@/main/model/CSVFile'
 
 export default (window: BrowserWindow) => {
   const argv = process.argv
   if (argv.length) {
     const path = argv[argv.length - 1]
-    if (path) window.webContents.send(channels.FILE_OPEN, path)
+    if (path) CSVFile.open(path, window)
   }
 
   /**
@@ -16,6 +16,6 @@ export default (window: BrowserWindow) => {
    */
   app.on('open-file', (e, path) => {
     e.preventDefault()
-    window.webContents.send(channels.FILE_OPEN, path)
+    CSVFile.open(path, window)
   })
 }

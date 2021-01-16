@@ -10,7 +10,7 @@ const MAX_PRELOAD_FILESIZE = 200 * 1024
 const DEFAULT_ENCODING = 'UTF-8'
 
 export default class CSVFile {
-  public static async open (path: string) {
+  public static async open (path: string, window?: BrowserWindow) {
     if (!await CSVFile.isFile(path)) return
 
     CSVFile.parse(path, {
@@ -19,10 +19,12 @@ export default class CSVFile {
 
       // eslint-disable-next-line
       relax_column_count: true,
-    })
+    }, window)
   }
 
-  // public static save<T> (path: string, data: Array<T>) {}
+  public static save<T> (path: string, data: string) {
+    fs.writeFile(path, data, err => console.error(err))
+  }
 
   /**
    * 渡された文字列がファイルパスかどうかチェックする
@@ -78,7 +80,7 @@ export default class CSVFile {
     }
   }
 
-  private static async parse (path: string, options: csvParse.Options) {
+  private static async parse (path: string, options: csvParse.Options, window?: BrowserWindow) {
     try {
       const encoding = await this.detectEncoding(path)
       const iconv = new Iconv(encoding, 'UTF-8')
@@ -87,7 +89,7 @@ export default class CSVFile {
         .pipe(iconv)
         .pipe(csvParse(options, (error: Error | undefined, data: string[][]) => {
           if (error) throw error
-          const win = BrowserWindow.getFocusedWindow()
+          const win = window || BrowserWindow.getFocusedWindow()
           const payload: channels.FILE_LOADED = { path, data }
           if (win) win.webContents.send(channels.FILE_LOADED, payload)
         }))

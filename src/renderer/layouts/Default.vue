@@ -1,6 +1,6 @@
 <template lang="pug">
 .wrapper
-  nav
+  nav.nav
     slot(name="nav")
   header.header
     slot(name="header")

@@ -38,12 +38,13 @@ export default defineComponent({
   border-radius: 4px 4px 0 0
   color: #cccccc
   display: inline-block
+  font-size: 14px
   padding: 8px 16px 8px 8px
-  transition: .2s ease
   user-select: none
+  white-space: nowrap
 
   &.active
-    background: #666
+    background: rgba(255, 255, 255, 0.33)
     color: aliceblue
 
   &:not(.active):hover

@@ -1,19 +1,21 @@
-import { BrowserWindow, dialog } from 'electron'
+import { BrowserWindow, dialog, MenuItem } from 'electron'
 import CSVFile from '@/main/model/CSVFile'
 
 export default class FileMenu {
   /**
-   * [ファイル] > [開く]
-   *
-   * @todo 複数ファイルを開けるようにしたい
+   * [ファイルを開く]
    */
-  public async open () {
-    const file = await dialog.showOpenDialog({ properties: ['openFile'] })
+  public async open (menu: MenuItem, win: BrowserWindow) {
+    const file = await dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })
     if (file.canceled || !file.filePaths.length) return
 
-    const win = BrowserWindow.getFocusedWindow()
-    if (!win) return
+    file.filePaths.forEach((path: string) => CSVFile.open(path, win))
+  }
 
-    file.filePaths.forEach((path: string) => CSVFile.open(path))
+  /**
+   * [ファイルの保存]
+   */
+  public async save (path: string, data: string) {
+    CSVFile.save(path, data)
   }
 }

@@ -1,6 +1,6 @@
 <template lang="pug">
-div#grid-table
-  div#grid-table__content
+div.grid-table
+  div(ref="gridTable")
 </template>
 
 <script lang="ts">
@@ -8,8 +8,8 @@ import {
   PropType,
   defineComponent,
   reactive,
+  ref,
   onMounted,
-  watch,
 } from 'vue'
 import HandsOnTable from 'handsontable'
 import 'handsontable/dist/handsontable.full.min.css'
@@ -19,12 +19,10 @@ export default defineComponent({
   name: 'GridTable',
   props: {
     data: { type: Array as PropType<HandsOnTable.CellValue[][] | HandsOnTable.RowObject[]>, required: true },
-    tab: { type: String as PropType<string>, required: true },
   },
   setup (props, { emit }) {
-    const onEdit = (_: HandsOnTable.CellValue[][], src: HandsOnTable.ChangeSource) => {
-      if (['loadData'].includes(src)) return
-      emit('edit')
+    const refs = {
+      gridTable: ref<HTMLDivElement>(),
     }
 
     const state = reactive({
@@ -39,28 +37,28 @@ export default defineComponent({
         dropdownMenu: true,
         language: 'ja-JP',
         licenseKey: 'non-commercial-and-evaluation',
-        afterChange: onEdit,
+        afterChange: (_: HandsOnTable.CellValue[][], src: HandsOnTable.ChangeSource) => {
+          if (!['loadData'].includes(src)) emit('edit')
+        },
       } as HandsOnTable.GridSettings,
     })
 
-    watch(() => props.tab, () => {
-      if (state.table) state.table.loadData(props.data)
-    })
-
     onMounted(() => {
-      const container = document.getElementById('grid-table__content')
-      if (container) state.table = new HandsOnTable(container, state.settings)
+      if (refs.gridTable.value) {
+        state.table = new HandsOnTable(refs.gridTable.value, state.settings)
+      }
     })
 
     return {
       state,
+      ...refs,
     }
   },
 })
 </script>
 
 <style lang="sass" scoped>
-#grid-table
+.grid-table
   box-sizing: inherit
   position: relative
   overflow: hidden

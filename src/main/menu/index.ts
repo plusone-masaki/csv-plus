@@ -1,4 +1,4 @@
-import Electron, { app, Menu } from 'electron'
+import Electron, { app, Menu, shell } from 'electron'
 // import { i18next } from '@/plugins/i18n'
 import FileMenu from '@/main/menu/FileMenu'
 
@@ -47,7 +47,7 @@ const template: Array<Electron.MenuItemConstructorOptions|Electron.MenuItem> = i
           label: '名前を付けて保存',
           accelerator: 'Ctrl+Shift+S',
         },
-      ],
+      ] as Electron.MenuItemConstructorOptions[],
     },
     {
       label: '編集(E)',
@@ -88,14 +88,11 @@ const template: Array<Electron.MenuItemConstructorOptions|Electron.MenuItem> = i
       submenu: [
         {
           label: 'このソフトについて',
-          click: async () => {
-            const { shell } = require('electron')
-            await shell.openExternal('https://electronjs.org')
-          },
+          role: 'about',
         },
       ],
     },
   ]
 
-const menu = Menu.buildFromTemplate(template)
-Menu.setApplicationMenu(menu)
+const index = Menu.buildFromTemplate(template)
+Menu.setApplicationMenu(index)
