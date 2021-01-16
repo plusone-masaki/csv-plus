@@ -19,7 +19,7 @@ import VueDraggable from 'vuedraggable'
 import NavigationTab from '@/renderer/components/Tabs/NavigationTab.vue'
 
 type Tab = {
-  label?: string;
+  label: string;
   key: string;
   dirty: boolean;
 }

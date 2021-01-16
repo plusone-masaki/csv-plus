@@ -10,7 +10,7 @@ const MAX_PRELOAD_FILESIZE = 200 * 1024
 const DEFAULT_ENCODING = 'UTF-8'
 
 export default class CSVFile {
-  public static async open (path: string, window?: BrowserWindow) {
+  public static async open (path: string, window: BrowserWindow) {
     if (!await CSVFile.isFile(path)) return
 
     CSVFile.parse(path, {
@@ -22,8 +22,10 @@ export default class CSVFile {
     }, window)
   }
 
-  public static save<T> (path: string, data: string) {
-    fs.writeFile(path, data, err => console.error(err))
+  public static save (path: string, data: string) {
+    fs.writeFile(path, data, err => {
+      throw err
+    })
   }
 
   /**
@@ -33,7 +35,7 @@ export default class CSVFile {
    * @param {string} path
    * @return {Promise<boolean>}
    */
-  private static async isFile (path: string) {
+  private static async isFile (path: string): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
       fs.stat(path, (error: Error|null, stats: fs.Stats) => {
         if (error) reject(error)
@@ -70,7 +72,7 @@ export default class CSVFile {
    * @param {string} path
    * @return {string}
    */
-  private static guessDelimiter (path: string) {
+  private static guessDelimiter (path: string): string {
     const extension = path.split('.').pop()
     switch (extension) {
       case 'tsv': return '\t'
@@ -80,7 +82,7 @@ export default class CSVFile {
     }
   }
 
-  private static async parse (path: string, options: csvParse.Options, window?: BrowserWindow) {
+  private static async parse (path: string, options: csvParse.Options, window: BrowserWindow) {
     try {
       const encoding = await this.detectEncoding(path)
       const iconv = new Iconv(encoding, 'UTF-8')
@@ -89,9 +91,8 @@ export default class CSVFile {
         .pipe(iconv)
         .pipe(csvParse(options, (error: Error | undefined, data: string[][]) => {
           if (error) throw error
-          const win = window || BrowserWindow.getFocusedWindow()
           const payload: channels.FILE_LOADED = { path, data }
-          if (win) win.webContents.send(channels.FILE_LOADED, payload)
+          window.webContents.send(channels.FILE_LOADED, payload)
         }))
     } catch (e) {
       console.error(e)

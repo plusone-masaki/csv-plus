@@ -4,8 +4,6 @@ import FileMenu from '@/main/menu/FileMenu'
 
 const isMac = process.platform === 'darwin'
 
-const fileMenu = new FileMenu()
-
 const template: Array<Electron.MenuItemConstructorOptions|Electron.MenuItem> = isMac
   ? [
     {
@@ -36,16 +34,18 @@ const template: Array<Electron.MenuItemConstructorOptions|Electron.MenuItem> = i
         {
           label: 'ファイルを開く',
           accelerator: 'Ctrl+O',
-          click: fileMenu.open,
+          click: FileMenu.open,
         },
         { type: 'separator' },
         {
           label: '上書き保存',
           accelerator: 'Ctrl+S',
+          click: FileMenu.save,
         },
         {
           label: '名前を付けて保存',
           accelerator: 'Ctrl+Shift+S',
+          click: FileMenu.saveAs,
         },
       ] as Electron.MenuItemConstructorOptions[],
     },
