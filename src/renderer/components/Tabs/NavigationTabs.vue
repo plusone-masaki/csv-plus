@@ -1,12 +1,16 @@
 <template lang="pug">
-vue-draggable.tabs(v-model="value" item-key="key")
-  template(#item="{ element }")
-    navigation-tab(
-      :label="element.label"
-      :active="activeTab === element.key"
-      :is-dirty="element.dirty"
-      @click="activeTab = element.key"
-    )
+div.tabs
+  vue-draggable(v-model="value" item-key="key")
+    template(#item="{ element }")
+      navigation-tab(
+        :label="element.label"
+        :active="activeTab === element.key"
+        :is-dirty="element.dirty"
+        @click="activeTab = element.key"
+        @close="onClose(element)"
+      )
+
+  navigation-add-tab(@add="onAdd")
 </template>
 
 <script lang="ts">
@@ -17,22 +21,25 @@ import {
 } from 'vue'
 import VueDraggable from 'vuedraggable'
 import NavigationTab from '@/renderer/components/Tabs/NavigationTab.vue'
+import HandsOnTable from 'handsontable'
+import NavigationAddTab from '@/renderer/components/Tabs/NavigationAddTab.vue'
 
 type Tab = {
-  label: string;
+  label?: string;
   key: string;
   dirty: boolean;
+  data: HandsOnTable.CellValue[][] | HandsOnTable.RowObject[];
 }
 
 export default defineComponent({
   name: 'NavigationTabs',
-  components: { NavigationTab, VueDraggable },
+  components: { NavigationAddTab, NavigationTab, VueDraggable },
   props: {
     modelValue: { type: Array as PropType<Tab[]>, required: true },
     tab: { type: String as PropType<string>, required: true },
   },
   setup (props, { emit }) {
-    const methods = {
+    const compute = {
       value: computed<Tab[]>({
         get: () => props.modelValue,
         set: (value: Tab[]) => emit('update:modelValue', value),
@@ -43,7 +50,13 @@ export default defineComponent({
       }),
     }
 
+    const methods = {
+      onAdd: () => emit('add'),
+      onClose: (tab: Tab) => emit('close', tab),
+    }
+
     return {
+      ...compute,
       ...methods,
     }
   },
@@ -53,10 +66,10 @@ export default defineComponent({
 <style lang="sass" scoped>
 .tabs
   box-sizing: border-box
-  cursor: pointer
   display: flex
   overflow-x: scroll
   padding: 8px 4px 0
+  white-space: nowrap
   width: 100vw
 
   &::-webkit-scrollbar

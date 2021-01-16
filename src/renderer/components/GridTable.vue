@@ -10,6 +10,7 @@ import {
   reactive,
   ref,
   onMounted,
+  watch,
 } from 'vue'
 import HandsOnTable from 'handsontable'
 import 'handsontable/dist/handsontable.full.min.css'
@@ -19,6 +20,7 @@ export default defineComponent({
   name: 'GridTable',
   props: {
     data: { type: Array as PropType<HandsOnTable.CellValue[][] | HandsOnTable.RowObject[]>, required: true },
+    path: { type: String as PropType<string>, required: true },
   },
   setup (props, { emit }) {
     const refs = {
@@ -43,6 +45,10 @@ export default defineComponent({
           if (!['loadData'].includes(src)) emit('edit')
         },
       } as HandsOnTable.GridSettings,
+    })
+
+    watch(() => props.path, () => {
+      if (state.table) state.table.loadData(props.data)
     })
 
     onMounted(() => {

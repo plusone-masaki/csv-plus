@@ -4,7 +4,11 @@ div.tag(
   @click.stop="onClick"
 )
   span.dirty {{ isDirty ? '*' : ' ' }}
-  span {{ label || t('tabs.new_tab') }}
+  span.label {{ label || t('tabs.new_tab') }}
+  i.close.material-icons(
+    @click.stop="onClose"
+  )
+    | clear
 </template>
 
 <script lang="ts">
@@ -23,6 +27,7 @@ export default defineComponent({
   setup (props, { emit }) {
     const methods = {
       onClick: () => emit('click'),
+      onClose: () => emit('close'),
     }
 
     return {
@@ -37,9 +42,10 @@ export default defineComponent({
   background: transparent
   border-radius: 4px 4px 0 0
   color: #cccccc
+  cursor: pointer
   display: inline-block
   font-size: 14px
-  padding: 8px 16px 8px 8px
+  padding: 8px
   user-select: none
   white-space: nowrap
 
@@ -54,4 +60,16 @@ export default defineComponent({
   .dirty
     display: inline-block
     width: 8px
+
+  .close
+    border-radius: 50%
+    display: inline-block
+    font-size: 16px
+    margin: -2px -2px -2px 6px
+    padding: 2px
+    vertical-align: bottom
+    width: 16px
+
+    &:hover
+      background: rgba(255, 255, 255, 0.08)
 </style>

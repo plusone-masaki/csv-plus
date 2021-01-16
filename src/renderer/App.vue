@@ -4,6 +4,8 @@ Layout
     navigation-tabs(
       v-model="state.tabs"
       v-model:tab="state.tab"
+      @add="addTab"
+      @close="closeTab"
     )
 
   template(v-slot:header)
@@ -13,30 +15,34 @@ Layout
     v-for="tab in state.tabs"
     v-show="tab.key === state.tab"
     :data="tab.data"
+    :path="tab.key"
+    :key="tab.key"
     @edit="onEdit"
   )
 </template>
 
 <script lang="ts">
 import { ipcRenderer, IpcRendererEvent } from 'electron'
-import { defineComponent, reactive } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 import HandsOnTable from 'handsontable'
 import csvStringify from 'csv-stringify/lib/sync'
-import { vueI18n } from '@/plugins/i18n'
+import { vueI18n } from '@/common/plugins/i18n'
 import Layout from '@/renderer/layouts/Default.vue'
 import NavigationTabs from '@/renderer/components/Tabs/NavigationTabs.vue'
 import ControlPanel from '@/renderer/components/ControlPanel.vue'
 import GridTable from '@/renderer/components/GridTable.vue'
 import * as channels from '@/common/channels'
 
+type Tab = {
+  label?: string;
+  key: string;
+  dirty: boolean;
+  data: HandsOnTable.CellValue[][] | HandsOnTable.RowObject[];
+}
+
 type State = {
   tab: string;
-  tabs: Array<{
-    label?: string;
-    key: string;
-    dirty: boolean;
-    data: HandsOnTable.CellValue[][] | HandsOnTable.RowObject[];
-  }>;
+  tabs: Array<Tab>;
 }
 
 export default defineComponent({
@@ -50,12 +56,14 @@ export default defineComponent({
   setup () {
     const { t } = vueI18n
 
+    const count = ref(0)
+
     const state: State = reactive({
-      tab: 'newTab0',
+      tab: `newTab${count.value}`,
       tabs: [
         {
           label: t('tabs.new_tab'),
-          key: 'newTab0',
+          key: `newTab${count.value++}`,
           dirty: false,
           data: HandsOnTable.helper.createEmptySpreadsheetData(10, 6),
         },
@@ -68,6 +76,26 @@ export default defineComponent({
         const tab = state.tabs.find(t => t.key === state.tab)
         if (tab) tab.dirty = true
       },
+      addTab: (tab?: Tab) => {
+        tab = tab || {
+          label: t('tabs.new_tab'),
+          key: `newTab${count.value++}`,
+          dirty: false,
+          data: HandsOnTable.helper.createEmptySpreadsheetData(10, 6),
+        }
+
+        state.tabs.push(tab)
+        state.tab = tab.key
+      },
+      closeTab: (tab: Tab) => {
+        const index = state.tabs.findIndex(t => t === tab)
+        state.tabs.splice(index, 1)
+
+        if (!state.tabs.length) return
+        if (!state.tabs.find(t => t.key === state.tab)) {
+          state.tab = state.tabs[index]?.key || state.tabs[0].key
+        }
+      },
     }
 
     // ファイルを開く
@@ -76,13 +104,12 @@ export default defineComponent({
       if (exists) {
         state.tab = exists.key
       } else {
-        state.tabs.push({
+        methods.addTab({
           label: file.path.split('/').pop(),
           key: file.path,
           dirty: false,
           data: file.data,
         })
-        state.tab = file.path
       }
     })
 
