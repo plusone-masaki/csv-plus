@@ -1,6 +1,6 @@
 <template lang="pug">
 Layout
-  template(v-slot:nav)
+  template(v-slot:header)
     navigation-tabs(
       v-model="state.tabs"
       v-model:tab="state.tab"
@@ -8,17 +8,14 @@ Layout
       @close="closeTab"
     )
 
-  template(v-slot:header)
-    control-panel
-
-  grid-table(
-    v-for="tab in state.tabs"
-    v-show="tab.key === state.tab"
-    :data="tab.data"
-    :path="tab.key"
-    :key="tab.key"
-    @edit="onEdit"
-  )
+  template(v-for="tab in state.tabs" :key="tab.key")
+    control-panel(v-model="tab.setting")
+    grid-table(
+      v-show="tab.key === state.tab"
+      :data="tab.data"
+      :path="tab.key"
+      @edit="onEdit"
+    )
 </template>
 
 <script lang="ts">
@@ -38,6 +35,12 @@ type Tab = {
   key: string;
   dirty: boolean;
   data: HandsOnTable.CellValue[][] | HandsOnTable.RowObject[];
+  setting: {
+    hasHeader: boolean;
+    delimiter: string;
+    quoteChar: string;
+    escapeChar: string;
+  };
 }
 
 type State = {
@@ -66,6 +69,12 @@ export default defineComponent({
           key: `newTab${count.value++}`,
           dirty: false,
           data: HandsOnTable.helper.createEmptySpreadsheetData(10, 6),
+          setting: {
+            hasHeader: false,
+            delimiter: ',',
+            quoteChar: '"',
+            escapeChar: '"',
+          },
         },
       ],
     })
@@ -82,6 +91,12 @@ export default defineComponent({
           key: `newTab${count.value++}`,
           dirty: false,
           data: HandsOnTable.helper.createEmptySpreadsheetData(10, 6),
+          setting: {
+            hasHeader: false,
+            delimiter: ',',
+            quoteChar: '"',
+            escapeChar: '"',
+          },
         }
 
         state.tabs.push(tab)
@@ -109,6 +124,12 @@ export default defineComponent({
           key: file.path,
           dirty: false,
           data: file.data,
+          setting: {
+            hasHeader: false,
+            delimiter: ',',
+            quoteChar: '"',
+            escapeChar: '"',
+          },
         })
       }
     })

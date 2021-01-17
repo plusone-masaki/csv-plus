@@ -8,5 +8,8 @@
   },
   "tabs": {
     "new_tab": "新しいタブ"
+  },
+  "setting": {
+    "has_header": "ヘッダーあり"
   }
 }

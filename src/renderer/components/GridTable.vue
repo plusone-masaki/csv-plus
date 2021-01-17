@@ -13,7 +13,6 @@ import {
   watch,
 } from 'vue'
 import HandsOnTable from 'handsontable'
-import 'handsontable/dist/handsontable.full.min.css'
 import 'handsontable/languages/ja-JP'
 
 export default defineComponent({

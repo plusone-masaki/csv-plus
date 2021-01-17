@@ -1,7 +1,5 @@
 <template lang="pug">
 .wrapper
-  nav.nav
-    slot(name="nav")
   header.header
     slot(name="header")
   main.main
@@ -24,8 +22,6 @@ export default defineComponent({
   grid-template-rows: min-content min-content 1fr
   min-height: 100vh
 
-.header
-  padding: 16px
 .main
   box-sizing: inherit
   padding: 8px 16px
