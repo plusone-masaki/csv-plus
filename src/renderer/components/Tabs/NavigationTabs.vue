@@ -1,12 +1,12 @@
 <template lang="pug">
 div.tabs
-  vue-draggable(v-model="value" item-key="key")
+  vue-draggable(v-model="value" item-key="path")
     template(#item="{ element }")
       navigation-tab(
         :label="element.label"
-        :active="activeTab === element.key"
+        :active="activeTab === element.path"
         :is-dirty="element.dirty"
-        @click="activeTab = element.key"
+        @click="activeTab = element.path"
         @close="onClose(element)"
       )
 
@@ -20,29 +20,22 @@ import {
   defineComponent,
 } from 'vue'
 import VueDraggable from 'vuedraggable'
+import { FileData } from '@/renderer/types'
 import NavigationTab from '@/renderer/components/Tabs/NavigationTab.vue'
-import HandsOnTable from 'handsontable'
 import NavigationAddTab from '@/renderer/components/Tabs/NavigationAddTab.vue'
-
-type Tab = {
-  label?: string;
-  key: string;
-  dirty: boolean;
-  data: HandsOnTable.CellValue[][] | HandsOnTable.RowObject[];
-}
 
 export default defineComponent({
   name: 'NavigationTabs',
   components: { NavigationAddTab, NavigationTab, VueDraggable },
   props: {
-    modelValue: { type: Array as PropType<Tab[]>, required: true },
+    modelValue: { type: Array as PropType<FileData[]>, required: true },
     tab: { type: String as PropType<string>, required: true },
   },
   setup (props, { emit }) {
     const compute = {
-      value: computed<Tab[]>({
+      value: computed<FileData[]>({
         get: () => props.modelValue,
-        set: (value: Tab[]) => emit('update:modelValue', value),
+        set: (value: FileData[]) => emit('update:modelValue', value),
       }),
       activeTab: computed<string>({
         get: () => props.tab,
@@ -52,7 +45,7 @@ export default defineComponent({
 
     const methods = {
       onAdd: () => emit('add'),
-      onClose: (tab: Tab) => emit('close', tab),
+      onClose: (tab: FileData) => emit('close', tab),
     }
 
     return {

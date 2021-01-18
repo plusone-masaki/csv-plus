@@ -19,6 +19,7 @@ export default defineComponent({
   name: 'GridTable',
   props: {
     data: { type: Array as PropType<HandsOnTable.CellValue[][] | HandsOnTable.RowObject[]>, required: true },
+    headers: { type: Array as PropType<Array<string|number>|null>, default: null },
     path: { type: String as PropType<string>, required: true },
   },
   setup (props, { emit }) {
@@ -40,7 +41,7 @@ export default defineComponent({
         dragToScroll: true,
         language: 'ja-JP',
         licenseKey: 'non-commercial-and-evaluation',
-        afterChange: (_: HandsOnTable.CellValue[][], src: HandsOnTable.ChangeSource) => {
+        afterChange: (_: unknown, src: HandsOnTable.ChangeSource) => {
           if (!['loadData'].includes(src)) emit('edit')
         },
       } as HandsOnTable.GridSettings,
@@ -70,5 +71,5 @@ export default defineComponent({
   position: relative
   overflow: hidden
   height: 100%
-  width: 100%
+  width: calc(100vw - 32px)
 </style>

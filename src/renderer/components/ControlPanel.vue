@@ -1,23 +1,28 @@
 <template lang="pug">
 div.control-panel
-  switch-button(v-model="settings.hasHeader") {{ t('setting.has_header') }}
+  h2.control-panel__title {{ t('setting.title') }}
+  switch-button(
+    v-model="settings.hasHeader"
+    color="#006600"
+  )
+    | {{ t('setting.header') }}
+    | {{ settings.hasHeader ? t('setting.have') : t('setting.not_have') }}
+
+  div
+    span {{ t('setting.delimiter') }}
+    text-input(v-model="settings.delimiter")
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
 import { vueI18n } from '@/common/plugins/i18n'
+import { Setting } from '@/renderer/types'
 import SwitchButton from '@/renderer/components/Form/SwitchButton.vue'
-
-type Setting = {
-  hasHeader: boolean;
-  delimiter: string;
-  quoteChar: string;
-  escapeChar: string;
-}
+import TextInput from '@/renderer/components/Form/TextInput.vue'
 
 export default defineComponent({
   name: 'ControlPanel',
-  components: { SwitchButton },
+  components: { TextInput, SwitchButton },
   props: {
     modelValue: { type: Object as PropType<Setting> },
   },
@@ -39,7 +44,14 @@ export default defineComponent({
 .control-panel
   background: #666666
   border-radius: 4px
+  color: #cfcfcf
   height: 120px
-  margin: 8px 0 16px
-  padding: 8px
+  margin-bottom: 16px
+  padding: 16px
+  text-align: start
+
+  &__title
+    font-size: 1.2rem
+    letter-spacing: 0.15rem
+    margin: -4px 0 8px
 </style>

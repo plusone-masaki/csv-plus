@@ -10,6 +10,10 @@
     "new_tab": "新しいタブ"
   },
   "setting": {
-    "has_header": "ヘッダーあり"
+    "title": "設定",
+    "header": "ヘッダー",
+    "have": "あり",
+    "not_have": "なし",
+    "delimiter": "区切り文字"
   }
 }

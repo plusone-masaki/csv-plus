@@ -1,8 +1,5 @@
 <template lang="pug">
-div.tag(
-  :class="{ active }"
-  @click.stop="onAdd"
-)
+div.tag(@click.stop="add")
   i.add.material-icons add
 </template>
 
@@ -11,15 +8,9 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'NavigationAddTab',
-  setup (props, { emit }) {
-    const methods = {
-      onAdd: () => emit('add'),
-    }
-
-    return {
-      ...methods,
-    }
-  },
+  setup: (props, { emit }) => ({
+    add: () => emit('add'),
+  }),
 })
 </script>
 

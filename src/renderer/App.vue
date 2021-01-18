@@ -2,20 +2,19 @@
 Layout
   template(v-slot:header)
     navigation-tabs(
-      v-model="state.tabs"
-      v-model:tab="state.tab"
+      v-model="state.files"
+      v-model:tab="state.active"
       @add="addTab"
       @close="closeTab"
     )
 
-  template(v-for="tab in state.tabs" :key="tab.key")
-    control-panel(v-model="tab.setting")
-    grid-table(
-      v-show="tab.key === state.tab"
-      :data="tab.data"
-      :path="tab.key"
-      @edit="onEdit"
-    )
+  content(
+    v-show="file.path === state.active"
+    v-for="file in state.files"
+    :file="file"
+    :key="file.path"
+    @edit="onEdit"
+  )
 </template>
 
 <script lang="ts">
@@ -24,36 +23,22 @@ import { defineComponent, reactive, ref } from 'vue'
 import HandsOnTable from 'handsontable'
 import csvStringify from 'csv-stringify/lib/sync'
 import { vueI18n } from '@/common/plugins/i18n'
-import Layout from '@/renderer/layouts/Default.vue'
+import { FileData } from '@/renderer/types'
+import Layout from '@/renderer/page/Layout.vue'
+import Content from '@/renderer/page/Content.vue'
 import NavigationTabs from '@/renderer/components/Tabs/NavigationTabs.vue'
-import ControlPanel from '@/renderer/components/ControlPanel.vue'
-import GridTable from '@/renderer/components/GridTable.vue'
 import * as channels from '@/common/channels'
 
-type Tab = {
-  label?: string;
-  key: string;
-  dirty: boolean;
-  data: HandsOnTable.CellValue[][] | HandsOnTable.RowObject[];
-  setting: {
-    hasHeader: boolean;
-    delimiter: string;
-    quoteChar: string;
-    escapeChar: string;
-  };
-}
-
 type State = {
-  tab: string;
-  tabs: Array<Tab>;
+  active: string;
+  files: FileData[];
 }
 
 export default defineComponent({
   name: 'App',
   components: {
-    ControlPanel,
     Layout,
-    GridTable,
+    Content,
     NavigationTabs,
   },
   setup () {
@@ -62,11 +47,11 @@ export default defineComponent({
     const count = ref(0)
 
     const state: State = reactive({
-      tab: `newTab${count.value}`,
-      tabs: [
+      active: `newTab${count.value}`,
+      files: [
         {
           label: t('tabs.new_tab'),
-          key: `newTab${count.value++}`,
+          path: `newTab${count.value++}`,
           dirty: false,
           data: HandsOnTable.helper.createEmptySpreadsheetData(10, 6),
           setting: {
@@ -82,13 +67,13 @@ export default defineComponent({
     const methods = {
       t,
       onEdit: () => {
-        const tab = state.tabs.find(t => t.key === state.tab)
-        if (tab) tab.dirty = true
+        const fileData = state.files.find(t => t.path === state.active)
+        if (fileData) fileData.dirty = true
       },
-      addTab: (tab?: Tab) => {
-        tab = tab || {
+      addTab: (fileData?: FileData) => {
+        fileData = fileData || {
           label: t('tabs.new_tab'),
-          key: `newTab${count.value++}`,
+          path: `newTab${count.value++}`,
           dirty: false,
           data: HandsOnTable.helper.createEmptySpreadsheetData(10, 6),
           setting: {
@@ -99,29 +84,29 @@ export default defineComponent({
           },
         }
 
-        state.tabs.push(tab)
-        state.tab = tab.key
+        state.files.push(fileData)
+        state.active = fileData.path
       },
-      closeTab: (tab: Tab) => {
-        const index = state.tabs.findIndex(t => t === tab)
-        state.tabs.splice(index, 1)
+      closeTab: (fileData: FileData) => {
+        const index = state.files.findIndex(t => t === fileData)
+        state.files.splice(index, 1)
 
-        if (!state.tabs.length) return
-        if (!state.tabs.find(t => t.key === state.tab)) {
-          state.tab = state.tabs[index]?.key || state.tabs[0].key
+        if (!state.files.length) return
+        if (!state.files.find(t => t.path === state.active)) {
+          state.active = state.files[index]?.path || state.files[0].path
         }
       },
     }
 
     // ファイルを開く
     ipcRenderer.on(channels.FILE_LOADED, (e: IpcRendererEvent, file: channels.FILE_LOADED) => {
-      const exists = state.tabs.find(tab => tab.key === file.path)
+      const exists = state.files.find(fileData => fileData.path === file.path)
       if (exists) {
-        state.tab = exists.key
+        state.active = exists.path
       } else {
         methods.addTab({
-          label: file.path.split('/').pop(),
-          key: file.path,
+          label: file.path.split('/').pop() || '',
+          path: file.path,
           dirty: false,
           data: file.data,
           setting: {
@@ -136,16 +121,17 @@ export default defineComponent({
 
     // ファイルを保存
     const save = (channelName: string) => () => {
-      const activeData = state.tabs.find(tab => tab.key === state.tab)
+      const activeData = state.files.find(file => file.path === state.active)
       if (!activeData) return
 
       const file: channels.FILE_SAVE = {
-        path: activeData.key,
+        path: activeData.path,
         data: csvStringify(activeData.data),
       }
+
       ipcRenderer.once(channels.FILE_SAVE_COMPLETE, (e: IpcRendererEvent, path: channels.FILE_SAVE_COMPLETE) => {
-        activeData.label = path.split('/').pop()
-        activeData.key = path
+        activeData.label = path.split('/').pop() || ''
+        activeData.path = path
         activeData.dirty = false
       })
       ipcRenderer.send(channelName, file)
