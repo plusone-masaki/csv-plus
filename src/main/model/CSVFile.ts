@@ -18,8 +18,8 @@ export default class CSVFile {
   }
 
   public static save (path: string, data: string) {
-    fs.writeFile(path, data, err => {
-      throw err
+    fs.writeFile(path, data, error => {
+      if (error) throw error
     })
   }
 
@@ -50,6 +50,7 @@ export default class CSVFile {
   private static async detectEncoding (path: string): Promise<string> {
     const encoding = await chardet.detectFile(path, { sampleSize: MAX_PRELOAD_FILESIZE })
 
+    if (typeof encoding === 'string' && encoding === 'UTF-32BE') return DEFAULT_ENCODING
     if (typeof encoding === 'string') return encoding
 
     if (encoding) {
@@ -80,7 +81,6 @@ export default class CSVFile {
   private static async parse (path: string, window: BrowserWindow) {
     try {
       const encoding = await this.detectEncoding(path)
-      console.log('encoding', encoding)
       const iconv = new Iconv(encoding, DEFAULT_ENCODING)
       const options: csvParse.Options = {
         bom: true,

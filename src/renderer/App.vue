@@ -19,7 +19,7 @@ Layout
 
 <script lang="ts">
 import { ipcRenderer, IpcRendererEvent } from 'electron'
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, nextTick, reactive, ref } from 'vue'
 import HandsOnTable from 'handsontable'
 import csvStringify from 'csv-stringify/lib/sync'
 import { vueI18n } from '@/common/plugins/i18n'
@@ -118,10 +118,18 @@ export default defineComponent({
         data: csvStringify(activeData.data),
       }
 
-      ipcRenderer.once(channels.FILE_SAVE_COMPLETE, (e: IpcRendererEvent, path: channels.FILE_SAVE_COMPLETE) => {
+      ipcRenderer.once(channels.FILE_SAVE_COMPLETE, async (e: IpcRendererEvent, path: channels.FILE_SAVE_COMPLETE) => {
+        // 既に同じファイルを開いていた場合は閉じる
+        if (path !== state.active) {
+          const sameFileIndex = state.files.findIndex(file => file.path === path)
+          sameFileIndex === -1 || state.files.splice(sameFileIndex, 1)
+          await nextTick()
+        }
+
         activeData.label = path.split('/').pop() || ''
         activeData.path = path
         activeData.dirty = false
+        state.active = path
       })
       ipcRenderer.send(channelName, file)
     }
