@@ -54,7 +54,7 @@ export default defineComponent({
           path: `newTab${count.value++}`,
           dirty: false,
           data: HandsOnTable.helper.createEmptySpreadsheetData(10, 6),
-          setting: {
+          options: {
             hasHeader: false,
             delimiter: ',',
             quoteChar: '"',
@@ -76,7 +76,7 @@ export default defineComponent({
           path: `newTab${count.value++}`,
           dirty: false,
           data: HandsOnTable.helper.createEmptySpreadsheetData(10, 6),
-          setting: {
+          options: {
             hasHeader: false,
             delimiter: ',',
             quoteChar: '"',
@@ -104,18 +104,7 @@ export default defineComponent({
       if (exists) {
         state.active = exists.path
       } else {
-        methods.addTab({
-          label: file.path.split('/').pop() || '',
-          path: file.path,
-          dirty: false,
-          data: file.data,
-          setting: {
-            hasHeader: false,
-            delimiter: ',',
-            quoteChar: '"',
-            escapeChar: '"',
-          },
-        })
+        methods.addTab(file)
       }
     })
 

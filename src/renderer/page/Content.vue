@@ -1,6 +1,6 @@
 <template lang="pug">
 section.content
-  control-panel(v-model="file.setting")
+  control-panel(v-model="file.options")
 
   main.main
     grid-table(

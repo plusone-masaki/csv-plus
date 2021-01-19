@@ -16,7 +16,7 @@ div.control-panel
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
 import { vueI18n } from '@/common/plugins/i18n'
-import { Setting } from '@/renderer/types'
+import { Options } from '@/renderer/types'
 import SwitchButton from '@/renderer/components/Form/SwitchButton.vue'
 import TextInput from '@/renderer/components/Form/TextInput.vue'
 
@@ -24,7 +24,7 @@ export default defineComponent({
   name: 'ControlPanel',
   components: { TextInput, SwitchButton },
   props: {
-    modelValue: { type: Object as PropType<Setting> },
+    modelValue: { type: Object as PropType<Options> },
   },
   setup (props, { emit }) {
     const settings = computed({

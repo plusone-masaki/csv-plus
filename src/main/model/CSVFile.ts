@@ -4,7 +4,7 @@ import csvParse from 'csv-parse'
 import chardet from 'chardet'
 import { Match } from 'chardet/lib/match'
 import * as channels from '@/common/channels'
-import { Setting } from '@/renderer/types'
+import { Options } from '@/renderer/types'
 
 const Iconv = require('iconv').Iconv
 const MAX_PRELOAD_FILESIZE = 200 * 1024
@@ -101,12 +101,12 @@ export default class CSVFile {
             path,
             data,
             dirty: false,
-            setting: {
+            options: {
               hasHeader: false,
               delimiter: options.delimiter,
               quoteChar: '"',
               escapeChar: '"',
-            } as Setting,
+            } as Options,
           }
 
           window.webContents.send(channels.FILE_LOADED, payload)

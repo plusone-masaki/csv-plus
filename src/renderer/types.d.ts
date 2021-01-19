@@ -1,6 +1,6 @@
 import HandsOnTable from 'handsontable'
 
-declare type Setting = {
+declare type Options = {
   hasHeader: boolean;
   delimiter: string;
   quoteChar: string;
@@ -12,5 +12,5 @@ declare type FileData = {
   path: string;
   dirty: boolean;
   data: HandsOnTable.CellValue[][] | HandsOnTable.RowObject[];
-  setting: Setting;
+  options: Options;
 }
