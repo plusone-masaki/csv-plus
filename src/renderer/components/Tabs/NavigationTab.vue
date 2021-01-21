@@ -40,7 +40,6 @@ export default defineComponent({
 <style lang="sass" scoped>
 .tag
   background: transparent
-  border-radius: 4px 4px 0 0
   color: #cccccc
   cursor: pointer
   display: inline-block

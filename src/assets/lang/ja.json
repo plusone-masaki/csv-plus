@@ -9,7 +9,8 @@
   "tabs": {
     "new_tab": "新しいタブ"
   },
-  "setting": {
+  "options": {
+    "csv_option": "CSV設定",
     "title": "設定",
     "header": "ヘッダー",
     "have": "あり",

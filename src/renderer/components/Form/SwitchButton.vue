@@ -41,7 +41,7 @@ export default defineComponent({
   flex-direction: row
 
   .switch-button
-    $switch-button-height: 1.6em
+    $switch-button-height: 1.3em
     $switch-button-color: var(--color)
     $switch-button-color-disabled: #4D4D4D
     $switch-button-border-thickness: 2px

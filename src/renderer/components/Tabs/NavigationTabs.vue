@@ -61,7 +61,6 @@ export default defineComponent({
   box-sizing: border-box
   display: flex
   overflow-x: scroll
-  padding: 8px 4px 0
   white-space: nowrap
   width: 100vw
 

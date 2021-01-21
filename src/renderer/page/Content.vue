@@ -1,25 +1,20 @@
 <template lang="pug">
 section.content
-  control-panel(v-model="file.options")
-
-  main.main
-    grid-table(
-      :data="file.data"
-      :path="file.path"
-      @edit="onEdit"
-    )
+  grid-table(
+    :data="file.data"
+    :path="file.path"
+    @edit="onEdit"
+  )
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { FileData } from '@/renderer/types'
-import ControlPanel from '@/renderer/components/ControlPanel.vue'
 import GridTable from '@/renderer/components/Grids/GridTable.vue'
 
 export default defineComponent({
   name: 'Content',
   components: {
-    ControlPanel,
     GridTable,
   },
   props: {
@@ -36,8 +31,6 @@ export default defineComponent({
 <style lang="sass" scoped>
 .content
   box-sizing: border-box
-  display: grid
-  grid-template-rows: min-content 1fr
-  padding: 16px
+  height: 100%
   width: 100vw
 </style>

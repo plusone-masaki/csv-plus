@@ -1,13 +1,12 @@
 <template lang="pug">
-Layout
-  template(v-slot:header)
-    navigation-tabs(
-      v-model="state.files"
-      v-model:tab="state.active"
-      @add="addTab"
-      @close="closeTab"
-    )
-
+.layout
+  control-panel(v-model="options")
+  navigation-tabs(
+    v-model="state.files"
+    v-model:tab="state.active"
+    @add="addTab"
+    @close="closeTab"
+  )
   content(
     v-show="file.path === state.active"
     v-for="file in state.files"
@@ -19,13 +18,13 @@ Layout
 
 <script lang="ts">
 import { ipcRenderer, IpcRendererEvent } from 'electron'
-import { defineComponent, nextTick, reactive, ref } from 'vue'
+import { computed, defineComponent, nextTick, reactive, ref } from 'vue'
 import HandsOnTable from 'handsontable'
 import csvStringify from 'csv-stringify/lib/sync'
 import { vueI18n } from '@/common/plugins/i18n'
-import { FileData } from '@/renderer/types'
-import Layout from '@/renderer/page/Layout.vue'
+import { FileData, Options } from '@/renderer/types'
 import Content from '@/renderer/page/Content.vue'
+import ControlPanel from '@/renderer/components/ControlPanel.vue'
 import NavigationTabs from '@/renderer/components/Tabs/NavigationTabs.vue'
 import * as channels from '@/common/channels'
 
@@ -34,10 +33,17 @@ type State = {
   files: FileData[];
 }
 
+const defaultOptions = (): Options => ({
+  hasHeader: false,
+  delimiter: ',',
+  quoteChar: '"',
+  escapeChar: '"',
+})
+
 export default defineComponent({
   name: 'App',
   components: {
-    Layout,
+    ControlPanel,
     Content,
     NavigationTabs,
   },
@@ -45,23 +51,30 @@ export default defineComponent({
     const { t } = vueI18n
 
     const count = ref(0)
+    const newTab = `newTab${count.value++}`
 
     const state: State = reactive({
-      active: `newTab${count.value}`,
+      active: newTab,
       files: [
         {
           label: t('tabs.new_tab'),
-          path: `newTab${count.value++}`,
+          path: newTab,
           dirty: false,
           data: HandsOnTable.helper.createEmptySpreadsheetData(10, 6),
-          options: {
-            hasHeader: false,
-            delimiter: ',',
-            quoteChar: '"',
-            escapeChar: '"',
-          },
+          options: defaultOptions(),
         },
       ],
+    })
+
+    const options = computed({
+      get: () => {
+        const file = state.files.find(file => file.path === state.active)
+        return file ? file.options : defaultOptions()
+      },
+      set: file => {
+        const index = state.files.findIndex((f: FileData) => f.path === state.active)
+        if (index !== -1) state.files[index].options = file
+      },
     })
 
     const methods = {
@@ -138,19 +151,24 @@ export default defineComponent({
 
     return {
       state,
+      options,
       ...methods,
     }
   },
 })
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="sass">
+@font-face
+  font-family: SourceHansCodeJP
+  src: url("../assets/fonts/SourceHanCodeJP-Regular.otf")
+
+#app
+  //font-family: SourceHansCodeJP, Avenir, Helvetica, Arial, sans-serif
+  font-family: SourceHansCodeJP, sans-serif
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
+  text-align: center
+  color: #2c3e50
+  margin-top: 60px
 </style>

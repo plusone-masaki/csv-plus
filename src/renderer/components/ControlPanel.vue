@@ -1,16 +1,21 @@
 <template lang="pug">
 div.control-panel
-  h2.control-panel__title {{ t('setting.title') }}
-  switch-button(
-    v-model="settings.hasHeader"
-    color="#006600"
-  )
-    | {{ t('setting.header') }}
-    | {{ settings.hasHeader ? t('setting.have') : t('setting.not_have') }}
+  div.control-panel__options
+    h2.control-panel__title {{ t('setting.title') }}
+    switch-button(
+      v-model="settings.hasHeader"
+      color="#006600"
+    )
+      | {{ t('options.header') }}
+      | {{ settings.hasHeader ? t('options.have') : t('options.not_have') }}
 
-  div
-    span {{ t('setting.delimiter') }}
-    text-input(v-model="settings.delimiter")
+    fieldset
+      legend {{ t('options.csv_option') }}
+      span {{ t('options.delimiter') }}
+      text-input(
+        v-model="settings.delimiter"
+        width="32px"
+      )
 </template>
 
 <script lang="ts">
@@ -19,10 +24,11 @@ import { vueI18n } from '@/common/plugins/i18n'
 import { Options } from '@/renderer/types'
 import SwitchButton from '@/renderer/components/Form/SwitchButton.vue'
 import TextInput from '@/renderer/components/Form/TextInput.vue'
+import ChipItem from '@/renderer/components/Form/ChipItem.vue'
 
 export default defineComponent({
   name: 'ControlPanel',
-  components: { TextInput, SwitchButton },
+  components: { ChipItem, TextInput, SwitchButton },
   props: {
     modelValue: { type: Object as PropType<Options> },
   },
@@ -42,16 +48,14 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .control-panel
-  background: #666666
-  border-radius: 4px
+  background: rgba(255, 255, 255, 0.33)
   color: #cfcfcf
-  height: 120px
-  margin-bottom: 16px
-  padding: 16px
+  display: grid
+  padding: 8px 16px
   text-align: start
 
   &__title
     font-size: 1.2rem
     letter-spacing: 0.15rem
-    margin: -4px 0 8px
+    margin: 4px 0
 </style>
