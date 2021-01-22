@@ -1,13 +1,18 @@
 <template lang="pug">
 div.tag(@click.stop="add")
-  i.add.material-icons add
+  span.add
+    SvgIcon(:size="16" icon="add")
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import SvgIcon from '@/renderer/components/Common/SvgIcon.vue'
 
 export default defineComponent({
   name: 'NavigationAddTab',
+  components: {
+    SvgIcon,
+  },
   setup: (props, { emit }) => ({
     add: () => emit('add'),
   }),
@@ -17,23 +22,26 @@ export default defineComponent({
 <style lang="sass" scoped>
 .tag
   background: transparent
-  border-radius: 4px 4px 0 0
+  border-radius: 0 4px 0 0
   color: #cccccc
   cursor: pointer
   display: inline-block
   font-size: 14px
-  padding: 8px
+  fill: #cccccc
+  padding: 4px 8px
   user-select: none
   white-space: nowrap
 
   &:hover
     background: rgba(255, 255, 255, 0.08)
     color: aliceblue
+    fill: aliceblue
 
   .add
     border-radius: 50%
-    display: inline-block
+    display: inline-flex
+    height: 16px
     font-size: 16px
-    vertical-align: bottom
+    vertical-align: middle
     width: 16px
 </style>

@@ -67,9 +67,10 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .grid-table
-  box-sizing: inherit
+  box-sizing: border-box
+  display: flex
   position: relative
   overflow: hidden
   height: 100%
-  width: calc(100vw - 32px)
+  width: 100vw
 </style>

@@ -32,5 +32,6 @@ export default defineComponent({
 .content
   box-sizing: border-box
   height: 100%
+  overflow: hidden
   width: 100vw
 </style>

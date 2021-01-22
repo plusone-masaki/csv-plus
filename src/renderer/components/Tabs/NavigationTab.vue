@@ -5,10 +5,12 @@ div.tag(
 )
   span.dirty {{ isDirty ? '*' : ' ' }}
   span.label {{ label || t('tabs.new_tab') }}
-  i.close.material-icons(
-    @click.stop="onClose"
-  )
-    | clear
+  span.close
+    svg-icon(
+      :size="16"
+      icon="close"
+      @click.stop="onClose"
+    )
 </template>
 
 <script lang="ts">
@@ -16,9 +18,13 @@ import {
   PropType,
   defineComponent,
 } from 'vue'
+import SvgIcon from '@/renderer/components/Common/SvgIcon.vue'
 
 export default defineComponent({
   name: 'NavigationTab',
+  components: {
+    SvgIcon,
+  },
   props: {
     active: { type: Boolean as PropType<boolean>, default: false },
     label: { type: String as PropType<string>, required: true },
@@ -44,29 +50,32 @@ export default defineComponent({
   cursor: pointer
   display: inline-block
   font-size: 14px
-  padding: 8px
+  fill: #cccccc
+  padding: 4px
   user-select: none
   white-space: nowrap
 
   &.active
     background: rgba(255, 255, 255, 0.33)
     color: aliceblue
+    fill: aliceblue
 
   &:not(.active):hover
     background: rgba(255, 255, 255, 0.08)
     color: aliceblue
+    fill: aliceblue
 
   .dirty
     display: inline-block
-    width: 8px
+    width: 12px
 
   .close
     border-radius: 50%
     display: inline-block
-    font-size: 16px
-    margin: -2px -2px -2px 6px
+    height: 16px
+    margin-left: 4px
     padding: 2px
-    vertical-align: bottom
+    vertical-align: middle
     width: 16px
 
     &:hover
