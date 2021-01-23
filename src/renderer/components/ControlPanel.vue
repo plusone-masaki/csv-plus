@@ -1,10 +1,29 @@
 <template lang="pug">
 div.control-panel
   toolbar
-    toolbar-icon(
+    // Has header
+    toolbar-switch(
       v-model="options.hasHeader"
+      title="先頭の行をヘッダに固定します"
       icon="table-header"
     )
+    toolbar-separator
+
+    // Delimiter
+    toolbar-radio(
+      v-model="options.delimiter"
+      value=","
+      title="コンマ区切り"
+      icon="comma"
+      size="33"
+    )
+    toolbar-radio(
+      v-model="options.delimiter"
+      value="\t"
+      title="タブ区切り"
+      icon="tab"
+    )
+    toolbar-separator
 </template>
 
 <script lang="ts">
@@ -12,13 +31,17 @@ import { computed, defineComponent, PropType } from 'vue'
 import { vueI18n } from '@/common/plugins/i18n'
 import { Options } from '@/renderer/types'
 import Toolbar from '@/renderer/components/ControlPanel/Toolbar.vue'
-import ToolbarIcon from '@/renderer/components/ControlPanel/ToolbarIcon.vue'
+import ToolbarSwitch from '@/renderer/components/ControlPanel/ToolbarSwitch.vue'
+import ToolbarRadio from '@/renderer/components/ControlPanel/ToolbarRadio.vue'
+import ToolbarSeparator from '@/renderer/components/ControlPanel/ToolbarSeparator.vue'
 
 export default defineComponent({
   name: 'ControlPanel',
   components: {
     Toolbar,
-    ToolbarIcon,
+    ToolbarSwitch,
+    ToolbarRadio,
+    ToolbarSeparator,
   },
   props: {
     modelValue: { type: Object as PropType<Options> },

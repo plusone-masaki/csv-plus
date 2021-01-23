@@ -24,7 +24,9 @@ export default defineComponent({
       icons: computed(() => ({
         add: Icon.mdiPlus,
         close: Icon.mdiClose,
-        'table-header': Icon.mdiTable,
+        'table-header': Icon.mdiTableArrowUp,
+        comma: Icon.mdiCommaBoxOutline,
+        tab: Icon.mdiKeyboardTab,
       })),
     }
   },

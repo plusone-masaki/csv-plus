@@ -1,11 +1,12 @@
 <template lang="pug">
-span.toolbar-icon(
+span.toolbar__icon(
   :class="{ active: modelValue }"
+  :title="title"
 )
   svg-icon(
     :icon="icon"
     :color="color"
-    :size="36"
+    :size="size"
     @click="onClick"
   )
 </template>
@@ -15,7 +16,7 @@ import { defineComponent, PropType } from 'vue'
 import SvgIcon from '@/renderer/components/Common/SvgIcon.vue'
 
 export default defineComponent({
-  name: 'ToolbarIcon',
+  name: 'ToolbarSwitch',
   components: {
     SvgIcon,
   },
@@ -23,6 +24,8 @@ export default defineComponent({
     modelValue: { type: Boolean as PropType<boolean>, default: false },
     icon: { type: String as PropType<string>, required: true },
     color: { type: String as PropType<string>, default: 'inherit' },
+    title: { type: String as PropType<string|undefined>, default: undefined },
+    size: { type: Number as PropType<number>, default: 36 },
   },
   setup: (props, { emit }) => ({
     onClick: () => emit('update:modelValue', !props.modelValue),
@@ -31,8 +34,9 @@ export default defineComponent({
 </script>
 
 <style lang="sass" scoped>
-.toolbar-icon
+.toolbar__icon
   align-items: center
+  box-sizing: border-box
   display: inline-flex
   justify-content: center
   letter-spacing: normal
@@ -42,6 +46,7 @@ export default defineComponent({
   text-indent: 0
   user-select: none
   vertical-align: middle
+  width: 44px
 
   &.active
     background: rgba(255, 255, 255, 0.12) !important
