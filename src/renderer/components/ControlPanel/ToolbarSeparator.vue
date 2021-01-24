@@ -12,6 +12,7 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .toolbar__separator
+  align-self: stretch
   border-color: #aaaaaa
   height: inherit
   margin: 4px 0

@@ -60,7 +60,7 @@ export default defineComponent({
           label: t('tabs.new_tab'),
           path: newTab,
           dirty: false,
-          data: HandsOnTable.helper.createEmptySpreadsheetData(10, 6),
+          data: HandsOnTable.helper.createEmptySpreadsheetData(100, 26),
           options: defaultOptions(),
         },
       ],
@@ -88,7 +88,7 @@ export default defineComponent({
           label: t('tabs.new_tab'),
           path: `newTab${count.value++}`,
           dirty: false,
-          data: HandsOnTable.helper.createEmptySpreadsheetData(10, 6),
+          data: HandsOnTable.helper.createEmptySpreadsheetData(100, 26),
           options: {
             hasHeader: false,
             delimiter: ',',

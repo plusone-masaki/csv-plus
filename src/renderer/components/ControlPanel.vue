@@ -9,6 +9,13 @@ div.control-panel
     )
     toolbar-separator
 
+    // Search
+    text-input(
+      v-model="keywords.search"
+      icon="search"
+    )
+    toolbar-separator
+
     // Delimiter
     toolbar-radio(
       v-model="options.delimiter"
@@ -34,10 +41,12 @@ import Toolbar from '@/renderer/components/ControlPanel/Toolbar.vue'
 import ToolbarSwitch from '@/renderer/components/ControlPanel/ToolbarSwitch.vue'
 import ToolbarRadio from '@/renderer/components/ControlPanel/ToolbarRadio.vue'
 import ToolbarSeparator from '@/renderer/components/ControlPanel/ToolbarSeparator.vue'
+import TextInput from '@/renderer/components/Form/TextInput.vue'
 
 export default defineComponent({
   name: 'ControlPanel',
   components: {
+    TextInput,
     Toolbar,
     ToolbarSwitch,
     ToolbarRadio,
@@ -47,6 +56,11 @@ export default defineComponent({
     modelValue: { type: Object as PropType<Options> },
   },
   setup (props, { emit }) {
+    const keywords = {
+      search: '',
+      filter: '',
+    }
+
     const options = computed({
       get: () => props.modelValue,
       set: value => emit('update:modelValue', value),
@@ -54,6 +68,7 @@ export default defineComponent({
 
     return {
       t: vueI18n.t,
+      keywords,
       options,
     }
   },

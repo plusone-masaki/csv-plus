@@ -13,6 +13,7 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .toolbar
+  align-items: center
   border-bottom: 1px solid rgba(255, 255, 255, 0.08)
   border-left: 8px solid
   display: flex

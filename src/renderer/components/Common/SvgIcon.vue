@@ -25,6 +25,7 @@ export default defineComponent({
         add: Icon.mdiPlus,
         close: Icon.mdiClose,
         'table-header': Icon.mdiTableArrowUp,
+        search: Icon.mdiMagnify,
         comma: Icon.mdiCommaBoxOutline,
         tab: Icon.mdiKeyboardTab,
       })),

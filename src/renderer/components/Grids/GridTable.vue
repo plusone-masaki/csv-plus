@@ -32,15 +32,18 @@ export default defineComponent({
       settings: {
         data: props.data,
         colHeaders: true,
-        rowHeaders: true,
-        manualColumnResize: true,
-        manualRowResize: true,
-        filters: true,
-        copyPaste: true,
+        columnSorting: true,
         contextMenu: true,
+        copyPaste: true,
         dragToScroll: true,
+        filters: true,
         language: 'ja-JP',
         licenseKey: 'non-commercial-and-evaluation',
+        manualColumnResize: true,
+        manualRowResize: true,
+        rowHeaders: true,
+        rowSorting: true,
+        search: true,
         afterChange: (_: unknown, src: HandsOnTable.ChangeSource) => {
           if (!['loadData'].includes(src)) emit('edit')
         },
