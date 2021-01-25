@@ -46,6 +46,7 @@ export default defineComponent({
   align-items: center
   box-sizing: border-box
   display: inline-flex
+  height: 44px
   justify-content: center
   letter-spacing: normal
   line-height: 1
