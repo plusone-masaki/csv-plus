@@ -1,5 +1,5 @@
 <template lang="pug">
-div.tag(
+div.tab(
   :class="{ active }"
   @click.stop="onClick"
 )
@@ -44,7 +44,7 @@ export default defineComponent({
 </script>
 
 <style lang="sass" scoped>
-.tag
+.tab
   background: transparent
   color: #cccccc
   cursor: pointer

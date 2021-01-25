@@ -15,8 +15,8 @@ import * as Icon from '@mdi/js'
 export default defineComponent({
   name: 'SvgIcon',
   props: {
-    icon: { type: String, required: true },
-    size: { type: Number, default: 24 },
+    icon: { type: String as PropType<string>, required: true },
+    size: { type: [String, Number] as PropType<string|number>, default: 24 },
     color: { type: String as PropType<string>, default: 'inherit' },
   },
   setup: () => {

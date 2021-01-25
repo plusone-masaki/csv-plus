@@ -3,7 +3,7 @@
   control-panel(v-model="options")
   navigation-tabs(
     v-model="state.files"
-    v-model:tab="state.active"
+    v-model:active="state.active"
     @add="addTab"
     @close="closeTab"
   )

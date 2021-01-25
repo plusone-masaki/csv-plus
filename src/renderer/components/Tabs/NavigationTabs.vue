@@ -1,6 +1,12 @@
 <template lang="pug">
 div.tabs
-  vue-draggable(v-model="value" item-key="path")
+  vue-draggable(
+    v-model="tabs"
+    tag="transition-group"
+    group="tabs"
+    animation="200"
+    item-key="path"
+  )
     template(#item="{ element }")
       navigation-tab(
         :label="element.label"
@@ -29,17 +35,17 @@ export default defineComponent({
   components: { NavigationAddTab, NavigationTab, VueDraggable },
   props: {
     modelValue: { type: Array as PropType<FileData[]>, required: true },
-    tab: { type: String as PropType<string>, required: true },
+    active: { type: String as PropType<string>, required: true },
   },
   setup (props, { emit }) {
     const compute = {
-      value: computed<FileData[]>({
+      tabs: computed<FileData[]>({
         get: () => props.modelValue,
         set: (value: FileData[]) => emit('update:modelValue', value),
       }),
       activeTab: computed<string>({
-        get: () => props.tab,
-        set: (value: string) => emit('update:tab', value),
+        get: () => props.active,
+        set: (value: string) => emit('update:active', value),
       }),
     }
 

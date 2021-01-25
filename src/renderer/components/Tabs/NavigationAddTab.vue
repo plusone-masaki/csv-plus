@@ -1,5 +1,5 @@
 <template lang="pug">
-div.tag(@click.stop="add")
+div.tab(@click.stop="add")
   span.add
     SvgIcon(:size="16" icon="add")
 </template>
@@ -20,7 +20,7 @@ export default defineComponent({
 </script>
 
 <style lang="sass" scoped>
-.tag
+.tab
   background: transparent
   border-radius: 0 4px 0 0
   color: #cccccc

@@ -25,12 +25,12 @@ export default defineComponent({
     SvgIcon,
   },
   props: {
-    modelValue: { type: Boolean as PropType<boolean>, default: false },
+    modelValue: { type: [Boolean, String] as PropType<boolean|string>, default: false },
     value: { type: String as PropType<string>, required: true },
     icon: { type: String as PropType<string>, required: true },
     color: { type: String as PropType<string>, default: 'inherit' },
     title: { type: String as PropType<string|undefined>, default: undefined },
-    size: { type: Number as PropType<number>, default: 36 },
+    size: { type: [String, Number] as PropType<string|number>, default: 36 },
   },
   setup: (props, { emit }) => ({
     checked: computed({
