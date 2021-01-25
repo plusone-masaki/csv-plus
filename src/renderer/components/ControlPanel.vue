@@ -4,7 +4,7 @@ div.control-panel
     // Has header
     toolbar-switch(
       v-model="options.hasHeader"
-      title="先頭の行をヘッダに固定します"
+      title="先頭の行をヘッダに設定します"
       icon="table-header"
     )
     toolbar-separator

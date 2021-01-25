@@ -5,11 +5,11 @@ div.grid-table
 
 <script lang="ts">
 import {
-  PropType,
+  computed,
   defineComponent,
-  reactive,
   ref,
   onMounted,
+  PropType,
   watch,
 } from 'vue'
 import HandsOnTable from 'handsontable'
@@ -19,49 +19,50 @@ export default defineComponent({
   name: 'GridTable',
   props: {
     data: { type: Array as PropType<HandsOnTable.CellValue[][] | HandsOnTable.RowObject[]>, required: true },
-    headers: { type: Array as PropType<Array<string|number>|null>, default: null },
+    headers: { type: [Boolean, Array] as PropType<boolean|string[]>, default: false },
     path: { type: String as PropType<string>, required: true },
   },
   setup (props, { emit }) {
     const refs = {
       gridTable: ref<HTMLDivElement>(),
+      table: ref<HandsOnTable|null>(null),
     }
 
-    const state = reactive({
-      table: null as HandsOnTable|null,
-      settings: {
-        data: props.data,
-        colHeaders: true,
-        columnSorting: true,
-        contextMenu: true,
-        copyPaste: true,
-        dragToScroll: true,
-        filters: true,
-        language: 'ja-JP',
-        licenseKey: 'non-commercial-and-evaluation',
-        manualColumnResize: true,
-        manualRowResize: true,
-        rowHeaders: true,
-        rowSorting: true,
-        search: true,
-        afterChange: (_: unknown, src: HandsOnTable.ChangeSource) => {
-          if (!['loadData'].includes(src)) emit('edit')
-        },
-      } as HandsOnTable.GridSettings,
-    })
+    const settings = computed((): HandsOnTable.GridSettings => ({
+      data: props.data,
+      colHeaders: props.headers || true,
+      columnSorting: true,
+      contextMenu: true,
+      copyPaste: true,
+      dragToScroll: true,
+      filters: true,
+      language: 'ja-JP',
+      licenseKey: 'non-commercial-and-evaluation',
+      manualColumnResize: true,
+      manualRowResize: true,
+      rowHeaders: true,
+      search: true,
+      afterChange: (_: unknown, src: HandsOnTable.ChangeSource) => {
+        if (!['loadData'].includes(src)) emit('edit')
+      },
+    }))
 
     watch(() => props.path, () => {
-      if (state.table) state.table.loadData(props.data)
+      if (refs.table.value) refs.table.value.loadData(props.data)
+    })
+
+    watch(() => settings.value, setting => {
+      if (refs.table.value) refs.table.value.updateSettings(setting)
     })
 
     onMounted(() => {
       if (refs.gridTable.value) {
-        state.table = new HandsOnTable(refs.gridTable.value, state.settings)
+        refs.table.value = new HandsOnTable(refs.gridTable.value, settings.value)
       }
     })
 
     return {
-      state,
+      settings,
       ...refs,
     }
   },

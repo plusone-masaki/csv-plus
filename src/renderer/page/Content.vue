@@ -1,14 +1,19 @@
 <template lang="pug">
 section.content
   grid-table(
-    :data="file.data"
+    :data="content"
     :path="file.path"
+    :headers="headers"
     @edit="onEdit"
   )
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import {
+  computed,
+  defineComponent,
+  PropType,
+} from 'vue'
 import { FileData } from '@/renderer/types'
 import GridTable from '@/renderer/components/Grids/GridTable.vue'
 
@@ -20,11 +25,11 @@ export default defineComponent({
   props: {
     file: { type: Object as PropType<FileData>, required: true },
   },
-  setup (props, { emit }) {
-    return {
-      onEdit: () => emit('edit'),
-    }
-  },
+  setup: (props, { emit }) => ({
+    headers: computed(() => props.file.options.hasHeader && props.file.data[0]),
+    content: computed(() => props.file.data.slice(Number(props.file.options.hasHeader))),
+    onEdit: () => emit('edit'),
+  }),
 })
 </script>
 
