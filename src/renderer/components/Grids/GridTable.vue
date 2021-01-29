@@ -7,9 +7,10 @@ div.grid-table
 import {
   computed,
   defineComponent,
-  ref,
+  nextTick,
   onMounted,
   PropType,
+  ref,
   watch,
 } from 'vue'
 import HandsOnTable from 'handsontable'
@@ -55,8 +56,11 @@ export default defineComponent({
       if (refs.table.value) refs.table.value.loadData(props.data)
     })
 
-    watch(() => props.active, active => {
-      if (active && refs.table.value) refs.table.value.render()
+    watch(() => props.active, async active => {
+      if (active && refs.table.value) {
+        await nextTick()
+        refs.table.value.render()
+      }
     })
 
     watch(() => settings.value, setting => {
