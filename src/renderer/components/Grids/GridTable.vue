@@ -14,13 +14,15 @@ import {
 } from 'vue'
 import HandsOnTable from 'handsontable'
 import 'handsontable/languages/ja-JP'
+import { Options } from '@/renderer/types'
 
 export default defineComponent({
   name: 'GridTable',
   props: {
     data: { type: Array as PropType<HandsOnTable.CellValue[][] | HandsOnTable.RowObject[]>, required: true },
-    headers: { type: [Boolean, Array] as PropType<boolean|string[]>, default: false },
+    options: { type: Object as PropType<Options>, default: false },
     path: { type: String as PropType<string>, required: true },
+    active: { type: Boolean as PropType<boolean>, required: true },
   },
   setup (props, { emit }) {
     const refs = {
@@ -29,8 +31,8 @@ export default defineComponent({
     }
 
     const settings = computed((): HandsOnTable.GridSettings => ({
-      data: props.data,
-      colHeaders: props.headers || true,
+      data: props.options.hasHeader ? props.data.slice(1) : props.data,
+      colHeaders: props.options.hasHeader ? props.data[0] as string[] : true,
       columnSorting: true,
       contextMenu: true,
       copyPaste: true,
@@ -40,6 +42,8 @@ export default defineComponent({
       licenseKey: 'non-commercial-and-evaluation',
       manualColumnResize: true,
       manualRowResize: true,
+      minSpareCols: 1,
+      minSpareRows: 1,
       rowHeaders: true,
       search: true,
       afterChange: (_: unknown, src: HandsOnTable.ChangeSource) => {
@@ -49,6 +53,10 @@ export default defineComponent({
 
     watch(() => props.path, () => {
       if (refs.table.value) refs.table.value.loadData(props.data)
+    })
+
+    watch(() => props.active, active => {
+      if (active && refs.table.value) refs.table.value.render()
     })
 
     watch(() => settings.value, setting => {

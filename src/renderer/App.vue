@@ -11,6 +11,7 @@
     v-show="file.path === state.active"
     v-for="file in state.files"
     :file="file"
+    :active="file.path === state.active"
     :key="file.path"
     @edit="onEdit"
   )

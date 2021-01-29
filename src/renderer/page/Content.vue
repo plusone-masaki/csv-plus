@@ -1,16 +1,16 @@
 <template lang="pug">
 section.content
   grid-table(
-    :data="content"
+    :data="file.data"
     :path="file.path"
-    :headers="headers"
+    :options="file.options"
+    :active="active"
     @edit="onEdit"
   )
 </template>
 
 <script lang="ts">
 import {
-  computed,
   defineComponent,
   PropType,
 } from 'vue'
@@ -24,10 +24,9 @@ export default defineComponent({
   },
   props: {
     file: { type: Object as PropType<FileData>, required: true },
+    active: { type: Boolean as PropType<boolean>, required: true },
   },
   setup: (props, { emit }) => ({
-    headers: computed(() => props.file.options.hasHeader && props.file.data[0]),
-    content: computed(() => props.file.data.slice(Number(props.file.options.hasHeader))),
     onEdit: () => emit('edit'),
   }),
 })
