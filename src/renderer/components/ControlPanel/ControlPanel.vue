@@ -7,30 +7,30 @@ div.control-panel
       title="先頭の行をヘッダに設定します"
       icon="table-header"
     )
-    toolbar-separator
+    //toolbar-separator
 
-    // Search
-    text-input(
-      v-model="keywords.search"
-      icon="search"
-    )
-    toolbar-separator
+    // TODO: Search
+    //text-input(
+    //  v-model="keywords.search"
+    //  icon="search"
+    //)
+    //toolbar-separator
 
-    // Delimiter
-    toolbar-radio(
-      v-model="options.delimiter"
-      value=","
-      title="コンマ区切り"
-      icon="comma"
-      size="33"
-    )
-    toolbar-radio(
-      v-model="options.delimiter"
-      value="\t"
-      title="タブ区切り"
-      icon="tab"
-    )
-    toolbar-separator
+    // TODO: Delimiter
+    //toolbar-radio(
+    //  v-model="options.delimiter"
+    //  value=","
+    //  title="コンマ区切り"
+    //  icon="comma"
+    //  size="33"
+    //)
+    //toolbar-radio(
+    //  v-model="options.delimiter"
+    //  value="\t"
+    //  title="タブ区切り"
+    //  icon="tab"
+    //)
+    //toolbar-separator
 </template>
 
 <script lang="ts">
