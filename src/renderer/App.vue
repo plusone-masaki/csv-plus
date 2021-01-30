@@ -25,7 +25,7 @@ import csvStringify from 'csv-stringify/lib/sync'
 import { vueI18n } from '@/common/plugins/i18n'
 import { FileData, Options } from '@/renderer/types'
 import Content from '@/renderer/page/Content.vue'
-import ControlPanel from '@/renderer/components/ControlPanel.vue'
+import ControlPanel from '@/renderer/components/ControlPanel/ControlPanel.vue'
 import NavigationTabs from '@/renderer/components/Tabs/NavigationTabs.vue'
 import * as channels from '@/common/channels'
 
