@@ -24,8 +24,7 @@ const template: Array<Electron.MenuItemConstructorOptions|Electron.MenuItem> = i
   ]
   : [
     {
-      label: 'ファイル(F)',
-      accelerator: 'Alt+F',
+      label: 'ファイル',
       submenu: [
         {
           label: '新規作成',
@@ -77,9 +76,8 @@ const template: Array<Electron.MenuItemConstructorOptions|Electron.MenuItem> = i
       ] as Electron.MenuItemConstructorOptions[],
     },
     {
-      label: 'ヘルプ(H)',
+      label: 'ヘルプ',
       role: 'help',
-      accelerator: 'Alt+H',
       submenu: [
         {
           label: 'このソフトについて',
