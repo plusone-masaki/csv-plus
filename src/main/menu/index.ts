@@ -1,6 +1,7 @@
 import Electron, { app, Menu } from 'electron'
 // import { i18next } from '@/plugins/i18n'
 import FileMenu from '@/main/menu/FileMenu'
+import EditMenu from '@/main/menu/EditMenu'
 
 const isMac = process.platform === 'darwin'
 
@@ -55,36 +56,25 @@ const template: Array<Electron.MenuItemConstructorOptions|Electron.MenuItem> = i
       ] as Electron.MenuItemConstructorOptions[],
     },
     {
-      label: '編集(E)',
-      accelerator: 'Alt+E',
+      label: '編集',
       submenu: [
         {
           label: '元に戻す',
-          role: 'undo',
+          accelerator: 'Ctrl+Z',
+          click: EditMenu.undo,
         },
         {
           label: 'やり直し',
-          role: 'redo',
-        },
-        { type: 'separator' },
-        {
-          label: '切り取り',
-          role: 'cut',
-        },
-        {
-          label: 'コピー',
-          role: 'copy',
-        },
-        {
-          label: '貼り付け',
-          role: 'paste',
+          accelerator: 'Ctrl+Shift+Z',
+          click: EditMenu.redo,
         },
         { type: 'separator' },
         {
           label: '全て選択',
-          role: 'selectAll',
+          accelerator: 'Ctrl+A',
+          click: EditMenu.selectAll,
         },
-      ],
+      ] as Electron.MenuItemConstructorOptions[],
     },
     {
       label: 'ヘルプ(H)',

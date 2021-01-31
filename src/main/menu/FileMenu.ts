@@ -12,6 +12,9 @@ import * as channels from '@/common/channels'
 export default class FileMenu {
   /**
    * [ファイルを開く]
+   *
+   * @param {MenuItem} menu
+   * @param {BrowserWindow} win
    */
   public static open (menu: MenuItem, win: BrowserWindow) {
     const files = dialog.showOpenDialogSync(win, { properties: ['openFile', 'multiSelections'] })
@@ -22,6 +25,9 @@ export default class FileMenu {
 
   /**
    * [上書き保存]
+   *
+   * @param {MenuItem} menu
+   * @param {BrowserWindow} win
    */
   public static save (menu: MenuItem, win: BrowserWindow) {
     ipcMain.once(channels.FILE_SAVE, (e: IpcMainEvent, file: channels.FILE_SAVE) => {
@@ -36,6 +42,9 @@ export default class FileMenu {
 
   /**
    * [名前を付けて保存]
+   *
+   * @param {MenuItem} menu
+   * @param {BrowserWindow} win
    */
   public static saveAs (menu: MenuItem, win: BrowserWindow) {
     ipcMain.once(channels.FILE_SAVE_AS, (e: IpcMainEvent, file: channels.FILE_SAVE_AS) => {
@@ -66,6 +75,12 @@ export default class FileMenu {
     }) || ''
   }
 
+  /**
+   * ファイルの存在確認
+   *
+   * @param {string} path
+   * @private
+   */
   private static _fileExists (path: string) {
     try {
       return fs.statSync(path).isFile()
