@@ -27,7 +27,7 @@ export default defineComponent({
   },
   setup (props, { emit }) {
     const refs = {
-      gridTable: ref<HTMLDivElement>(),
+      wrapper: ref<HTMLDivElement>(),
       table: ref<HandsOnTable|null>(null),
     }
 
@@ -68,8 +68,8 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      if (refs.gridTable.value) {
-        refs.table.value = new HandsOnTable(refs.gridTable.value, settings.value)
+      if (refs.wrapper.value) {
+        refs.table.value = new HandsOnTable(refs.wrapper.value, settings.value)
       }
     })
 

@@ -1,4 +1,4 @@
-import Electron, { app, Menu, shell } from 'electron'
+import Electron, { app, Menu } from 'electron'
 // import { i18next } from '@/plugins/i18n'
 import FileMenu from '@/main/menu/FileMenu'
 
