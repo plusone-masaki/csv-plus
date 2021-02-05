@@ -23,8 +23,6 @@ async function createWindow () {
     },
   })
 
-  filesystem(win)
-
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string)
@@ -34,6 +32,8 @@ async function createWindow () {
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
   }
+
+  filesystem(win)
 }
 
 // Quit when all windows are closed.

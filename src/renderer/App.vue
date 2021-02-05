@@ -114,6 +114,10 @@ export default defineComponent({
 
     // ファイルを開く
     ipcRenderer.on(channels.FILE_LOADED, (e: IpcRendererEvent, file: channels.FILE_LOADED) => {
+      // データ未操作の場合、初期表示のタブは削除
+      const activeData = state.files.find(file => file.path === state.active)
+      if (count.value === 1 && activeData && !activeData.dirty) methods.closeTab(activeData)
+
       const exists = state.files.find(fileData => fileData.path === file.path)
       if (exists) {
         state.active = exists.path
