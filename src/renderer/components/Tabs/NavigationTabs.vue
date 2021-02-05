@@ -37,8 +37,8 @@ export default defineComponent({
 
   setup (props, context) {
     const models = {
-      tabs: vModel('modelValue', props.modelValue, context),
-      activeTab: vModel('active', props.active, context),
+      tabs: vModel('modelValue', props, context),
+      activeTab: vModel('active', props, context),
     }
 
     const methods = {

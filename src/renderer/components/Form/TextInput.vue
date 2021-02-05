@@ -28,7 +28,7 @@ export default defineComponent({
     width: { type: Number as PropType<number>, default: 180 },
   },
   setup: (props, context) => ({
-    value: vModel('modelValue', props.modelValue, context),
+    value: vModel('modelValue', props, context),
   }),
 })
 </script>

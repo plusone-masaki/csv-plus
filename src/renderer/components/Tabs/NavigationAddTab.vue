@@ -13,8 +13,8 @@ export default defineComponent({
   components: {
     SvgIcon,
   },
-  setup: (props, { emit }) => ({
-    add: () => emit('add'),
+  setup: (props, context) => ({
+    add: () => context.emit('add'),
   }),
 })
 </script>
@@ -22,9 +22,7 @@ export default defineComponent({
 <style lang="sass" scoped>
 .tab
   background: transparent
-  border-radius: 0 4px 0 0
   color: #cccccc
-  cursor: pointer
   display: inline-block
   font-size: 14px
   fill: #cccccc

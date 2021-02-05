@@ -34,7 +34,7 @@ export default defineComponent({
     size: { type: [String, Number] as PropType<string|number>, default: 36 },
   },
   setup: (props, context) => ({
-    checked: vModel('modelValue', props.modelValue, context),
+    checked: vModel('modelValue', props, context),
   }),
 })
 </script>

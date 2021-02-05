@@ -34,7 +34,7 @@ div.control-panel
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { vueI18n } from '@/common/plugins/i18n'
 import { Options } from '@/renderer/types'
 import vModel from '@/renderer/utils/v-model'
@@ -62,7 +62,7 @@ export default defineComponent({
       filter: '',
     }
 
-    const options = vModel('modelValue', props.modelValue, context)
+    const options = vModel('modelValue', props, context)
 
     return {
       t: vueI18n.t,

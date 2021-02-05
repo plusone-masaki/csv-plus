@@ -43,7 +43,6 @@ export default defineComponent({
 .tab
   background: transparent
   color: #cccccc
-  cursor: pointer
   display: inline-block
   font-size: 14px
   fill: #cccccc
