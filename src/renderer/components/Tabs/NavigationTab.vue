@@ -31,13 +31,9 @@ export default defineComponent({
     isDirty: { type: Boolean as PropType<boolean>, default: false },
   },
   setup (props, { emit }) {
-    const methods = {
+    return {
       onClick: () => emit('click'),
       onClose: () => emit('close'),
-    }
-
-    return {
-      ...methods,
     }
   },
 })

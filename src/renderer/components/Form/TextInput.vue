@@ -14,7 +14,8 @@ label.text-input
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
+import vModel from '@/renderer/utils/v-model'
 import SvgIcon from '@/renderer/components/Common/SvgIcon.vue'
 
 export default defineComponent({
@@ -26,11 +27,8 @@ export default defineComponent({
     placeholder: { type: String as PropType<string|undefined>, default: undefined },
     width: { type: Number as PropType<number>, default: 180 },
   },
-  setup: (props, { emit }) => ({
-    value: computed({
-      get: () => props.modelValue,
-      set: value => emit('update:modelValue', value),
-    }),
+  setup: (props, context) => ({
+    value: vModel('modelValue', props.modelValue, context),
   }),
 })
 </script>

@@ -16,7 +16,8 @@ label.toolbar__icon(
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
+import vModel from '@/renderer/utils/v-model'
 import SvgIcon from '@/renderer/components/Common/SvgIcon.vue'
 
 export default defineComponent({
@@ -32,11 +33,8 @@ export default defineComponent({
     title: { type: String as PropType<string|undefined>, default: undefined },
     size: { type: [String, Number] as PropType<string|number>, default: 36 },
   },
-  setup: (props, { emit }) => ({
-    checked: computed({
-      get: () => props.modelValue,
-      set: value => emit('update:modelValue', value),
-    }),
+  setup: (props, context) => ({
+    checked: vModel('modelValue', props.modelValue, context),
   }),
 })
 </script>

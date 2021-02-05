@@ -3,8 +3,8 @@ import CSVFile from '@/main/model/CSVFile'
 
 export default (window: BrowserWindow) => {
   const argv = process.argv
-  if (argv.length) {
-    const path = argv[argv.length - 1]
+  if (argv.length >= 2) {
+    const path = argv[1]
     if (path) CSVFile.open(path, window)
   }
 

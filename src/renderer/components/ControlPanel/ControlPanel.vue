@@ -37,6 +37,7 @@ div.control-panel
 import { computed, defineComponent, PropType } from 'vue'
 import { vueI18n } from '@/common/plugins/i18n'
 import { Options } from '@/renderer/types'
+import vModel from '@/renderer/utils/v-model'
 import Toolbar from '@/renderer/components/ControlPanel/Toolbar.vue'
 import ToolbarSwitch from '@/renderer/components/ControlPanel/ToolbarSwitch.vue'
 import ToolbarRadio from '@/renderer/components/ControlPanel/ToolbarRadio.vue'
@@ -55,16 +56,13 @@ export default defineComponent({
   props: {
     modelValue: { type: Object as PropType<Options> },
   },
-  setup (props, { emit }) {
+  setup (props, context) {
     const keywords = {
       search: '',
       filter: '',
     }
 
-    const options = computed({
-      get: () => props.modelValue,
-      set: value => emit('update:modelValue', value),
-    })
+    const options = vModel('modelValue', props.modelValue, context)
 
     return {
       t: vueI18n.t,

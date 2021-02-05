@@ -20,13 +20,10 @@ div.tabs
 </template>
 
 <script lang="ts">
-import {
-  PropType,
-  computed,
-  defineComponent,
-} from 'vue'
+import { PropType, defineComponent } from 'vue'
 import VueDraggable from 'vuedraggable'
 import { FileData } from '@/renderer/types'
+import vModel from '@/renderer/utils/v-model'
 import NavigationTab from '@/renderer/components/Tabs/NavigationTab.vue'
 import NavigationAddTab from '@/renderer/components/Tabs/NavigationAddTab.vue'
 
@@ -37,25 +34,20 @@ export default defineComponent({
     modelValue: { type: Array as PropType<FileData[]>, required: true },
     active: { type: String as PropType<string>, required: true },
   },
-  setup (props, { emit }) {
-    const compute = {
-      tabs: computed<FileData[]>({
-        get: () => props.modelValue,
-        set: (value: FileData[]) => emit('update:modelValue', value),
-      }),
-      activeTab: computed<string>({
-        get: () => props.active,
-        set: (value: string) => emit('update:active', value),
-      }),
+
+  setup (props, context) {
+    const models = {
+      tabs: vModel('modelValue', props.modelValue, context),
+      activeTab: vModel('active', props.active, context),
     }
 
     const methods = {
-      onAdd: () => emit('add'),
-      onClose: (tab: FileData) => emit('close', tab),
+      onAdd: () => context.emit('add'),
+      onClose: (tab: FileData) => context.emit('close', tab),
     }
 
     return {
-      ...compute,
+      ...models,
       ...methods,
     }
   },
