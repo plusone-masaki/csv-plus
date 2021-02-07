@@ -74,6 +74,11 @@ export default defineComponent({
 </script>
 
 <style lang="sass" scoped>
-.control-panel
-  fill: #cfcfcf
+@media (prefers-color-scheme: light)
+  .control-panel
+    fill: map-get($light-theme, "font-color")
+
+@media (prefers-color-scheme: dark)
+  .control-panel
+    fill: map-get($dark-theme, "font-color")
 </style>
