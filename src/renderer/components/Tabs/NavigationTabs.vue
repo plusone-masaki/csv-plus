@@ -65,10 +65,4 @@ export default defineComponent({
   &::-webkit-scrollbar
     height: 4px
     transition: background-color .3s ease
-
-  &::-webkit-scrollbar-track
-    background-color: rgba(255, 255, 255, 0.33)
-
-  &:hover::-webkit-scrollbar-thumb
-    background-color: rgba(0, 0, 0, 0.33)
 </style>

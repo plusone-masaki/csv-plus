@@ -26,9 +26,6 @@ export default defineComponent({
     file: { type: Object as PropType<FileData>, required: true },
     active: { type: Boolean as PropType<boolean>, required: true },
   },
-  setup: (props, { emit }) => ({
-    onEdit: () => emit('edit'),
-  }),
 })
 </script>
 

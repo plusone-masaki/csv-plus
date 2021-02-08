@@ -47,10 +47,4 @@ export default defineComponent({
   user-select: none
   vertical-align: middle
   width: 44px
-
-  &.active
-    background: rgba(255, 255, 255, 0.12) !important
-
-  &:hover
-    background: rgba(255, 255, 255, 0.08)
 </style>

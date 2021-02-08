@@ -7,7 +7,11 @@ div.control-panel
       title="先頭の行をヘッダに設定します"
       icon="table-header"
     )
-    //toolbar-separator
+    toolbar-separator
+
+    toolbar-switch(
+
+    )
 
     // TODO: Search
     //text-input(
@@ -72,13 +76,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="sass" scoped>
-@media (prefers-color-scheme: light)
-  .control-panel
-    fill: map-get($light-theme, "font-color")
-
-@media (prefers-color-scheme: dark)
-  .control-panel
-    fill: map-get($dark-theme, "font-color")
-</style>

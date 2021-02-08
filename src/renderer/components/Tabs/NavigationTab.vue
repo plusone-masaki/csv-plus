@@ -42,23 +42,11 @@ export default defineComponent({
 <style lang="sass" scoped>
 .tab
   background: transparent
-  color: #cccccc
   display: inline-block
   font-size: 14px
-  fill: #cccccc
   padding: 4px
   user-select: none
   white-space: nowrap
-
-  &.active
-    background: rgba(255, 255, 255, 0.33)
-    color: aliceblue
-    fill: aliceblue
-
-  &:not(.active):hover
-    background: rgba(255, 255, 255, 0.08)
-    color: aliceblue
-    fill: aliceblue
 
   .dirty
     display: inline-block

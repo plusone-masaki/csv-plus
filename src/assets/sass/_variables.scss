@@ -3,9 +3,12 @@
 $light-theme: (
   "primary": #cfcfcf,
   "font-color": #2c3e50,
+  "active": #333333,
 ) !default;
 
 $dark-theme: (
-  "primary": #2c3e50,
+  "primary": #000000,
+  "accent": #2c3e50,
   "font-color": #cfcfcf,
+  "active": #ffffff,
 ) !default
