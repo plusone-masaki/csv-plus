@@ -1,6 +1,7 @@
 <template lang="pug">
 div.toolbar
-  slot
+  div.toolbar__content
+    slot
 </template>
 
 <script lang="ts">
@@ -13,9 +14,9 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .toolbar
-  align-items: center
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08)
   border-left: 8px solid
-  display: flex
-  white-space: nowrap
+  &__content
+    align-items: center
+    display: flex
+    white-space: nowrap
 </style>

@@ -1,31 +1,35 @@
 @import "variables"
 
-@media (prefers-color-scheme: light)
-  .control-panel
-    fill: map-get($light-theme, "font-color")
+html
+  background: map-get($light-theme, "primary")
+  fill: map-get($light-theme, "font-color")
 
-  .tabs
-    &::-webkit-scrollbar-track
-      background-color: rgba(0, 0, 0, 0.33)
+.tabs
+  &::-webkit-scrollbar-track
+    background-color: rgba(0, 0, 0, 0.33)
 
-    &:hover::-webkit-scrollbar-thumb
-      background-color: rgba(255, 255, 255, 0.33)
+  &:hover::-webkit-scrollbar-thumb
+    background-color: rgba(255, 255, 255, 0.33)
 
-  .tab
-    color: #999999
-    fill: #999999
+.tab
+  color: #999999
+  fill: #999999
 
-    &.active
-      background: rgba(0, 0, 0, 0.33)
-      color: map-get($light-theme, "active")
-      fill: map-get($light-theme, "active")
+  &.active
+    background: rgba(0, 0, 0, 0.33)
+    color: map-get($light-theme, "active")
+    fill: map-get($light-theme, "active")
 
-    &:not(.active):hover
-      background: rgba(0, 0, 0, 0.08)
-      color: map-get($light-theme, "active")
-      fill: map-get($light-theme, "active")
+  &:not(.active):hover
+    background: rgba(0, 0, 0, 0.08)
+    color: map-get($light-theme, "active")
+    fill: map-get($light-theme, "active")
 
-  .toolbar__icon
+.toolbar
+  &__content
+    border-bottom: 1px solid map-get($light-theme, "accent")
+
+  &__icon
     &.active
       background: darken(map-get($light-theme, "primary"), 30%) !important
       color: darken(map-get($light-theme, "font-color"), 20%) !important
@@ -36,38 +40,38 @@
       color: darken(map-get($light-theme, "font-color"), 8%)
       fill: darken(map-get($light-theme, "font-color"), 8%)
 
-@media (prefers-color-scheme: dark)
-  .control-panel
-    fill: map-get($dark-theme, "font-color")
-
-  .tabs
-    &::-webkit-scrollbar-track
-      background-color: rgba(255, 255, 255, 0.33)
-
-    &:hover::-webkit-scrollbar-thumb
-      background-color: rgba(0, 0, 0, 0.33)
-
-  .tab
-    color: #cccccc
-    fill: #cccccc
-
-    &.active
-      background: rgba(255, 255, 255, 0.33)
-      color: map-get($dark-theme, "active")
-      fill: map-get($dark-theme, "active")
-
-    &:not(.active):hover
-      background: rgba(255, 255, 255, 0.08)
-      color: map-get($dark-theme, "active")
-      fill: map-get($dark-theme, "active")
-
-  .toolbar__icon
-    &.active
-      background: lighten(map-get($dark-theme, "primary"), 30%) !important
-      color: lighten(map-get($dark-theme, "font-color"), 20%) !important
-      fill: lighten(map-get($dark-theme, "font-color"), 20%) !important
-
-    &:hover
-      background: lighten(map-get($dark-theme, "primary"), 20%)
-      color: lighten(map-get($dark-theme, "font-color"), 8%)
-      fill: lighten(map-get($dark-theme, "font-color"), 8%)
+//@media (prefers-color-scheme: dark)
+//  .control-panel
+//    fill: map-get($dark-theme, "font-color")
+//
+//  .tabs
+//    &::-webkit-scrollbar-track
+//      background-color: rgba(255, 255, 255, 0.33)
+//
+//    &:hover::-webkit-scrollbar-thumb
+//      background-color: rgba(0, 0, 0, 0.33)
+//
+//  .tab
+//    color: #cccccc
+//    fill: #cccccc
+//
+//    &.active
+//      background: rgba(255, 255, 255, 0.33)
+//      color: map-get($dark-theme, "active")
+//      fill: map-get($dark-theme, "active")
+//
+//    &:not(.active):hover
+//      background: rgba(255, 255, 255, 0.08)
+//      color: map-get($dark-theme, "active")
+//      fill: map-get($dark-theme, "active")
+//
+//  .toolbar__icon
+//    &.active
+//      background: lighten(map-get($dark-theme, "primary"), 30%) !important
+//      color: lighten(map-get($dark-theme, "font-color"), 20%) !important
+//      fill: lighten(map-get($dark-theme, "font-color"), 20%) !important
+//
+//    &:hover
+//      background: lighten(map-get($dark-theme, "primary"), 20%)
+//      color: lighten(map-get($dark-theme, "font-color"), 8%)
+//      fill: lighten(map-get($dark-theme, "font-color"), 8%)

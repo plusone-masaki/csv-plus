@@ -7,11 +7,6 @@ div.control-panel
       title="先頭の行をヘッダに設定します"
       icon="table-header"
     )
-    toolbar-separator
-
-    toolbar-switch(
-
-    )
 
     // TODO: Search
     //text-input(

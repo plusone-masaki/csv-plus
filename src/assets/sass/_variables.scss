@@ -1,7 +1,8 @@
 @use "sass:map";
 
 $light-theme: (
-  "primary": #cfcfcf,
+  "primary": #f0f0f0,
+  "accent": #cfcfcf,
   "font-color": #2c3e50,
   "active": #333333,
 ) !default;
