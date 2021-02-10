@@ -2,11 +2,11 @@ import fs from 'fs'
 import { BrowserWindow, dialog } from 'electron'
 import csvParse from 'csv-parse'
 import chardet from 'chardet'
+import iconv from 'iconv-lite'
 import { Match } from 'chardet/lib/match'
 import * as channels from '@/common/channels'
 import { Options } from '@/renderer/types'
 
-const Iconv = require('iconv').Iconv
 const MAX_PRELOAD_FILESIZE = 200 * 1024
 const DEFAULT_ENCODING = 'UTF-8'
 
@@ -81,7 +81,6 @@ export default class CSVFile {
   private static async parse (path: string, window: BrowserWindow) {
     try {
       const encoding = await this.detectEncoding(path)
-      const iconv = new Iconv(encoding, DEFAULT_ENCODING)
       const options: csvParse.Options = {
         bom: true,
         delimiter: CSVFile.guessDelimiter(path),
@@ -89,7 +88,7 @@ export default class CSVFile {
       }
 
       fs.createReadStream(path)
-        .pipe(iconv)
+        .pipe(iconv.decodeStream(encoding))
         .pipe(csvParse(options, (error: Error | undefined, data: string[][]) => {
           if (error) {
             dialog.showErrorBox('ファイルを開けませんでした', 'ファイル形式が間違っていないかご確認下さい')
