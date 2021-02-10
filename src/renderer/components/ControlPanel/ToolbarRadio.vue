@@ -38,26 +38,3 @@ export default defineComponent({
   }),
 })
 </script>
-
-<style lang="sass" scoped>
-.toolbar__icon
-  align-items: center
-  box-sizing: border-box
-  display: inline-flex
-  height: 44px
-  justify-content: center
-  letter-spacing: normal
-  line-height: 1
-  padding: 4px
-  position: relative
-  text-indent: 0
-  user-select: none
-  vertical-align: middle
-  width: 44px
-
-  &.active
-    background: rgba(255, 255, 255, 0.12) !important
-
-  &:hover
-    background: rgba(255, 255, 255, 0.08)
-</style>

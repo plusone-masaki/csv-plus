@@ -2,12 +2,12 @@
 span.toolbar__icon(
   :class="{ active: modelValue }"
   :title="title"
+  @click="onClick"
 )
   svg-icon(
     :icon="icon"
     :color="color"
     :size="size"
-    @click="onClick"
   )
 </template>
 
@@ -32,19 +32,3 @@ export default defineComponent({
   }),
 })
 </script>
-
-<style lang="sass" scoped>
-.toolbar__icon
-  align-items: center
-  box-sizing: border-box
-  display: inline-flex
-  justify-content: center
-  letter-spacing: normal
-  line-height: 1
-  padding: 4px
-  position: relative
-  text-indent: 0
-  user-select: none
-  vertical-align: middle
-  width: 44px
-</style>
