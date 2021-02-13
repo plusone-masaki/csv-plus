@@ -1,13 +1,4 @@
 module.exports = {
-  css: {
-    loaderOptions: {
-      sass: {
-        additionalData: `
-          @import "~@/assets/sass/_variables.scss"
-        `,
-      },
-    },
-  },
   pluginOptions: {
     electronBuilder: {
       outputDir: 'dist',
@@ -15,6 +6,10 @@ module.exports = {
       rendererProcessFile: 'src/renderer/index.ts',
       nodeIntegration: true,
       builderOptions: {
+        nsis: {
+          oneClick: false,
+          perMachine: true,
+        },
         mac: {
           category: 'public.app-category.developer-tools',
           target: [
@@ -30,10 +25,21 @@ module.exports = {
           },
         },
         linux: {
+          category: 'Development',
           target: [
             'deb',
           ],
+          mimeTypes: [
+            'text/csv',
+          ],
         },
+        fileAssociations: [
+          {
+            ext: 'csv',
+            role: 'Editor',
+            name: 'Comma separated values',
+          },
+        ],
       },
     },
   },
