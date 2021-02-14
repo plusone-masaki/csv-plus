@@ -39,6 +39,11 @@ module.exports = {
             role: 'Editor',
             name: 'Comma separated values',
           },
+          {
+            ext: 'tsv',
+            role: 'Editor',
+            name: 'Tab separated values',
+          },
         ],
       },
     },
