@@ -1,10 +1,15 @@
 import { ipcMain, IpcMainEvent } from 'electron'
+import * as channels from '@/common/channels'
 import FileMenu from '@/main/menu/FileMenu'
 // import EditMenu from '@/main/menu/EditMenu'
-import * as channels from '@/common/channels'
+import CSVFile from '@/main/model/CSVFile'
 
 ipcMain.on(channels.FILE_OPEN, (e: IpcMainEvent) => {
   FileMenu.open(e.sender)
+})
+
+ipcMain.on(channels.FILE_DROPPED, (e: IpcMainEvent, paths: Array<string>) => {
+  paths.forEach(path => CSVFile.open(path, e.sender))
 })
 
 ipcMain.on(channels.FILE_SAVE, (e: IpcMainEvent, file: channels.FILE_SAVE) => {

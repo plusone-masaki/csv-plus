@@ -4,7 +4,7 @@ div.tab(
   @click.stop="onClick"
 )
   span.dirty {{ isDirty ? '*' : ' ' }}
-  span.label {{ label || t('tabs.new_tab') }}
+  span.label(:title="label || t('tabs.new_tab')") {{ label || t('tabs.new_tab') }}
   span.close
     svg-icon(
       :size="16"
@@ -42,7 +42,8 @@ export default defineComponent({
 <style lang="sass" scoped>
 .tab
   background: transparent
-  display: inline-block
+  box-sizing: border-box
+  display: inline-flex
   font-size: 14px
   padding: 4px
   user-select: none
@@ -51,6 +52,12 @@ export default defineComponent({
   .dirty
     display: inline-block
     width: 12px
+
+  .label
+    display: inline-block
+    max-width: 180px
+    overflow: hidden
+    text-overflow: fade
 
   .close
     border-radius: 50%

@@ -2,6 +2,7 @@ import { FileData } from '@/renderer/types'
 
 // Files
 export const FILE_OPEN = 'FILE_OPEN'
+export const FILE_DROPPED = 'FILE_DROPPED'
 export const FILE_LOADED = 'FILE_LOADED'
 export const FILE_SAVE = 'FILE_SAVE'
 export const FILE_SAVE_AS = 'FILE_SAVE_AS'

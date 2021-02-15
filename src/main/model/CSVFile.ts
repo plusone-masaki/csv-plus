@@ -96,7 +96,7 @@ export default class CSVFile {
           }
 
           const payload: channels.FILE_LOADED = {
-            label: path.split('/').pop() || '',
+            label: path.split(process.platform === 'win32' ? '\\' : '/').pop() || '',
             path,
             data,
             dirty: false,

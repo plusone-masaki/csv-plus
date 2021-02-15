@@ -11,7 +11,7 @@ export default (tabs: Tabs) => {
   ipcRenderer.on(channels.FILE_LOADED, (e: IpcRendererEvent, file: channels.FILE_LOADED) => {
     // データ未操作の場合、初期表示のタブは削除
     const activeData = tabs.state.files.find((file: FileData) => file.path === tabs.state.active)
-    if (tabs.state.count === 1 && activeData && !activeData.dirty) tabs.closeTab(activeData)
+    if (tabs.state.files.length === 1 && activeData?.path === 'newTab0' && !activeData.dirty) tabs.closeTab(activeData)
 
     const exists = tabs.state.files.find((fileData: FileData) => fileData.path === file.path)
     if (exists) {
@@ -19,6 +19,16 @@ export default (tabs: Tabs) => {
     } else {
       tabs.addTab(file)
     }
+  })
+
+  // ファイルをドロップ
+  document.addEventListener('dragover', e => e.preventDefault()) // drop イベントを発生させるために必要
+  document.addEventListener('drop', e => {
+    e.preventDefault()
+    if (!(e.dataTransfer && e.dataTransfer.files)) return
+    const files = Array.from(e.dataTransfer.files)
+    const paths = files.map(file => file.path)
+    ipcRenderer.send(channels.FILE_DROPPED, paths)
   })
 
   // ファイルを保存
