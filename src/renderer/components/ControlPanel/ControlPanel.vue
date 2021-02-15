@@ -1,10 +1,24 @@
 <template lang="pug">
 div.control-panel
   toolbar
+    toolbar-switch(
+      title="新規作成"
+      icon="file"
+    )
+    toolbar-switch(
+      title="ファイルを開く"
+      icon="folder-open"
+    )
+    toolbar-switch(
+      title="上書き保存"
+      icon="save"
+    )
+    toolbar-separator
+  toolbar
     // Has header
     toolbar-switch(
       v-model="options.hasHeader"
-      title="先頭の行をヘッダに設定します"
+      title="１行目をヘッダに設定します"
       icon="table-header"
     )
 

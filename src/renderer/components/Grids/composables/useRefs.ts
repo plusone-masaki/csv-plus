@@ -5,7 +5,7 @@ import {
   SetupContext,
 } from 'vue'
 import HandsOnTable from 'handsontable'
-import { Props } from '@/renderer/components/Grids/types'
+import { Props } from './types'
 
 export default (props: Props, context: SetupContext) => {
   const wrapper = ref<HTMLDivElement>()

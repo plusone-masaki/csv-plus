@@ -1,4 +1,4 @@
-# csv-plus
+# csv+
 
 ## Project setup
 ```

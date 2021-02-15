@@ -25,10 +25,13 @@ export default defineComponent({
     icon: { type: String as PropType<string>, required: true },
     color: { type: String as PropType<string>, default: 'inherit' },
     title: { type: String as PropType<string|undefined>, default: undefined },
-    size: { type: Number as PropType<number>, default: 36 },
+    size: { type: Number as PropType<number>, default: 28 },
   },
   setup: (props, { emit }) => ({
-    onClick: () => emit('update:modelValue', !props.modelValue),
+    onClick: () => {
+      emit('click')
+      emit('update:modelValue', !props.modelValue)
+    },
   }),
 })
 </script>

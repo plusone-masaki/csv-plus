@@ -5,7 +5,7 @@ import {
   watch,
 } from 'vue'
 import HandsOnTable from 'handsontable'
-import { Props } from '@/renderer/components/Grids/types'
+import { Props } from './types'
 
 type Refs = {
   table: Ref<HandsOnTable|null>;

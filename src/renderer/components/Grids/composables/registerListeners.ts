@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron'
 import { Ref, SetupContext } from 'vue'
 import HandsOnTable from 'handsontable'
-import { Props } from '@/renderer/components/Grids/types'
+import { Props } from './types'
 import * as channels from '@/common/channels'
 
 type Refs = {

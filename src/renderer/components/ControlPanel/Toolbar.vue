@@ -25,7 +25,7 @@ export default defineComponent({
     align-items: center
     box-sizing: border-box
     display: inline-flex
-    height: 44px
+    height: 28px
     justify-content: center
     letter-spacing: normal
     line-height: 1
@@ -34,7 +34,7 @@ export default defineComponent({
     text-indent: 0
     user-select: none
     vertical-align: middle
-    width: 44px
+    width: 28px
 
     &::before
       content: ""

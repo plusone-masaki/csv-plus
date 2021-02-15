@@ -1,9 +1,8 @@
 import {
-  ipcMain,
-  IpcMainEvent,
   BrowserWindow,
   MenuItem,
   dialog,
+  WebContents,
 } from 'electron'
 import * as fs from 'fs'
 import CSVFile from '@/main/model/CSVFile'
@@ -30,13 +29,6 @@ export default class FileMenu {
    * @param {BrowserWindow} win
    */
   public static save (menu: MenuItem, win: BrowserWindow) {
-    ipcMain.once(channels.FILE_SAVE, (e: IpcMainEvent, file: channels.FILE_SAVE) => {
-      if (!FileMenu._fileExists(file.path)) file.path = FileMenu._saveAs(win)
-      if (!file.path) return
-      CSVFile.save(file.path, file.data)
-      win.webContents.send(channels.FILE_SAVE_COMPLETE, file.path)
-    })
-
     win.webContents.send(channels.FILE_SAVE)
   }
 
@@ -47,25 +39,32 @@ export default class FileMenu {
    * @param {BrowserWindow} win
    */
   public static saveAs (menu: MenuItem, win: BrowserWindow) {
-    ipcMain.once(channels.FILE_SAVE_AS, (e: IpcMainEvent, file: channels.FILE_SAVE_AS) => {
-      file.path = FileMenu._saveAs(win, FileMenu._fileExists(file.path) ? file.path : undefined)
-      if (!file.path) return
-      CSVFile.save(file.path, file.data)
-      win.webContents.send(channels.FILE_SAVE_COMPLETE, file.path)
-    })
-
     win.webContents.send(channels.FILE_SAVE_AS)
+  }
+
+  public static executeSave (channelName: string, file: channels.FILE_SAVE, webContents: WebContents) {
+    switch (channelName) {
+      case channels.FILE_SAVE:
+        if (!FileMenu._fileExists(file.path)) file.path = FileMenu._selectPath()
+        break
+      case channels.FILE_SAVE_AS:
+        file.path = FileMenu._selectPath(FileMenu._fileExists(file.path) ? file.path : undefined)
+        break
+    }
+
+    if (!file.path) return
+    CSVFile.save(file.path, file.data)
+    webContents.send(channels.FILE_SAVE_COMPLETE, file.path)
   }
 
   /**
    * 保存する場所を選択
    *
-   * @param {BrowserWindow} win
    * @param {string|undefined} path
    * @private
    */
-  private static _saveAs (win: BrowserWindow, path?: string) {
-    return dialog.showSaveDialogSync(win, {
+  private static _selectPath (path?: string) {
+    return dialog.showSaveDialogSync({
       title: '名前を付けて保存',
       defaultPath: path,
       properties: [

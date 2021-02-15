@@ -28,6 +28,9 @@ export default defineComponent({
         search: Icon.mdiMagnify,
         comma: Icon.mdiCommaBoxOutline,
         tab: Icon.mdiKeyboardTab,
+        file: Icon.mdiFileOutline,
+        'folder-open': Icon.mdiFolderOpenOutline,
+        save: Icon.mdiContentSave,
       })),
     }
   },
