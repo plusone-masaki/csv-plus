@@ -9,37 +9,40 @@ import * as channels from '@/common/channels'
 import CSVFile from '@/main/model/CSVFile'
 
 export default class FileMenu {
+  public static open (content: WebContents): void
+  public static open (menu: MenuItem, window: BrowserWindow): void
+
   /**
    * [ファイルを開く]
    *
-   * @param {MenuItem} menu
-   * @param {BrowserWindow} win
+   * @param {MenuItem|WebContents} menu
+   * @param {BrowserWindow|undefined} window
    */
-  public static open (menu: MenuItem, win: BrowserWindow) {
-    const files = dialog.showOpenDialogSync(win, { properties: ['openFile', 'multiSelections'] })
+  public static open (menu: MenuItem|WebContents, window?: BrowserWindow): void {
+    const files = dialog.showOpenDialogSync({ properties: ['openFile', 'multiSelections'] })
     if (!files) return
 
-    files.forEach((path: string) => CSVFile.open(path, win))
+    files.forEach((path: string) => CSVFile.open(path, window || menu as WebContents))
   }
 
   /**
    * [上書き保存]
    *
    * @param {MenuItem} menu
-   * @param {BrowserWindow} win
+   * @param {BrowserWindow} window
    */
-  public static save (menu: MenuItem, win: BrowserWindow) {
-    win.webContents.send(channels.FILE_SAVE)
+  public static save (menu: MenuItem, window: BrowserWindow) {
+    window.webContents.send(channels.FILE_SAVE)
   }
 
   /**
    * [名前を付けて保存]
    *
    * @param {MenuItem} menu
-   * @param {BrowserWindow} win
+   * @param {BrowserWindow} window
    */
-  public static saveAs (menu: MenuItem, win: BrowserWindow) {
-    win.webContents.send(channels.FILE_SAVE_AS)
+  public static saveAs (menu: MenuItem, window: BrowserWindow) {
+    window.webContents.send(channels.FILE_SAVE_AS)
   }
 
   /**

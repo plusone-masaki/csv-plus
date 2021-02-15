@@ -4,14 +4,17 @@ div.control-panel
     toolbar-switch(
       title="新規作成"
       icon="file"
+      @click="onNew"
     )
     toolbar-switch(
       title="ファイルを開く"
       icon="folder-open"
+      @click="onOpen"
     )
     toolbar-switch(
       title="上書き保存"
       icon="save"
+      @click="onSave"
     )
     toolbar-separator
   toolbar
@@ -81,6 +84,9 @@ export default defineComponent({
       t: vueI18n.t,
       keywords,
       options,
+      onNew: () => context.emit('new'),
+      onOpen: () => context.emit('open'),
+      onSave: () => context.emit('save'),
     }
   },
 })

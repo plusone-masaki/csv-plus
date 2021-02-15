@@ -28,10 +28,7 @@ export default defineComponent({
     size: { type: Number as PropType<number>, default: 28 },
   },
   setup: (props, { emit }) => ({
-    onClick: () => {
-      emit('click')
-      emit('update:modelValue', !props.modelValue)
-    },
+    onClick: () => emit('update:modelValue', !props.modelValue),
   }),
 })
 </script>

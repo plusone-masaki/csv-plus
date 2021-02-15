@@ -1,12 +1,19 @@
 <template lang="pug">
 .layout
-  control-panel(v-model="options")
+  control-panel(
+    v-model="options"
+    @new="addTab"
+    @open="open"
+    @save="save"
+  )
+
   navigation-tabs(
     v-model="state.files"
     v-model:active="state.active"
     @add="addTab"
     @close="closeTab"
   )
+
   content(
     v-show="file.path === state.active"
     v-for="file in state.files"
