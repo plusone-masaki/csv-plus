@@ -67,8 +67,9 @@ export default class FileMenu {
   /**
    * 保存する場所を選択
    *
-   * @param {string|undefined} path
    * @private
+   * @param {string|undefined} path
+   * @return {string}
    */
   private static _selectPath (path?: string) {
     return dialog.showSaveDialogSync({
@@ -84,8 +85,9 @@ export default class FileMenu {
   /**
    * ファイルの存在確認
    *
-   * @param {string} path
    * @private
+   * @param {string} path
+   * @return {boolean}
    */
   private static _fileExists (path: string) {
     try {
