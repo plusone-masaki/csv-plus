@@ -5,8 +5,8 @@ import {
   WebContents,
 } from 'electron'
 import * as fs from 'fs'
-import CSVFile from '@/main/model/CSVFile'
 import * as channels from '@/common/channels'
+import CSVFile from '@/main/model/CSVFile'
 
 export default class FileMenu {
   /**
@@ -42,6 +42,13 @@ export default class FileMenu {
     win.webContents.send(channels.FILE_SAVE_AS)
   }
 
+  /**
+   * 保存処理の実行
+   *
+   * @param {string} channelName
+   * @param {{ path: string, data: string }} file
+   * @param {WebContents} webContents
+   */
   public static executeSave (channelName: string, file: channels.FILE_SAVE, webContents: WebContents) {
     switch (channelName) {
       case channels.FILE_SAVE:
