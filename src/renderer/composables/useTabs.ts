@@ -1,8 +1,11 @@
+import { ipcRenderer } from 'electron'
 import { computed, reactive, ref } from 'vue'
+import * as channels from '@/common/channels'
 import { vueI18n } from '@/common/plugins/i18n'
 import HandsOnTable from 'handsontable'
 import { FileData, Options } from '@/renderer/types'
 import { Tabs } from '@/renderer/composables/types'
+import csvStringify from 'csv-stringify/lib/sync'
 
 const defaultOptions = (): Options => ({
   hasHeader: false,
@@ -65,7 +68,17 @@ export default (): Tabs => {
     state.active = fileData.path
   }
 
-  const closeTab = (fileData: FileData) => {
+  const closeTab = async (fileData: FileData) => {
+    // ファイルが未保存の場合は確認ダイアログを表示
+    if (fileData.dirty) {
+      const item = {
+        name: fileData.label,
+        path: fileData.path,
+        data: csvStringify(fileData.data),
+      }
+      if (!await ipcRenderer.invoke(channels.FILE_DESTROY_CONFIRM, item)) return
+    }
+
     const index = state.files.findIndex(t => t === fileData)
     state.files.splice(index, 1)
 

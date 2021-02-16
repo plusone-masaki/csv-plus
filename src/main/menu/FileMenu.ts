@@ -2,27 +2,27 @@ import {
   BrowserWindow,
   MenuItem,
   dialog,
-  WebContents,
 } from 'electron'
 import * as fs from 'fs'
 import * as channels from '@/common/channels'
 import CSVFile from '@/main/model/CSVFile'
 
 export default class FileMenu {
-  public static open (content: WebContents): void
+  public static open (window: BrowserWindow): void
   public static open (menu: MenuItem, window: BrowserWindow): void
 
   /**
    * [ファイルを開く]
    *
-   * @param {MenuItem|WebContents} menu
+   * @param {MenuItem|BrowserWindow} menu
    * @param {BrowserWindow|undefined} window
    */
-  public static open (menu: MenuItem|WebContents, window?: BrowserWindow): void {
-    const files = dialog.showOpenDialogSync({ properties: ['openFile', 'multiSelections'] })
+  public static open (menu: MenuItem|BrowserWindow, window?: BrowserWindow): void {
+    window = window || menu as BrowserWindow
+    const files = dialog.showOpenDialogSync(window, { properties: ['openFile', 'multiSelections'] })
     if (!files) return
 
-    files.forEach((path: string) => CSVFile.open(path, window || menu as WebContents))
+    files.forEach((path: string) => CSVFile.open(path, window as BrowserWindow))
   }
 
   /**
@@ -50,32 +50,39 @@ export default class FileMenu {
    *
    * @param {string} channelName
    * @param {{ path: string, data: string }} file
-   * @param {WebContents} webContents
+   * @param {BrowserWindow} window
    */
-  public static executeSave (channelName: string, file: channels.FILE_SAVE, webContents: WebContents) {
+  public static executeSave (channelName: string, file: channels.FILE_SAVE, window: BrowserWindow): boolean {
     switch (channelName) {
       case channels.FILE_SAVE:
-        if (!FileMenu._fileExists(file.path)) file.path = FileMenu._selectPath()
+        if (!FileMenu._fileExists(file.path)) file.path = FileMenu._selectPath(window)
         break
       case channels.FILE_SAVE_AS:
-        file.path = FileMenu._selectPath(FileMenu._fileExists(file.path) ? file.path : undefined)
+        file.path = FileMenu._selectPath(window, FileMenu._fileExists(file.path) ? file.path : undefined)
         break
     }
 
-    if (!file.path) return
-    CSVFile.save(file.path, file.data)
-    webContents.send(channels.FILE_SAVE_COMPLETE, file.path)
+    if (!file.path) return false
+
+    try {
+      CSVFile.save(file.path, file.data)
+      window.webContents.send(channels.FILE_SAVE_COMPLETE, file.path)
+      return true
+    } catch (e) {
+      return false
+    }
   }
 
   /**
    * 保存する場所を選択
    *
    * @private
+   * @param {BrowserWindow} window
    * @param {string|undefined} path
    * @return {string}
    */
-  private static _selectPath (path?: string) {
-    return dialog.showSaveDialogSync({
+  private static _selectPath (window: BrowserWindow, path?: string) {
+    return dialog.showSaveDialogSync(window, {
       title: '名前を付けて保存',
       defaultPath: path,
       properties: [

@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { BrowserWindow, dialog, WebContents } from 'electron'
+import { BrowserWindow, dialog } from 'electron'
 import csvParse from 'csv-parse'
 import chardet from 'chardet'
 import iconv from 'iconv-lite'
@@ -11,7 +11,7 @@ const MAX_PRELOAD_FILESIZE = 200 * 1024
 const DEFAULT_ENCODING = 'UTF-8'
 
 export default class CSVFile {
-  public static async open (path: string, window: BrowserWindow|WebContents) {
+  public static async open (path: string, window: BrowserWindow) {
     if (!await CSVFile.isFile(path)) return
 
     CSVFile.parse(path, window)
@@ -78,7 +78,7 @@ export default class CSVFile {
     }
   }
 
-  private static async parse (path: string, window: BrowserWindow|WebContents) {
+  private static async parse (path: string, window: BrowserWindow) {
     try {
       const encoding = await this.detectEncoding(path)
       const options: csvParse.Options = {
@@ -108,11 +108,7 @@ export default class CSVFile {
             } as Options,
           }
 
-          if (window instanceof BrowserWindow) {
-            window.webContents.send(channels.FILE_LOADED, payload)
-          } else {
-            window.send(channels.FILE_LOADED, payload)
-          }
+          window.webContents.send(channels.FILE_LOADED, payload)
         }))
     } catch (e) {
       console.error(e)

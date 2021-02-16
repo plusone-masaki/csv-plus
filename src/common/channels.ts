@@ -7,11 +7,13 @@ export const FILE_LOADED = 'FILE_LOADED'
 export const FILE_SAVE = 'FILE_SAVE'
 export const FILE_SAVE_AS = 'FILE_SAVE_AS'
 export const FILE_SAVE_COMPLETE = 'FILE_SAVE_COMPLETE'
+export const FILE_DESTROY_CONFIRM = 'FILE_DESTROY_CONFIRM'
 
 export type FILE_LOADED = FileData
 export type FILE_SAVE = { path: string; data: string }
 export type FILE_SAVE_AS = FILE_SAVE
 export type FILE_SAVE_COMPLETE = string
+export type FILE_DESTROY_CONFIRM = { name: string; path: string; data: string }
 
 // Menus
 export const MENU_SELECT_ALL = 'MENU_SELECT_ALL'
