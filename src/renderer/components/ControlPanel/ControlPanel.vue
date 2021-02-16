@@ -2,17 +2,17 @@
 div.control-panel
   toolbar
     toolbar-switch(
-      title="新規作成"
+      :title="$t('control_panel.new')"
       icon="file"
       @click="onNew"
     )
     toolbar-switch(
-      title="ファイルを開く"
+      :title="$t('control_panel.open')"
       icon="folder-open"
       @click="onOpen"
     )
     toolbar-switch(
-      title="上書き保存"
+      :title="$t('control_panel.save')"
       icon="save"
       @click="onSave"
     )
@@ -21,7 +21,7 @@ div.control-panel
     // Has header
     toolbar-switch(
       v-model="options.hasHeader"
-      title="１行目をヘッダに設定します"
+      :title="$t('control_panel.set_header')"
       icon="table-header"
     )
 

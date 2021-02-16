@@ -55,11 +55,13 @@ export default defineComponent({
 
   .label
     display: inline-block
+    margin-top: -1px
     max-width: 180px
     overflow: hidden
-    text-overflow: fade
+    text-overflow: ellipsis
 
   .close
+    align-self: stretch
     border-radius: 50%
     display: inline-block
     height: 16px
@@ -67,7 +69,4 @@ export default defineComponent({
     padding: 2px
     vertical-align: middle
     width: 16px
-
-    &:hover
-      background: rgba(255, 255, 255, 0.08)
 </style>

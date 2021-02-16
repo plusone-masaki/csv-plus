@@ -6,6 +6,12 @@
     "settings": "設定",
     "help": "ヘルプ"
   },
+  "control_panel": {
+    "new": "新規作成",
+    "open": "ファイルを開く",
+    "save": "上書き保存",
+    "set_header": "１行目をヘッダに設定します"
+  },
   "tabs": {
     "new_tab": "新しいタブ"
   },

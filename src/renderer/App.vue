@@ -26,7 +26,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { vueI18n } from '@/common/plugins/i18n'
 import useTabs from '@/renderer/composables/useTabs'
 import useFiles from '@/renderer/composables/useFiles'
 import Content from '@/renderer/page/Content.vue'
@@ -45,7 +44,6 @@ export default defineComponent({
     const files = useFiles(tabs)
 
     return {
-      t: vueI18n.t,
       ...tabs,
       ...files,
     }
