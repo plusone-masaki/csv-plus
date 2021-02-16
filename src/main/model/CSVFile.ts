@@ -12,9 +12,9 @@ const DEFAULT_ENCODING = 'UTF-8'
 
 export default class CSVFile {
   public static async open (path: string, window: BrowserWindow) {
-    if (!await CSVFile.isFile(path)) return
+    if (!await CSVFile._isFile(path)) return
 
-    CSVFile.parse(path, window)
+    CSVFile._parse(path, window)
   }
 
   public static save (path: string, data: string) {
@@ -30,9 +30,9 @@ export default class CSVFile {
    * @param {string} path
    * @return {Promise<boolean>}
    */
-  private static async isFile (path: string): Promise<boolean> {
+  private static async _isFile (path: string): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
-      fs.stat(path, (error: Error|null, stats: fs.Stats) => {
+      fs.stat(path, (error, stats: fs.Stats) => {
         if (error) reject(error)
         resolve(stats.isFile())
       })
@@ -68,22 +68,21 @@ export default class CSVFile {
    * @param {string} path
    * @return {string}
    */
-  private static guessDelimiter (path: string): string {
+  private static _guessDelimiter (path: string): string {
     const extension = path.split('.').pop()
     switch (extension) {
       case 'tsv': return '\t'
-      case 'env': return '='
       case 'csv':
       default: return ','
     }
   }
 
-  private static async parse (path: string, window: BrowserWindow) {
+  private static async _parse (path: string, window: BrowserWindow) {
     try {
       const encoding = await this.detectEncoding(path)
       const options: csvParse.Options = {
         bom: true,
-        delimiter: CSVFile.guessDelimiter(path),
+        delimiter: CSVFile._guessDelimiter(path),
         relaxColumnCount: true,
       }
 

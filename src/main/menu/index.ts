@@ -2,6 +2,7 @@ import Electron, { app, Menu } from 'electron'
 // import { i18next } from '@/plugins/i18n'
 import FileMenu from '@/main/menu/FileMenu'
 import EditMenu from '@/main/menu/EditMenu'
+import HelpMenu from '@/main/menu/HelpMenu'
 
 const isMac = process.platform === 'darwin'
 
@@ -79,6 +80,7 @@ const template: Array<Electron.MenuItemConstructorOptions|Electron.MenuItem> = [
       {
         label: 'このソフトについて',
         role: 'about',
+        click: HelpMenu.about,
       },
     ],
   },

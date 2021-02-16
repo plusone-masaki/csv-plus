@@ -6,6 +6,8 @@ module.exports = {
       rendererProcessFile: 'src/renderer/index.ts',
       nodeIntegration: true,
       builderOptions: {
+        appId: 'csv-plus',
+        productName: 'CSV+',
         nsis: {
           oneClick: false,
           perMachine: true,

@@ -6,6 +6,8 @@ import './events'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
+app.setName('CSV+')
+
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },

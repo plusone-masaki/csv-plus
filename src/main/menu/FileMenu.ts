@@ -17,7 +17,7 @@ export default class FileMenu {
    * @param {MenuItem|BrowserWindow} menu
    * @param {BrowserWindow|undefined} window
    */
-  public static open (menu: MenuItem|BrowserWindow, window?: BrowserWindow): void {
+  public static open (menu: MenuItem|BrowserWindow, window?: BrowserWindow) {
     window = window || menu as BrowserWindow
     const files = dialog.showOpenDialogSync(window, { properties: ['openFile', 'multiSelections'] })
     if (!files) return
@@ -81,7 +81,7 @@ export default class FileMenu {
    * @param {string|undefined} path
    * @return {string}
    */
-  private static _selectPath (window: BrowserWindow, path?: string) {
+  private static _selectPath (window: BrowserWindow, path?: string): string {
     return dialog.showSaveDialogSync(window, {
       title: '名前を付けて保存',
       defaultPath: path,
@@ -99,7 +99,7 @@ export default class FileMenu {
    * @param {string} path
    * @return {boolean}
    */
-  private static _fileExists (path: string) {
+  private static _fileExists (path: string): boolean {
     try {
       return fs.statSync(path).isFile()
     } catch (e) {
