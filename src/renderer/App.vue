@@ -20,6 +20,7 @@
     :file="file"
     :active="file.path === state.active"
     :key="file.path"
+    @load="onLoad"
     @edit="onEdit"
   )
 </template>

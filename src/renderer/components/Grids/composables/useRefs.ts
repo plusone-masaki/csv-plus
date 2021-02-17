@@ -6,6 +6,7 @@ import {
 } from 'vue'
 import HandsOnTable from 'handsontable'
 import { Props } from './types'
+import 'handsontable/languages/ja-JP'
 
 export default (props: Props, context: SetupContext) => {
   const wrapper = ref<HTMLDivElement>()
@@ -34,6 +35,7 @@ export default (props: Props, context: SetupContext) => {
   onMounted(() => {
     if (wrapper.value) {
       table.value = new HandsOnTable(wrapper.value, settings.value)
+      context.emit('load', table)
     }
   })
 

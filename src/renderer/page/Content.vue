@@ -5,6 +5,7 @@ section.content
     :path="file.path"
     :options="file.options"
     :active="active"
+    @load="onLoad"
     @edit="onEdit"
   )
 </template>
@@ -13,7 +14,9 @@ section.content
 import {
   defineComponent,
   PropType,
+  Ref,
 } from 'vue'
+import HandsOnTable from 'handsontable'
 import { FileData } from '@/renderer/types'
 import GridTable from '@/renderer/components/Grids/GridTable.vue'
 
@@ -27,6 +30,7 @@ export default defineComponent({
     active: { type: Boolean as PropType<boolean>, required: true },
   },
   setup: (props, context) => ({
+    onLoad: (table: Ref<HandsOnTable>) => context.emit('load', table),
     onEdit: () => context.emit('edit'),
   }),
 })

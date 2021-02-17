@@ -6,7 +6,6 @@ div.grid-table
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import HandsOnTable from 'handsontable'
-import 'handsontable/languages/ja-JP'
 import { Options } from '@/renderer/types'
 import useRefs from '@/renderer/components/Grids/composables/useRefs'
 import registerWatchers from '@/renderer/components/Grids/composables/registerWatchers'

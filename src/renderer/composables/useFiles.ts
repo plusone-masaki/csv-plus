@@ -1,11 +1,31 @@
 import { ipcRenderer, IpcRendererEvent } from 'electron'
+import HandsOnTable from 'handsontable'
 import * as channels from '@/common/channels'
-import { nextTick } from 'vue'
+import { nextTick, Ref, ref } from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
 import { FileData } from '@/renderer/types'
 import { Tabs } from '@/renderer/composables/types'
 
 export default (tabs: Tabs) => {
+  const table = ref<HandsOnTable>()
+  const onLoad = (t: Ref<HandsOnTable>) => {
+    table.value = t.value
+  }
+
+  // 末尾の空要素を削除する
+  const _trimEmptyCells = (data: HandsOnTable.CellValue[][]|HandsOnTable.RowObject[]): HandsOnTable.CellValue[][]|HandsOnTable.RowObject[] => {
+    if (!table.value) return []
+
+    const emptyRows = table.value.countEmptyRows(true)
+    data.splice(data.length - emptyRows, emptyRows)
+
+    if (!data.length) return []
+    const emptyCols = table.value?.countEmptyCols(true)
+    data.forEach(row => row.splice(row.length - emptyCols))
+
+    return data
+  }
+
   // ファイルを開く
   const open = () => ipcRenderer.send(channels.FILE_OPEN)
   ipcRenderer.on(channels.FILE_LOADED, (e: IpcRendererEvent, file: channels.FILE_LOADED) => {
@@ -40,7 +60,7 @@ export default (tabs: Tabs) => {
 
     const file: channels.FILE_SAVE = {
       path: activeData.path,
-      data: csvStringify(activeData.data),
+      data: csvStringify(_trimEmptyCells(activeData.data)),
     }
     ipcRenderer.send(channelName, file)
   }
@@ -64,6 +84,8 @@ export default (tabs: Tabs) => {
   })
 
   return {
+    table,
+    onLoad,
     open,
     save,
   }

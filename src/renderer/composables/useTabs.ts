@@ -64,6 +64,8 @@ export default (): Tabs => {
       },
     }
 
+    if (!fileData.data.length) fileData.data = HandsOnTable.helper.createEmptySpreadsheetData(100, 26)
+
     state.files.push(fileData)
     state.active = fileData.path
   }
