@@ -29,7 +29,12 @@ export default [
       },
       { type: 'separator' },
       {
-        label: '閉じる',
+        label: '設定',
+        accelerator: 'Ctrl+Alt+S',
+      },
+      { type: 'separator' },
+      {
+        label: '終了',
         role: 'quit',
       },
     ],

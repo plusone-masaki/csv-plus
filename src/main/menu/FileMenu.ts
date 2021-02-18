@@ -46,6 +46,22 @@ export default class FileMenu {
   }
 
   /**
+   * [設定]
+   *
+   * @param {MenuItem} menu
+   * @param {BrowserWindow} window
+   * @todo 設定画面のHTML作成
+   */
+  public static openSettingsWindow (menu: MenuItem, window: BrowserWindow) {
+    const settings = new BrowserWindow({
+      parent: window,
+      width: 640,
+      height: 480,
+    })
+    settings.loadURL('')
+  }
+
+  /**
    * 保存処理の実行
    *
    * @param {string} channelName

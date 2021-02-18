@@ -61,11 +61,6 @@ export default [
         accelerator: 'Ctrl+Shift+S',
         click: FileMenu.saveAs,
       },
-      { type: 'separator' },
-      {
-        label: '閉じる',
-        role: 'quit',
-      },
     ],
   },
   {
