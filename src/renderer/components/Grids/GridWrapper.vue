@@ -21,7 +21,7 @@ import { FileData } from '@/renderer/types'
 import GridTable from '@/renderer/components/Grids/GridTable.vue'
 
 export default defineComponent({
-  name: 'Content',
+  name: 'Wrapper',
   components: {
     GridTable,
   },

@@ -14,7 +14,7 @@
     @close="closeTab"
   )
 
-  content(
+  grid-wrapper(
     v-show="file.path === state.active"
     v-for="file in state.files"
     :file="file"
@@ -29,16 +29,16 @@
 import { defineComponent } from 'vue'
 import useTabs from '@/renderer/composables/useTabs'
 import useFiles from '@/renderer/composables/useFiles'
-import Content from '@/renderer/page/Content.vue'
 import ControlPanel from '@/renderer/components/ControlPanel/ControlPanel.vue'
 import NavigationTabs from '@/renderer/components/Tabs/NavigationTabs.vue'
+import GridWrapper from '@/renderer/components/Grids/GridWrapper.vue'
 
 export default defineComponent({
   name: 'App',
   components: {
     ControlPanel,
-    Content,
     NavigationTabs,
+    GridWrapper,
   },
   setup () {
     const tabs = useTabs()
