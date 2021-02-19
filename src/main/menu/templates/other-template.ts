@@ -31,6 +31,7 @@ export default [
       {
         label: '設定',
         accelerator: 'Ctrl+Alt+S',
+        click: FileMenu.openSettingsWindow,
       },
       { type: 'separator' },
       {

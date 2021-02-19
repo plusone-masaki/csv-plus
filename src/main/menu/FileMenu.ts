@@ -58,7 +58,7 @@ export default class FileMenu {
       width: 640,
       height: 480,
     })
-    settings.loadURL('')
+    settings.loadURL('app://./settings.html')
   }
 
   /**

@@ -32,6 +32,11 @@ export default [
       },
       { type: 'separator' },
       {
+        label: '設定',
+        click: FileMenu.openSettingsWindow,
+      },
+      { type: 'separator' },
+      {
         label: '終了',
         role: 'quit',
       },
