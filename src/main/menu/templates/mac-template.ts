@@ -52,18 +52,18 @@ export default [
       { type: 'separator' },
       {
         label: 'ファイルを開く',
-        accelerator: 'Ctrl+O',
+        accelerator: 'CmdOrCtrl+O',
         click: FileMenu.open,
       },
       { type: 'separator' },
       {
         label: '上書き保存',
-        accelerator: 'Ctrl+S',
+        accelerator: 'CmdOrCtrl+S',
         click: FileMenu.save,
       },
       {
         label: '名前を付けて保存',
-        accelerator: 'Ctrl+Shift+S',
+        accelerator: 'CmdOrCtrl+Shift+S',
         click: FileMenu.saveAs,
       },
     ],
@@ -73,18 +73,18 @@ export default [
     submenu: [
       {
         label: '元に戻す',
-        accelerator: 'Ctrl+Z',
+        accelerator: 'CmdOrCtrl+Z',
         click: EditMenu.undo,
       },
       {
         label: 'やり直し',
-        accelerator: 'Ctrl+Shift+Z',
+        accelerator: 'CmdOrCtrl+Shift+Z',
         click: EditMenu.redo,
       },
       { type: 'separator' },
       {
         label: '全て選択',
-        accelerator: 'Ctrl+A',
+        accelerator: 'CmdOrCtrl+A',
         click: EditMenu.selectAll,
       },
     ],

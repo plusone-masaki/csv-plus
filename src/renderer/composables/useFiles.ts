@@ -22,7 +22,7 @@ export default (tabs: Tabs) => {
 
     if (!rows.length) return []
     const emptyCols = table.value?.countEmptyCols(true)
-    rows.forEach(row => row.splice(row.length - emptyCols))
+    rows.forEach(row => row.slice().splice(row.length - emptyCols))
 
     return rows
   }
