@@ -15,15 +15,16 @@ export default (tabs: Tabs) => {
   // 末尾の空要素を削除する
   const _trimEmptyCells = (data: HandsOnTable.CellValue[][]|HandsOnTable.RowObject[]): HandsOnTable.CellValue[][]|HandsOnTable.RowObject[] => {
     if (!table.value) return []
+    const rows = data.slice()
 
     const emptyRows = table.value.countEmptyRows(true)
-    data.splice(data.length - emptyRows, emptyRows)
+    rows.splice(data.length - emptyRows, emptyRows)
 
-    if (!data.length) return []
+    if (!rows.length) return []
     const emptyCols = table.value?.countEmptyCols(true)
-    data.forEach(row => row.splice(row.length - emptyCols))
+    rows.forEach(row => row.splice(row.length - emptyCols))
 
-    return data
+    return rows
   }
 
   // ファイルを開く
