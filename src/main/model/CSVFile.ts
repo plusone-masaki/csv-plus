@@ -31,12 +31,12 @@ export default class CSVFile {
    * @return {Promise<boolean>}
    */
   private static async _isFile (path: string): Promise<boolean> {
-    return new Promise<boolean>((resolve, reject) => {
-      fs.stat(path, (error, stats: fs.Stats) => {
-        if (error) reject(error)
-        resolve(stats.isFile())
-      })
-    })
+    try {
+      fs.accessSync(path, fs.constants.F_OK)
+      return true
+    } catch (e) {
+      return false
+    }
   }
 
   /**
