@@ -6,7 +6,7 @@ export default class ConfigFile {
 
   public static async getConfig () {
     try {
-      fs.accessSync(this.CONFIG_FILE_PATH, fs.constants.F_OK)
+      fs.accessSync(ConfigFile.CONFIG_FILE_PATH, fs.constants.F_OK)
       return JSON.parse(fs.readFileSync(this.CONFIG_FILE_PATH, { encoding: 'utf8' }))
     } catch (e) {
       return {}
@@ -14,7 +14,7 @@ export default class ConfigFile {
   }
 
   public static save (data: string) {
-    fs.writeFile(this.CONFIG_FILE_PATH, data, error => {
+    fs.writeFile(ConfigFile.CONFIG_FILE_PATH, data, error => {
       if (error) throw error
     })
   }

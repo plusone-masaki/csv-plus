@@ -1,5 +1,5 @@
 <template lang="pug">
-.layout
+div.layout
   control-panel(
     v-model="options"
     @new="addTab"
@@ -27,14 +27,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import useTabs from '@/renderer/composables/useTabs'
-import useFiles from '@/renderer/composables/useFiles'
+import useTabs from './composables/useTabs'
+import useFiles from './composables/useFiles'
 import ControlPanel from '@/renderer/components/ControlPanel/ControlPanel.vue'
 import NavigationTabs from '@/renderer/components/Tabs/NavigationTabs.vue'
 import GridWrapper from '@/renderer/components/Grids/GridWrapper.vue'
 
 export default defineComponent({
-  name: 'App',
+  name: 'IndexPage',
   components: {
     ControlPanel,
     NavigationTabs,
@@ -55,7 +55,7 @@ export default defineComponent({
 <style lang="sass">
 @font-face
   font-family: SourceHansCodeJP
-  src: url("../assets/fonts/SourceHanCodeJP-Regular.otf")
+  src: url("/assets/fonts/SourceHanCodeJP-Regular.otf")
 
 #app
   //font-family: SourceHansCodeJP, Avenir, Helvetica, Arial, sans-serif

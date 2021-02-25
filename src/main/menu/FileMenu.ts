@@ -52,13 +52,23 @@ export default class FileMenu {
    * @param {BrowserWindow} window
    * @todo 設定画面のHTML作成
    */
-  public static openSettingsWindow (menu: MenuItem, window: BrowserWindow) {
+  public static async openSettingsWindow (menu: MenuItem, window: BrowserWindow) {
     const settings = new BrowserWindow({
       parent: window,
+      title: '設定',
       width: 640,
       height: 480,
+      resizable: false,
     })
-    settings.loadURL('app://./settings.html')
+    settings.menuBarVisible = false
+
+    if (process.env.WEBPACK_DEV_SERVER_URL) {
+      // Load the url of the dev server if in development mode
+      await settings.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string + 'settings')
+      if (!process.env.IS_TEST) settings.webContents.openDevTools()
+    } else {
+      settings.loadURL('app://./settings.html')
+    }
   }
 
   /**

@@ -1,10 +1,10 @@
 import { ipcRenderer, IpcRendererEvent } from 'electron'
-import HandsOnTable from 'handsontable'
-import * as channels from '@/common/channels'
 import { nextTick, Ref, ref } from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
+import HandsOnTable from 'handsontable'
+import * as channels from '@/common/channels'
 import { FileData } from '@/renderer/types'
-import { Tabs } from '@/renderer/composables/types'
+import { Tabs } from './types'
 
 export default (tabs: Tabs) => {
   const table = ref<HandsOnTable>()

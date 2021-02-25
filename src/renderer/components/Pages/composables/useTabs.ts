@@ -1,11 +1,11 @@
 import { ipcRenderer } from 'electron'
 import { computed, reactive, ref } from 'vue'
+import csvStringify from 'csv-stringify/lib/sync'
+import HandsOnTable from 'handsontable'
 import * as channels from '@/common/channels'
 import { vueI18n } from '@/common/plugins/i18n'
-import HandsOnTable from 'handsontable'
 import { FileData, Options } from '@/renderer/types'
-import { Tabs } from '@/renderer/composables/types'
-import csvStringify from 'csv-stringify/lib/sync'
+import { Tabs } from './types'
 
 const defaultOptions = (): Options => ({
   hasHeader: false,
