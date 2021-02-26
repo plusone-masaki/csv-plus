@@ -1,23 +1,13 @@
 module.exports = {
   pages: {
-    index: {
-      entry: 'src/renderer/pages/index.ts',
-      template: 'public/index.html',
-      filename: 'index.html',
-      chunks: ['chunk-vendors', 'chunk-common', 'app', 'index'],
-    },
-    settings: {
-      entry: 'src/renderer/pages/settings.ts',
-      template: 'public/index.html',
-      filename: 'settings.html',
-      chunks: ['chunk-vendors', 'chunk-common', 'settings'],
-    },
+    index: 'src/renderer/pages/index.ts',
+    settings: 'src/renderer/pages/settings.ts',
   },
   pluginOptions: {
     electronBuilder: {
       outputDir: 'dist',
       mainProcessFile: 'src/main/index.ts',
-      rendererProcessFile: 'src/renderer/pages/index.ts',
+      // rendererProcessFile: 'src/renderer/pages/index.ts',
       mainProcessWatch: ['src/main/**/*'],
       nodeIntegration: true,
       builderOptions: {

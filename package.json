@@ -5,6 +5,7 @@
   "author": "Masaki Enomoto <m_enomoto@plus-one.tech>",
   "license": "MIT",
   "private": true,
+  "main": "background.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -16,7 +17,6 @@
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
-  "main": "background.js",
   "dependencies": {
     "@mdi/js": "^5.9.55",
     "chardet": "^1.3.0",

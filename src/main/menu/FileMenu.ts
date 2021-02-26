@@ -59,6 +59,11 @@ export default class FileMenu {
       width: 640,
       height: 480,
       resizable: false,
+      webPreferences: {
+        // Use pluginOptions.nodeIntegration, leave this alone
+        // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
+        nodeIntegration: true,
+      },
     })
     settings.menuBarVisible = false
 
