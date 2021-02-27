@@ -54,6 +54,7 @@ export default defineComponent({
     width: 12px
 
   .label
+    align-self: center
     display: inline-block
     margin-top: -1px
     max-width: 180px

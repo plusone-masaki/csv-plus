@@ -21,8 +21,9 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .tab
+  align-items: center
   background: transparent
-  display: inline-block
+  display: inline-flex
   font-size: 14px
   padding: 4px 8px
   user-select: none
