@@ -2,7 +2,9 @@ import { BrowserWindow, dialog, ipcMain, IpcMainEvent, IpcMainInvokeEvent, WebCo
 import * as channels from '@/common/channels'
 import FileMenu from '@/main/menu/FileMenu'
 // import EditMenu from '@/main/menu/EditMenu'
-import CSVFile from '@/main/model/CSVFile'
+import CSVLoader from '@/main/model/CSVLoader'
+
+const csvLoader = new CSVLoader()
 
 const getWindow = (contents: WebContents): BrowserWindow => {
   const window = BrowserWindow.fromWebContents(contents)
@@ -16,7 +18,7 @@ ipcMain.on(channels.FILE_OPEN, (e: IpcMainEvent) => {
 
 ipcMain.on(channels.FILE_DROPPED, (e: IpcMainEvent, paths: Array<string>) => {
   const window = getWindow(e.sender)
-  paths.forEach(path => CSVFile.open(path, window))
+  paths.forEach(async path => window.webContents.send(channels.FILE_LOADED, await csvLoader.setWindow(window).open(path)))
 })
 
 ipcMain.on(channels.FILE_SAVE, (e: IpcMainEvent, file: channels.FILE_SAVE) => {
