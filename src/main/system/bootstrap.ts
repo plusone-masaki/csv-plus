@@ -1,10 +1,12 @@
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
-import filesystem from './filesystem'
+import CSVLoader from '@/main/model/CSVLoader'
 import './events'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const csvLoader = new CSVLoader()
+let win: BrowserWindow
 
 app.setName('CSV+')
 
@@ -15,7 +17,7 @@ protocol.registerSchemesAsPrivileged([
 
 async function createWindow () {
   // Create the browser window.
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     title: 'CSV+',
     width: 1024,
     height: 768,
@@ -24,6 +26,16 @@ async function createWindow () {
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: true,
     },
+  })
+
+  // File load from arguments
+  win.webContents.on('did-finish-load', () => {
+    const argv = process.argv
+    if (argv.length >= 2 && argv[1]) {
+      const path = argv[1]
+      csvLoader.open(path)
+    }
+    csvLoader.setWindow(win)
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -35,9 +47,18 @@ async function createWindow () {
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
   }
-
-  filesystem(win)
 }
+
+/**
+ * MacOSやフロントから取得したファイル情報を処理する
+ *
+ * @param {Event} e
+ * @param {string} path
+ */
+app.on('open-file', async (e, path) => {
+  e.preventDefault()
+  await csvLoader.open(path)
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {

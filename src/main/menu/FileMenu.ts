@@ -5,7 +5,9 @@ import {
 } from 'electron'
 import * as fs from 'fs'
 import * as channels from '@/common/channels'
-import CSVFile from '@/main/model/CSVFile'
+import CSVLoader from '@/main/model/CSVLoader'
+
+const csvLoader = new CSVLoader()
 
 export default class FileMenu {
   public static open (window: BrowserWindow): void
@@ -22,7 +24,7 @@ export default class FileMenu {
     const files = dialog.showOpenDialogSync(window, { properties: ['openFile', 'multiSelections'] })
     if (!files) return
 
-    files.forEach((path: string) => CSVFile.open(path, window as BrowserWindow))
+    files.forEach((path: string) => csvLoader.setWindow(window as BrowserWindow).open(path))
   }
 
   /**
@@ -96,7 +98,7 @@ export default class FileMenu {
     if (!file.path) return false
 
     try {
-      CSVFile.save(file.path, file.data)
+      csvLoader.save(file.path, file.data)
       window.webContents.send(channels.FILE_SAVE_COMPLETE, file.path)
       return true
     } catch (e) {
