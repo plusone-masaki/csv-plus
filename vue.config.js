@@ -12,9 +12,6 @@ module.exports = {
       builderOptions: {
         appId: 'csv-plus',
         productName: 'CSV+',
-        win: {
-          target: 'nsis',
-        },
         nsis: {
           oneClick: false,
           perMachine: true,
