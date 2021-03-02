@@ -1,6 +1,7 @@
+import * as path from 'path'
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+// import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import CSVLoader from '@/main/model/CSVLoader'
 import './events'
 
@@ -25,7 +26,9 @@ async function createWindow () {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: true,
+      contextIsolation: false,
     },
+    icon: path.resolve(__dirname, '../build/icons/256x256.png'),
   })
 
   // File load from arguments
@@ -33,7 +36,7 @@ async function createWindow () {
     const argv = process.argv
     if (argv.length >= 2 && argv[1]) {
       const path = argv[1]
-      csvLoader.open(path)
+      if (path !== 'dist') csvLoader.open(path)
     }
     csvLoader.setWindow(win)
   })
@@ -55,9 +58,9 @@ async function createWindow () {
  * @param {Event} e
  * @param {string} path
  */
-app.on('open-file', async (e, path) => {
+app.on('open-file', (e, path) => {
   e.preventDefault()
-  await csvLoader.open(path)
+  csvLoader.open(path)
 })
 
 // Quit when all windows are closed.
@@ -79,14 +82,14 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
-  if (isDevelopment && !process.env.IS_TEST) {
-    // Install Vue Devtools
-    try {
-      await installExtension(VUEJS_DEVTOOLS)
-    } catch (e) {
-      console.error('Vue Devtools failed to install:', e.toString())
-    }
-  }
+  // if (isDevelopment && !process.env.IS_TEST) {
+  //   // Install Vue Devtools
+  //   try {
+  //     await installExtension(VUEJS_DEVTOOLS)
+  //   } catch (e) {
+  //     console.error('Vue Devtools failed to install:', e.toString())
+  //   }
+  // }
   createWindow()
 })
 
