@@ -29,7 +29,7 @@ async function createWindow () {
       nodeIntegration: true,
       contextIsolation: false,
     },
-    icon: path.resolve(__dirname, '../build/icons/256x256.png'),
+    icon: path.resolve(__dirname, '../build/icons/icon.png'),
   })
 
   // File load from arguments
