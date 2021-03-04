@@ -8,6 +8,7 @@ import './events'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const csvLoader = new CSVLoader()
 let win: BrowserWindow
+let filepath: string
 
 app.setName('CSV+')
 
@@ -33,12 +34,12 @@ async function createWindow () {
 
   // File load from arguments
   win.webContents.on('did-finish-load', () => {
+    csvLoader.setWindow(win)
     const argv = process.argv
     if (argv.length >= 2 && argv[1]) {
-      const path = argv[1]
-      if (path !== 'dist') csvLoader.open(path)
+      filepath = argv[1]
     }
-    csvLoader.setWindow(win)
+    if (filepath && filepath !== 'dist') csvLoader.open(filepath)
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -48,19 +49,23 @@ async function createWindow () {
   } else {
     createProtocol('app')
     // Load the index.html when not in development
-    win.loadURL('app://./index.html')
+    return win.loadURL('app://./index.html')
   }
 }
 
-/**
- * MacOSやフロントから取得したファイル情報を処理する
- *
- * @param {Event} e
- * @param {string} path
- */
-app.on('open-file', (e, path) => {
-  e.preventDefault()
-  csvLoader.open(path)
+app.on('will-finish-launching', () => {
+  /**
+   * MacOSでファイルからアプリを開いた場合
+   *
+   * @param {Event} e
+   * @param {string} path
+   */
+  app.on('open-file', (e, path) => {
+    e.preventDefault()
+    filepath = path
+
+    if (win && win.isDestroyed()) return createWindow()
+  })
 })
 
 // Quit when all windows are closed.
@@ -75,7 +80,7 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  if (BrowserWindow.getAllWindows().length === 0) return createWindow()
 })
 
 // This method will be called when Electron has finished
@@ -90,7 +95,7 @@ app.on('ready', async () => {
   //     console.error('Vue Devtools failed to install:', e.toString())
   //   }
   // }
-  createWindow()
+  return createWindow()
 })
 
 // Exit cleanly on request from parent process in development mode.

@@ -12,15 +12,14 @@ const MAX_PRELOAD_FILESIZE = 200 * 1024
 const DEFAULT_ENCODING = 'UTF-8'
 
 export default class CSVLoader {
-  readonly ready: Promise<boolean>
-
+  private ready?: Promise<boolean>
   private event: EventEmitter = new EventEmitter()
   private window: BrowserWindow|null = null
 
   public constructor () {
     const event = this.event
     this.ready = new Promise(resolve => {
-      event.on('ready', () => resolve(true))
+      event.once('ready', () => resolve(true))
     })
   }
 
@@ -127,9 +126,9 @@ export default class CSVLoader {
           }
 
           await this.ready
-          if (!this.window) return
-
-          this.window.webContents.send(channels.FILE_LOADED, payload)
+          if (this.window) {
+            this.window.webContents.send(channels.FILE_LOADED, payload)
+          }
         }))
     } catch (e) {
       console.error(e)
