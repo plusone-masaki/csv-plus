@@ -7,7 +7,6 @@ module.exports = {
     electronBuilder: {
       outputDir: 'dist',
       mainProcessFile: 'src/main/index.ts',
-      // rendererProcessFile: 'src/renderer/pages/index.ts',
       mainProcessWatch: ['src/main/**/*'],
       nodeIntegration: true,
       builderOptions: {
