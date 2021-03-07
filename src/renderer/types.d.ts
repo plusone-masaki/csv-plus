@@ -5,6 +5,7 @@ declare type Options = {
   delimiter: string;
   quoteChar: string;
   escapeChar: string;
+  enableSearch: boolean;
 }
 
 declare type FileData = {

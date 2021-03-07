@@ -1,13 +1,13 @@
 <template lang="pug">
 label.text-input
-  span.text-input__icon
+  span.text-input__icon(v-if="icon")
     svg-icon(
-      v-if="icon"
       :icon="icon"
       color="rgba(0, 0, 0, 1)"
     )
   input.text-input__input(
     v-model="value"
+    :placeholder="placeholder"
     :style="{ width: `${width}px` }"
     type="text"
   )
@@ -30,18 +30,18 @@ export default defineComponent({
   setup: (props, context) => ({
     value: vModel('modelValue', props, context),
   }),
+  inheritAttrs: true,
 })
 </script>
 
 <style lang="sass" scoped>
 .text-input
-  background: transparent
+  background: rgba(255, 255, 255, 0.67)
   border: thin solid #cfcfcf
-  border-radius: 4px
   box-sizing: border-box
   display: inline-flex
-  height: 30px
-  margin: 0 8px
+  height: 28px
+  margin: 0
 
   &:focus-within
     border-color: dodgerblue

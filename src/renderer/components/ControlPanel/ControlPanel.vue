@@ -17,6 +17,11 @@ div.control-panel
       @click="onSave"
     )
     toolbar-separator
+    toolbar-switch(
+      v-model="options.enableSearch"
+      :title="$t('control_panel.search')"
+      icon="search"
+    )
   toolbar
     // Has header
     toolbar-switch(

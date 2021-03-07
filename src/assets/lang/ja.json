@@ -10,7 +10,11 @@
     "new": "新規作成",
     "open": "ファイルを開く",
     "save": "上書き保存",
-    "set_header": "１行目をヘッダに設定します"
+    "set_header": "１行目をヘッダに設定します",
+    "search": "検索"
+  },
+  "search-box": {
+    "search": "検索"
   },
   "tabs": {
     "new_tab": "新しいタブ"

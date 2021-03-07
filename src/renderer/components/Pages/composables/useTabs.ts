@@ -12,6 +12,7 @@ const defaultOptions = (): Options => ({
   delimiter: ',',
   quoteChar: '"',
   escapeChar: '"',
+  enableSearch: false,
 })
 
 export default (): Tabs => {
@@ -56,12 +57,7 @@ export default (): Tabs => {
       path: `newTab${count.value++}`,
       dirty: false,
       data: HandsOnTable.helper.createEmptySpreadsheetData(100, 26),
-      options: {
-        hasHeader: false,
-        delimiter: ',',
-        quoteChar: '"',
-        escapeChar: '"',
-      },
+      options: defaultOptions(),
     }
 
     if (!fileData.data.length) fileData.data = HandsOnTable.helper.createEmptySpreadsheetData(100, 26)
