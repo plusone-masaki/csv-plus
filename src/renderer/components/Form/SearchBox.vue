@@ -10,14 +10,16 @@ form.search-box(
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import TextInput from '@/renderer/components/Form/TextInput.vue'
 import useStyles from './composables/useStyles'
+import vModel from '@/renderer/utils/v-model'
 
 export default defineComponent({
   name: 'SearchBox',
   components: { TextInput },
   props: {
+    modelValue: { type: String as PropType<string>, default: '' },
     fixed: { type: Boolean as PropType<boolean>, default: false },
     absolute: { type: Boolean as PropType<boolean>, default: false },
     top: { type: Boolean as PropType<boolean>, default: false },
@@ -26,7 +28,7 @@ export default defineComponent({
     left: { type: Boolean as PropType<boolean>, default: false },
   },
   setup: (props, context) => {
-    const keyword = ref('')
+    const keyword = vModel('modelValue', props, context)
     const style = useStyles(props)
     const onSubmit = () => context.emit('search', keyword)
 

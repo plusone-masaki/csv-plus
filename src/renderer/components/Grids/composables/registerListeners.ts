@@ -6,6 +6,8 @@ import * as channels from '@/common/channels'
 
 type Refs = {
   table: Ref<HandsOnTable|null>;
+  search: Ref<HandsOnTable.plugins.Search|null>;
+  filter: Ref<HandsOnTable.plugins.Filters|null>;
   wrapper: Ref<HTMLDivElement|undefined>;
   settings: Ref<HandsOnTable.GridSettings>;
 }

@@ -2,19 +2,19 @@
 div.control-panel
   toolbar
     toolbar-switch(
-      :title="$t('control_panel.new')"
+      :title="$t('control_panel.add')"
       icon="file"
-      @click="onNew"
+      @click="add"
     )
     toolbar-switch(
       :title="$t('control_panel.open')"
       icon="folder-open"
-      @click="onOpen"
+      @click="open"
     )
     toolbar-switch(
       :title="$t('control_panel.save')"
       icon="save"
-      @click="onSave"
+      @click="save"
     )
     toolbar-separator
     toolbar-switch(
@@ -55,8 +55,11 @@ div.control-panel
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
-import { vueI18n } from '@/common/plugins/i18n'
+import {
+  defineComponent,
+  PropType,
+  WritableComputedRef,
+} from 'vue'
 import { Options } from '@/renderer/types'
 import vModel from '@/renderer/utils/v-model'
 import Toolbar from '@/renderer/components/ControlPanel/Toolbar.vue'
@@ -64,6 +67,8 @@ import ToolbarSwitch from '@/renderer/components/ControlPanel/ToolbarSwitch.vue'
 import ToolbarRadio from '@/renderer/components/ControlPanel/ToolbarRadio.vue'
 import ToolbarSeparator from '@/renderer/components/ControlPanel/ToolbarSeparator.vue'
 import TextInput from '@/renderer/components/Form/TextInput.vue'
+import useEvents from './composables/useEvents'
+import registerListeners from './composables/registerListeners'
 
 export default defineComponent({
   name: 'ControlPanel',
@@ -78,20 +83,14 @@ export default defineComponent({
     modelValue: { type: Object as PropType<Options> },
   },
   setup (props, context) {
-    const keywords = {
-      search: '',
-      filter: '',
-    }
-
     const options = vModel('modelValue', props, context)
+    const events = useEvents(context)
+
+    registerListeners(options as WritableComputedRef<Options>)
 
     return {
-      t: vueI18n.t,
-      keywords,
       options,
-      onNew: () => context.emit('new'),
-      onOpen: () => context.emit('open'),
-      onSave: () => context.emit('save'),
+      ...events,
     }
   },
 })

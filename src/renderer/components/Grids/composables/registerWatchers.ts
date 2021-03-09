@@ -9,6 +9,8 @@ import { Props } from './types'
 
 type Refs = {
   table: Ref<HandsOnTable|null>;
+  search: Ref<HandsOnTable.plugins.Search|null>;
+  filter: Ref<HandsOnTable.plugins.Filters|null>;
   wrapper: Ref<HTMLDivElement|undefined>;
   settings: Ref<HandsOnTable.GridSettings>;
 }
@@ -27,5 +29,13 @@ export default (props: Props, context: SetupContext, refs: Refs) => {
 
   watch(() => refs.settings.value, settings => {
     if (refs.table.value) refs.table.value.updateSettings(settings)
+  })
+
+  // Search
+  watch(() => props.keyword, keyword => {
+    if (refs.table.value && refs.search.value) {
+      refs.search.value.query(keyword)
+      refs.table.value.render()
+    }
   })
 }

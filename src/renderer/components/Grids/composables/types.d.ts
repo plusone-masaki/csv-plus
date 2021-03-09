@@ -6,4 +6,5 @@ export type Props = {
   options: Options;
   path: string;
   active: boolean;
+  keyword: string;
 }

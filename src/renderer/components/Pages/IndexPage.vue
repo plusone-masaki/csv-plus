@@ -2,7 +2,7 @@
 div.layout
   control-panel(
     v-model="options"
-    @new="addTab"
+    @add="addTab"
     @open="open"
     @save="save"
   )

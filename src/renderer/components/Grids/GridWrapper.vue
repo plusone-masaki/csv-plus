@@ -3,12 +3,14 @@ section.content
   grid-table(
     v-bind="file"
     :active="active"
+    :keyword="keyword"
     @load="onLoad"
     @edit="onEdit"
   )
   div.content__overlay
     search-box(
-      v-if="file.options.enableSearch"
+      v-show="file.options.enableSearch"
+      v-model="keyword"
       absolute
       top
       right
@@ -20,6 +22,7 @@ import {
   defineComponent,
   PropType,
   Ref,
+  ref,
 } from 'vue'
 import HandsOnTable from 'handsontable'
 import { FileData } from '@/renderer/types'
@@ -37,6 +40,7 @@ export default defineComponent({
     active: { type: Boolean as PropType<boolean>, required: true },
   },
   setup: (props, context) => ({
+    keyword: ref(''),
     onLoad: (table: Ref<HandsOnTable>) => context.emit('load', table),
     onEdit: () => context.emit('edit'),
   }),

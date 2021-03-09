@@ -18,6 +18,7 @@ export default defineComponent({
     options: { type: Object as PropType<Options>, required: true },
     path: { type: String as PropType<string>, required: true },
     active: { type: Boolean as PropType<boolean>, required: true },
+    keyword: { type: String as PropType<string>, required: true },
   },
   setup (props, context) {
     const refs = useRefs(props, context)
