@@ -13,6 +13,7 @@ const defaultOptions = (): Options => ({
   quoteChar: '"',
   escapeChar: '"',
   enableSearch: false,
+  encoding: 'UTF-8',
 })
 
 export default (): Tabs => {

@@ -122,6 +122,7 @@ export default class CSVLoader {
               delimiter: options.delimiter,
               quoteChar: '"',
               escapeChar: '"',
+              encoding,
             } as Options,
           }
 
