@@ -27,12 +27,12 @@ export default [
         accelerator: 'Ctrl+Shift+S',
         click: FileMenu.saveAs,
       },
-      { type: 'separator' },
-      {
-        label: '設定',
-        accelerator: 'Ctrl+Alt+S',
-        click: FileMenu.openSettingsWindow,
-      },
+      // { type: 'separator' },
+      // {
+      //   label: '設定',
+      //   accelerator: 'Ctrl+Alt+S',
+      //   click: FileMenu.openSettingsWindow,
+      // },
       { type: 'separator' },
       {
         label: '終了',
