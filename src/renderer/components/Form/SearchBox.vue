@@ -47,4 +47,14 @@ export default defineComponent({
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.08)
   padding: 2px 8px
   pointer-events: visible
+  transform: translateY(0px)
+  transition: 0.5s
+.v-leave-active
+  transform: translateY(-40px)
+.v-enter-to
+  transform: translateY(0px)
+.v-enter-active
+  transition: 0s
+  transform: translateY(-35px)
+
 </style>

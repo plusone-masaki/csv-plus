@@ -8,13 +8,14 @@ section.content
     @edit="onEdit"
   )
   div.content__overlay
-    search-box(
-      v-show="file.options.enableSearch"
-      v-model="keyword"
-      absolute
-      top
-      right
-    )
+    transition
+      search-box(
+        v-show="file.options.enableSearch"
+        v-model="keyword"
+        absolute
+        top
+        right
+      )
 </template>
 
 <script lang="ts">
