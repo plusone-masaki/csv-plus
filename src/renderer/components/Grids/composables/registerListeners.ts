@@ -1,38 +1,28 @@
 import { ipcRenderer } from 'electron'
-import { Ref, SetupContext } from 'vue'
-import HandsOnTable from 'handsontable'
 import { Props } from './types'
 import * as channels from '@/common/channels'
 
-type Refs = {
-  table: Ref<HandsOnTable|null>;
-  search: Ref<HandsOnTable.plugins.Search|null>;
-  filter: Ref<HandsOnTable.plugins.Filters|null>;
-  wrapper: Ref<HTMLDivElement|undefined>;
-  settings: Ref<HandsOnTable.GridSettings>;
-}
-
-export default (props: Props, context: SetupContext, { table }: Refs) => {
+export default (props: Props) => {
   /**
    * IPC events
    */
-  ipcRenderer.on(channels.MENU_SELECT_ALL, () => table.value && table.value.selectAll())
-  ipcRenderer.on(channels.MENU_UNDO, () => table.value && table.value.undo())
-  ipcRenderer.on(channels.MENU_REDO, () => table.value && table.value.redo())
+  ipcRenderer.on(channels.MENU_SELECT_ALL, () => props.active && props.table && props.table.selectAll())
+  ipcRenderer.on(channels.MENU_UNDO, () => props.active && props.table && props.table.undo())
+  ipcRenderer.on(channels.MENU_REDO, () => props.active && props.table && props.table.redo())
 
   /**
    * Key bindings
    */
   document.addEventListener('keydown', (event: KeyboardEvent) => {
-    if (!props.active || !table.value) return
+    if (!props.active || !props.table) return
 
     switch (event.key.toUpperCase()) {
       case 'A': // Select all
-        if (event.ctrlKey) table.value.selectAll()
+        if (event.ctrlKey) props.table.selectAll()
         break
       case 'Z': // undo|redo
-        if (event.ctrlKey && event.shiftKey) table.value.redo()
-        else if (event.ctrlKey) table.value.undo()
+        if (event.ctrlKey && event.shiftKey) props.table.redo()
+        else if (event.ctrlKey) props.table.undo()
         break
     }
   })

@@ -15,6 +15,7 @@ export default defineComponent({
   name: 'GridTable',
   props: {
     data: { type: Array as PropType<HandsOnTable.CellValue[][] | HandsOnTable.RowObject[]>, required: true },
+    table: { type: Object as PropType<HandsOnTable|null>, default: null },
     options: { type: Object as PropType<Options>, required: true },
     path: { type: String as PropType<string>, required: true },
     active: { type: Boolean as PropType<boolean>, required: true },
@@ -23,7 +24,7 @@ export default defineComponent({
   setup (props, context) {
     const refs = useRefs(props, context)
     registerWatchers(props, context, refs)
-    registerListeners(props, context, refs)
+    registerListeners(props)
 
     return {
       ...refs,

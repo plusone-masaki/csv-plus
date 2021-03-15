@@ -32,8 +32,9 @@ export default (): Tabs => {
         dirty: false,
         data: HandsOnTable.helper.createEmptySpreadsheetData(100, 26),
         options: defaultOptions(),
+        table: null,
       },
-    ],
+    ] as FileData[],
   })
 
   const options = computed<Options>({
@@ -59,6 +60,7 @@ export default (): Tabs => {
       dirty: false,
       data: HandsOnTable.helper.createEmptySpreadsheetData(100, 26),
       options: defaultOptions(),
+      table: null,
     }
 
     if (!fileData.data.length) fileData.data = HandsOnTable.helper.createEmptySpreadsheetData(100, 26)

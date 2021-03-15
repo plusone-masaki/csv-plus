@@ -1,20 +1,26 @@
 <template lang="pug">
-section.content
-  grid-table(
-    v-bind="file"
-    :active="active"
-    :keyword="keyword"
-    @load="onLoad"
-    @edit="onEdit"
-  )
+section.content(v-show="active")
   div.content__overlay
     search-box(
       v-show="file.options.enableSearch"
       v-model="keyword"
-      absolute
-      top
-      right
+      :absolute="true"
+      :top="true"
+      :right="true"
     )
+
+  grid-table(
+    v-bind="file"
+    :active="active"
+    :keyword="keyword"
+    @edit="onEdit"
+    @load="onLoad"
+  )
+
+footer-nav(
+  v-show="active"
+  v-model="file"
+)
 </template>
 
 <script lang="ts">
@@ -28,13 +34,16 @@ import HandsOnTable from 'handsontable'
 import { FileData } from '@/renderer/types'
 import GridTable from '@/renderer/components/Grids/GridTable.vue'
 import SearchBox from '@/renderer/components/Form/SearchBox.vue'
+import FooterNav from '@/renderer/components/Footer/FooterNav.vue'
 
 export default defineComponent({
-  name: 'Wrapper',
+  name: 'GridWrapper',
   components: {
     GridTable,
     SearchBox,
+    FooterNav,
   },
+  emits: ['load', 'edit'],
   props: {
     file: { type: Object as PropType<FileData>, required: true },
     active: { type: Boolean as PropType<boolean>, required: true },

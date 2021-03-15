@@ -7,4 +7,5 @@ export type Props = {
   path: string;
   active: boolean;
   keyword: string;
+  table: HandsOnTable | null;
 }

@@ -10,7 +10,6 @@ import 'handsontable/languages/ja-JP'
 
 export default (props: Props, context: SetupContext) => {
   const wrapper = ref<HTMLDivElement>()
-  const table = ref<HandsOnTable|null>(null)
   const search = ref<HandsOnTable.plugins.Search|null>(null)
   const filter = ref<HandsOnTable.plugins.Filters|null>(null)
   const settings = computed((): HandsOnTable.GridSettings => ({
@@ -37,16 +36,14 @@ export default (props: Props, context: SetupContext) => {
   onMounted(() => {
     if (wrapper.value) {
       const handsOnTable = new HandsOnTable(wrapper.value, settings.value)
-      table.value = handsOnTable
       search.value = handsOnTable.getPlugin('search')
       filter.value = handsOnTable.getPlugin('filters')
-      context.emit('load', table)
+      context.emit('load', handsOnTable)
     }
   })
 
   return {
     wrapper,
-    table,
     search,
     filter,
     settings,

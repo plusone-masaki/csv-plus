@@ -15,4 +15,5 @@ declare type FileData = {
   dirty: boolean;
   data: HandsOnTable.CellValue[][] | HandsOnTable.RowObject[];
   options: Options;
+  table: HandsOnTable | null;
 }

@@ -1,5 +1,5 @@
 import { ipcRenderer, IpcRendererEvent } from 'electron'
-import { nextTick, Ref, ref } from 'vue'
+import { computed, nextTick } from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
 import HandsOnTable from 'handsontable'
 import * as channels from '@/common/channels'
@@ -7,32 +7,33 @@ import { FileData } from '@/renderer/types'
 import { Tabs } from './types'
 
 export default (tabs: Tabs) => {
-  const table = ref<HandsOnTable>()
-  const onLoad = (t: Ref<HandsOnTable>) => {
-    table.value = t.value
-  }
+  const activeFile = computed({
+    get: () => tabs.state.files.find((file: FileData) => file.path === tabs.state.active),
+    set: (file: FileData) => {
+      const index = tabs.state.files.findIndex((file: FileData) => file.path === tabs.state.active)
+      tabs.state.files[index] = file
+    },
+  })
 
   // 末尾の空要素を削除する
   const _trimEmptyCells = (data: HandsOnTable.CellValue[][]|HandsOnTable.RowObject[]): HandsOnTable.CellValue[][]|HandsOnTable.RowObject[] => {
-    if (!table.value) return []
+    if (!activeFile.value || !activeFile.value.table) return data
+
     const rows = data.slice()
 
-    const emptyRows = table.value.countEmptyRows(true)
+    const emptyRows = activeFile.value.table.countEmptyRows(true)
     rows.splice(data.length - emptyRows, emptyRows)
 
     if (!rows.length) return []
-    const emptyCols = table.value?.countEmptyCols(true)
-    rows.forEach(row => row.slice().splice(row.length - emptyCols))
-
-    return rows
+    const emptyCols = activeFile.value.table.countEmptyCols(true)
+    return rows.map(row => row.slice(0, row.length - emptyCols))
   }
 
   // ファイルを開く
   const open = () => ipcRenderer.send(channels.FILE_OPEN)
   ipcRenderer.on(channels.FILE_LOADED, (e: IpcRendererEvent, file: channels.FILE_LOADED) => {
     // データ未操作の場合、初期表示のタブは削除
-    const activeData = tabs.state.files.find((file: FileData) => file.path === tabs.state.active)
-    if (tabs.state.files.length === 1 && activeData?.path === 'newTab0' && !activeData.dirty) tabs.closeTab(activeData)
+    if (tabs.state.files.length === 1 && activeFile.value?.path === 'newTab0' && !activeFile.value.dirty) tabs.closeTab(activeFile.value)
 
     const exists = tabs.state.files.find((fileData: FileData) => fileData.path === file.path)
     if (exists) {
@@ -56,20 +57,18 @@ export default (tabs: Tabs) => {
   const save = (channelName?: string) => {
     if (!channelName) channelName = channels.FILE_SAVE
 
-    const activeData = tabs.state.files.find((file: FileData) => file.path === tabs.state.active)
-    if (!activeData) return
+    if (!activeFile.value) return
 
     const file: channels.FILE_SAVE = {
-      path: activeData.path,
-      data: csvStringify(_trimEmptyCells(activeData.data)),
+      path: activeFile.value.path,
+      data: csvStringify(_trimEmptyCells(activeFile.value.data)),
     }
     ipcRenderer.send(channelName, file)
   }
   ipcRenderer.on(channels.FILE_SAVE, () => save(channels.FILE_SAVE))
   ipcRenderer.on(channels.FILE_SAVE_AS, () => save(channels.FILE_SAVE_AS))
   ipcRenderer.on(channels.FILE_SAVE_COMPLETE, async (e: IpcRendererEvent, path: channels.FILE_SAVE_COMPLETE) => {
-    const activeData = tabs.state.files.find((file: FileData) => file.path === tabs.state.active)
-    if (!activeData) return
+    if (!activeFile.value) return
 
     // 既に同じファイルを開いていた場合は閉じる
     if (path !== tabs.state.active) {
@@ -78,15 +77,14 @@ export default (tabs: Tabs) => {
       await nextTick()
     }
 
-    activeData.label = path.split('/').pop() || ''
-    activeData.path = path
-    activeData.dirty = false
+    activeFile.value.dirty = false
+    activeFile.value.label = path.split('/').pop() || ''
+    activeFile.value.path = path
     tabs.state.active = path
   })
 
   return {
-    table,
-    onLoad,
+    activeFile,
     open,
     save,
   }

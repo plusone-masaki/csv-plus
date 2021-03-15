@@ -124,6 +124,7 @@ export default class CSVLoader {
               escapeChar: '"',
               encoding,
             } as Options,
+            table: null,
           }
 
           await this.ready
