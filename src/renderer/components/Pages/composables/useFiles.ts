@@ -3,29 +3,29 @@ import { computed, nextTick } from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
 import HandsOnTable from 'handsontable'
 import * as channels from '@/common/channels'
-import { FileData } from '@/renderer/types'
-import { Tabs } from './types'
+import { FileData, Tab } from '@/renderer/types'
+import { useTab } from './types'
 
-export default (tabs: Tabs) => {
-  const activeFile = computed({
-    get: () => tabs.state.files.find((file: FileData) => file.path === tabs.state.active),
-    set: (file: FileData) => {
-      const index = tabs.state.files.findIndex((file: FileData) => file.path === tabs.state.active)
-      tabs.state.files[index] = file
+export default ({ state, addTab, closeTab }: useTab) => {
+  const activeTab = computed({
+    get: () => state.tabs.find((file: FileData) => file.path === state.active),
+    set: (tab: Tab) => {
+      const index = state.tabs.findIndex((file: FileData) => file.path === state.active)
+      state.tabs[index] = tab
     },
   })
 
   // 末尾の空要素を削除する
   const _trimEmptyCells = (data: HandsOnTable.CellValue[][]|HandsOnTable.RowObject[]): HandsOnTable.CellValue[][]|HandsOnTable.RowObject[] => {
-    if (!activeFile.value || !activeFile.value.table) return data
+    if (!activeTab.value || !activeTab.value.table) return data
 
     const rows = data.slice()
 
-    const emptyRows = activeFile.value.table.countEmptyRows(true)
+    const emptyRows = activeTab.value.table.countEmptyRows(true)
     rows.splice(data.length - emptyRows, emptyRows)
 
     if (!rows.length) return []
-    const emptyCols = activeFile.value.table.countEmptyCols(true)
+    const emptyCols = activeTab.value.table.countEmptyCols(true)
     return rows.map(row => row.slice(0, row.length - emptyCols))
   }
 
@@ -33,13 +33,13 @@ export default (tabs: Tabs) => {
   const open = () => ipcRenderer.send(channels.FILE_OPEN)
   ipcRenderer.on(channels.FILE_LOADED, (e: IpcRendererEvent, file: channels.FILE_LOADED) => {
     // データ未操作の場合、初期表示のタブは削除
-    if (tabs.state.files.length === 1 && activeFile.value?.path === 'newTab0' && !activeFile.value.dirty) tabs.closeTab(activeFile.value)
+    if (state.tabs.length === 1 && activeTab.value?.file.path === 'newTab0' && !activeTab.value.dirty) closeTab(activeTab.value)
 
-    const exists = tabs.state.files.find((fileData: FileData) => fileData.path === file.path)
+    const exists = state.tabs.find((tab: Tab) => tab.file.path === file.path)
     if (exists) {
-      tabs.state.active = exists.path
+      state.active = exists.path
     } else {
-      tabs.addTab(file)
+      addTab(file)
     }
   })
 
@@ -57,34 +57,34 @@ export default (tabs: Tabs) => {
   const save = (channelName?: string) => {
     if (!channelName) channelName = channels.FILE_SAVE
 
-    if (!activeFile.value) return
+    if (!activeTab.value) return
 
     const file: channels.FILE_SAVE = {
-      path: activeFile.value.path,
-      data: csvStringify(_trimEmptyCells(activeFile.value.data)),
+      path: activeTab.value.file.path,
+      data: csvStringify(_trimEmptyCells(activeTab.value.file.data)),
     }
     ipcRenderer.send(channelName, file)
   }
   ipcRenderer.on(channels.FILE_SAVE, () => save(channels.FILE_SAVE))
   ipcRenderer.on(channels.FILE_SAVE_AS, () => save(channels.FILE_SAVE_AS))
   ipcRenderer.on(channels.FILE_SAVE_COMPLETE, async (e: IpcRendererEvent, path: channels.FILE_SAVE_COMPLETE) => {
-    if (!activeFile.value) return
+    if (!activeTab.value) return
 
     // 既に同じファイルを開いていた場合は閉じる
-    if (path !== tabs.state.active) {
-      const sameFileIndex = tabs.state.files.findIndex((file: FileData) => file.path === path)
-      sameFileIndex === -1 || tabs.state.files.splice(sameFileIndex, 1)
+    if (path !== state.active) {
+      const sameFileIndex = state.tabs.findIndex((file: FileData) => file.path === path)
+      sameFileIndex === -1 || state.tabs.splice(sameFileIndex, 1)
       await nextTick()
     }
 
-    activeFile.value.dirty = false
-    activeFile.value.label = path.split('/').pop() || ''
-    activeFile.value.path = path
-    tabs.state.active = path
+    activeTab.value.dirty = false
+    activeTab.value.file.label = path.split('/').pop() || ''
+    activeTab.value.file.path = path
+    state.active = path
   })
 
   return {
-    activeFile,
+    activeTab,
     open,
     save,
   }

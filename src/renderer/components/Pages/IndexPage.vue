@@ -8,18 +8,18 @@ div.layout
   )
 
   navigation-tabs(
-    v-model="state.files"
+    v-model="state.tabs"
     v-model:active="state.active"
     @add="addTab"
     @close="closeTab"
   )
 
   grid-wrapper(
-    v-for="file in state.files"
-    :file="file"
-    :active="file.path === state.active"
-    :key="file.path"
-    @load="file.table = $event"
+    v-for="tab in state.tabs"
+    :tab="tab"
+    :active="tab.file.path === state.active"
+    :key="tab.file.path"
+    @load="tab.table = $event"
     @edit="onEdit"
   )
 </template>

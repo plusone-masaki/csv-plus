@@ -2,7 +2,7 @@
 section.content(v-show="active")
   div.content__overlay
     search-box(
-      v-show="file.options.enableSearch"
+      v-show="tab.options.search"
       v-model="keyword"
       :absolute="true"
       :top="true"
@@ -10,7 +10,7 @@ section.content(v-show="active")
     )
 
   grid-table(
-    v-bind="file"
+    v-bind="tab"
     :active="active"
     :keyword="keyword"
     @edit="onEdit"
@@ -19,7 +19,7 @@ section.content(v-show="active")
 
 footer-nav(
   v-show="active"
-  v-model="file"
+  v-model="tab"
 )
 </template>
 
@@ -31,7 +31,7 @@ import {
   ref,
 } from 'vue'
 import HandsOnTable from 'handsontable'
-import { FileData } from '@/renderer/types'
+import { Tab } from '@/renderer/types'
 import GridTable from '@/renderer/components/Grids/GridTable.vue'
 import SearchBox from '@/renderer/components/Form/SearchBox.vue'
 import FooterNav from '@/renderer/components/Footer/FooterNav.vue'
@@ -45,7 +45,7 @@ export default defineComponent({
   },
   emits: ['load', 'edit'],
   props: {
-    file: { type: Object as PropType<FileData>, required: true },
+    tab: { type: Object as PropType<Tab>, required: true },
     active: { type: Boolean as PropType<boolean>, required: true },
   },
   setup: (props, context) => ({

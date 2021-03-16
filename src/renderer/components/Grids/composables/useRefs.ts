@@ -13,8 +13,8 @@ export default (props: Props, context: SetupContext) => {
   const search = ref<HandsOnTable.plugins.Search|null>(null)
   const filter = ref<HandsOnTable.plugins.Filters|null>(null)
   const settings = computed((): HandsOnTable.GridSettings => ({
-    data: props.options.hasHeader ? props.data.slice(1) : props.data,
-    colHeaders: props.options.hasHeader ? props.data[0] as string[] : true,
+    data: props.options.hasHeader ? props.file.data.slice(1) : props.file.data,
+    colHeaders: props.options.hasHeader ? props.file.data[0] as string[] : true,
     columnSorting: true,
     contextMenu: true,
     copyPaste: true,

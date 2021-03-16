@@ -15,8 +15,8 @@ type Refs = {
 }
 
 export default (props: Props, context: SetupContext, refs: Refs) => {
-  watch(() => props.path, () => {
-    if (props.table) props.table.loadData(props.data)
+  watch(() => props.file.path, () => {
+    if (props.table) props.table.loadData(props.file.data)
   })
 
   watch(() => props.active, async active => {

@@ -1,6 +1,6 @@
 <template lang="pug">
 footer.footer-nav
-  footer-nav-item {{ file.options.encoding }}
+  footer-nav-item {{ tab.file.meta.encoding }}
 </template>
 
 <script lang="ts">
@@ -10,7 +10,7 @@ import {
   reactive,
   WritableComputedRef,
 } from 'vue'
-import { FileData } from '@/renderer/types'
+import { Tab } from '@/renderer/types'
 import vModel from '@/renderer/utils/v-model'
 import FooterNavItem from '@/renderer/components/Footer/FooterNavItem.vue'
 
@@ -20,10 +20,10 @@ export default defineComponent({
     FooterNavItem,
   },
   props: {
-    modelValue: { type: Object as PropType<FileData>, required: true },
+    modelValue: { type: Object as PropType<Tab>, required: true },
   },
   setup (props, context) {
-    const file = vModel('modelValue', props, context) as WritableComputedRef<FileData>
+    const tab = vModel('modelValue', props, context) as WritableComputedRef<Tab>
     const tableInfo = reactive({
       selected: {
         cols: 0,
@@ -60,7 +60,7 @@ export default defineComponent({
     // }
 
     return {
-      file,
+      tab,
       tableInfo,
     }
   },

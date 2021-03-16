@@ -18,7 +18,7 @@ div.control-panel
     )
     toolbar-separator
     toolbar-switch(
-      v-model="options.enableSearch"
+      v-model="options.search"
       :title="$t('control_panel.search')"
       icon="search"
     )
