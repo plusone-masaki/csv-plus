@@ -6,7 +6,7 @@ div.grid-table
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import HandsOnTable from 'handsontable'
-import { Options } from '@/renderer/types'
+import { FileData, Options } from '@/renderer/types'
 import useRefs from '@/renderer/components/Grids/composables/useRefs'
 import registerWatchers from '@/renderer/components/Grids/composables/registerWatchers'
 import registerListeners from '@/renderer/components/Grids/composables/registerListeners'
@@ -14,16 +14,16 @@ import registerListeners from '@/renderer/components/Grids/composables/registerL
 export default defineComponent({
   name: 'GridTable',
   props: {
-    data: { type: Array as PropType<HandsOnTable.CellValue[][] | HandsOnTable.RowObject[]>, required: true },
+    table: { type: Object as PropType<HandsOnTable|null>, default: null },
+    file: { type: Object as PropType<FileData>, required: true },
     options: { type: Object as PropType<Options>, required: true },
-    path: { type: String as PropType<string>, required: true },
     active: { type: Boolean as PropType<boolean>, required: true },
     keyword: { type: String as PropType<string>, required: true },
   },
   setup (props, context) {
     const refs = useRefs(props, context)
     registerWatchers(props, context, refs)
-    registerListeners(props, context, refs)
+    registerListeners(props)
 
     return {
       ...refs,

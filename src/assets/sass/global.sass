@@ -1,13 +1,25 @@
+@font-face
+  font-family: SourceHansCodeJP
+  src: url("../fonts/SourceHanCodeJP-Regular.otf")
+
 body,
 #app
   min-height: 100vh
   margin: 0
 
+#app
+  color: #2c3e50
+  //font-family: SourceHansCodeJP, Avenir, Helvetica, Arial, sans-serif
+  font-family: SourceHansCodeJP, sans-serif
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
+  text-align: center
+
 .layout
   box-sizing: border-box
   display: grid
   grid-auto-flow: column dense
-  grid-template-rows: min-content min-content 1fr
+  grid-template-rows: min-content min-content 1fr min-content
   height: 100vh
 
 .hidden

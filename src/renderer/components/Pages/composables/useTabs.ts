@@ -4,87 +4,91 @@ import csvStringify from 'csv-stringify/lib/sync'
 import HandsOnTable from 'handsontable'
 import * as channels from '@/common/channels'
 import { vueI18n } from '@/common/plugins/i18n'
-import { FileData, Options } from '@/renderer/types'
-import { Tabs } from './types'
+import { FileData, Tab, Options, FileMeta } from '@/renderer/types'
+import { useTab } from './types'
 
 const defaultOptions = (): Options => ({
   hasHeader: false,
+  search: false,
+})
+
+const defaultMeta = (): FileMeta => ({
   delimiter: ',',
   quoteChar: '"',
   escapeChar: '"',
-  enableSearch: false,
+  encoding: 'UTF-8',
 })
 
-export default (): Tabs => {
+export default (): useTab => {
   const { t } = vueI18n
 
   const count = ref(0)
-  const newTab = `newTab${count.value++}`
-
   const state = reactive({
     count,
-    active: newTab,
-    files: [
-      {
-        label: t('tabs.new_tab'),
-        path: newTab,
-        dirty: false,
-        data: HandsOnTable.helper.createEmptySpreadsheetData(100, 26),
-        options: defaultOptions(),
-      },
-    ],
+    active: '',
+    tabs: [] as Tab[],
   })
 
   const options = computed<Options>({
     get: () => {
-      const file = state.files.find(file => file.path === state.active)
-      return file ? file.options : defaultOptions()
+      const tab = state.tabs.find(tab => tab.file.path === state.active)
+      return tab ? tab.options : defaultOptions()
     },
-    set: file => {
-      const index = state.files.findIndex((f: FileData) => f.path === state.active)
-      if (index !== -1) state.files[index].options = file
+    set: options => {
+      const index = state.tabs.findIndex((tab: Tab) => tab.file.path === state.active)
+      if (index !== -1) state.tabs[index].options = options
     },
   })
 
   const onEdit = () => {
-    const fileData = state.files.find(t => t.path === state.active)
+    const fileData = state.tabs.find(tab => tab.file.path === state.active)
     if (fileData) fileData.dirty = true
   }
 
-  const addTab = (fileData?: FileData) => {
-    fileData = fileData || {
+  const addTab = (file?: FileData) => {
+    file = file || {
       label: t('tabs.new_tab'),
-      path: `newTab${count.value++}`,
-      dirty: false,
+      path: `newTab${count.value}`,
       data: HandsOnTable.helper.createEmptySpreadsheetData(100, 26),
-      options: defaultOptions(),
+      meta: defaultMeta(),
     }
 
-    if (!fileData.data.length) fileData.data = HandsOnTable.helper.createEmptySpreadsheetData(100, 26)
+    if (!file.data.length) file.data = HandsOnTable.helper.createEmptySpreadsheetData(100, 26)
 
-    state.files.push(fileData)
-    state.active = fileData.path
+    const tab: Tab = {
+      id: count.value++,
+      table: null,
+      dirty: false,
+      options: defaultOptions(),
+      file,
+    }
+
+    state.tabs.push(tab)
+    state.active = file.path
   }
 
-  const closeTab = async (fileData: FileData) => {
+  const closeTab = async (tab: Tab) => {
     // ファイルが未保存の場合は確認ダイアログを表示
-    if (fileData.dirty) {
+    if (tab.dirty) {
       const item = {
-        name: fileData.label,
-        path: fileData.path,
-        data: csvStringify(fileData.data),
+        name: tab.file.label,
+        path: tab.file.path,
+        data: csvStringify(tab.file.data),
       }
       if (!await ipcRenderer.invoke(channels.FILE_DESTROY_CONFIRM, item)) return
     }
 
-    const index = state.files.findIndex(t => t === fileData)
-    state.files.splice(index, 1)
+    const index = state.tabs.findIndex(st => st === tab)
+    state.tabs.splice(index, 1)
 
-    if (!state.files.length) return
-    if (!state.files.find(t => t.path === state.active)) {
-      state.active = state.files[index]?.path || state.files[0].path
+    if (!state.tabs.length) return
+    if (!state.tabs.find(st => st.file.path === state.active)) {
+      state.active = state.tabs[index]?.file.path || state.tabs[0].file.path
     }
   }
+
+  // 新しいタブを1件作成しておく
+  addTab()
 
   return {
     state,

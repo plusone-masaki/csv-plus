@@ -5,14 +5,14 @@ div.tabs
     tag="transition-group"
     group="tabs"
     animation="200"
-    item-key="path"
+    item-key="id"
   )
     template(#item="{ element }")
       navigation-tab(
-        :label="element.label"
-        :active="activeTab === element.path"
+        :label="element.file.label"
+        :active="activeTab === element.file.path"
         :is-dirty="element.dirty"
-        @click="activeTab = element.path"
+        @click="activeTab = element.file.path"
         @close="onClose(element)"
       )
 
@@ -22,7 +22,7 @@ div.tabs
 <script lang="ts">
 import { PropType, defineComponent } from 'vue'
 import VueDraggable from 'vuedraggable'
-import { FileData } from '@/renderer/types'
+import { Tab } from '@/renderer/types'
 import vModel from '@/renderer/utils/v-model'
 import NavigationTab from '@/renderer/components/Tabs/NavigationTab.vue'
 import NavigationAddTab from '@/renderer/components/Tabs/NavigationAddTab.vue'
@@ -31,7 +31,7 @@ export default defineComponent({
   name: 'NavigationTabs',
   components: { NavigationAddTab, NavigationTab, VueDraggable },
   props: {
-    modelValue: { type: Array as PropType<FileData[]>, required: true },
+    modelValue: { type: Array as PropType<Tab[]>, required: true },
     active: { type: String as PropType<string>, required: true },
   },
 
@@ -43,7 +43,7 @@ export default defineComponent({
 
     const methods = {
       onAdd: () => context.emit('add'),
-      onClose: (tab: FileData) => context.emit('close', tab),
+      onClose: (tab: Tab) => context.emit('close', tab),
     }
 
     return {

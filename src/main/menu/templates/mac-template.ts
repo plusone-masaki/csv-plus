@@ -30,11 +30,11 @@ export default [
         label: '表示する',
         role: 'unhide',
       },
-      { type: 'separator' },
-      {
-        label: '設定',
-        click: FileMenu.openSettingsWindow,
-      },
+      // { type: 'separator' },
+      // {
+      //   label: '設定',
+      //   click: FileMenu.openSettingsWindow,
+      // },
       { type: 'separator' },
       {
         label: '終了',

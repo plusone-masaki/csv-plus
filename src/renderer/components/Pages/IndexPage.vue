@@ -8,19 +8,18 @@ div.layout
   )
 
   navigation-tabs(
-    v-model="state.files"
+    v-model="state.tabs"
     v-model:active="state.active"
     @add="addTab"
     @close="closeTab"
   )
 
   grid-wrapper(
-    v-show="file.path === state.active"
-    v-for="file in state.files"
-    :file="file"
-    :active="file.path === state.active"
-    :key="file.path"
-    @load="onLoad"
+    v-for="tab in state.tabs"
+    :tab="tab"
+    :active="tab.file.path === state.active"
+    :key="tab.file.path"
+    @load="tab.table = $event"
     @edit="onEdit"
   )
 </template>
@@ -51,17 +50,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="sass">
-@font-face
-  font-family: SourceHansCodeJP
-  src: url("/assets/fonts/SourceHanCodeJP-Regular.otf")
-
-#app
-  //font-family: SourceHansCodeJP, Avenir, Helvetica, Arial, sans-serif
-  font-family: SourceHansCodeJP, sans-serif
-  -webkit-font-smoothing: antialiased
-  -moz-osx-font-smoothing: grayscale
-  text-align: center
-  color: #2c3e50
-</style>
