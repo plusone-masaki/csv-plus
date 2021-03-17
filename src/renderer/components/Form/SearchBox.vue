@@ -3,14 +3,15 @@ form.search-box(
   :style="style"
   @submit.prevent="onSubmit"
 )
-  text-input(
+  text-input.search-box__input(
     v-model="keyword"
     :placeholder="$t('search-box.search')"
+    ref="searchInput"
   )
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, onMounted, PropType, ref } from 'vue'
 import TextInput from '@/renderer/components/Form/TextInput.vue'
 import useStyles from './composables/useStyles'
 import vModel from '@/renderer/utils/v-model'
@@ -28,11 +29,14 @@ export default defineComponent({
     left: { type: Boolean as PropType<boolean>, default: false },
   },
   setup: (props, context) => {
+    const searchInput = ref<typeof TextInput|null>(null)
     const keyword = vModel('modelValue', props, context)
     const style = useStyles(props)
     const onSubmit = () => context.emit('search', keyword)
+    onMounted(() => searchInput.value?.$el.focus())
 
     return {
+      searchInput,
       keyword,
       style,
       onSubmit,
@@ -47,9 +51,9 @@ export default defineComponent({
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.08)
   padding: 2px 8px
   pointer-events: visible
-.slide-transitionY-leave-active, .slide-transitionY-enter-active
+.slide-y-transition-leave-active, .slide-y-transition-enter-active
   transform: translateY(-100%)
   transition: all 0.1s linear
-.slide-transitionY-enter-to
+.slide-y-transition-enter-to
   transform: translateY(0px)
 </style>

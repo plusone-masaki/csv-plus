@@ -7,6 +7,7 @@ label.text-input
     )
   input.text-input__input(
     v-model="value"
+    v-bind="$attrs"
     :placeholder="placeholder"
     :style="{ width: `${width}px` }"
     type="text"

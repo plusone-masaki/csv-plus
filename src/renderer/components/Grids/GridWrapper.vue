@@ -1,9 +1,9 @@
 <template lang="pug">
 section.content(v-show="active")
   div.content__overlay
-    transition(name="slide-transitionY")
+    transition(name="slide-y-transition")
       search-box(
-        v-show="tab.options.search"
+        v-if="tab.options.search"
         v-model="keyword"
         :absolute="true"
         :top="true"
