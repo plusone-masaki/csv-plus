@@ -1,13 +1,14 @@
 <template lang="pug">
 section.content(v-show="active")
   div.content__overlay
-    search-box(
-      v-show="tab.options.search"
-      v-model="keyword"
-      :absolute="true"
-      :top="true"
-      :right="true"
-    )
+    transition(name="slide-transitionY")
+      search-box(
+        v-show="tab.options.search"
+        v-model="keyword"
+        :absolute="true"
+        :top="true"
+        :right="true"
+      )
 
   grid-table(
     v-bind="tab"
