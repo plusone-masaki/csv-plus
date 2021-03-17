@@ -8,7 +8,7 @@ section.content
     @edit="onEdit"
   )
   div.content__overlay
-    transition
+    transition(name="slide-transitionY")
       search-box(
         v-show="file.options.enableSearch"
         v-model="keyword"
