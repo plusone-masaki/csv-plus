@@ -38,4 +38,11 @@ export default (props: Props, context: SetupContext, refs: Refs) => {
       props.table.render()
     }
   })
+
+  watch(() => props.options.search, show => {
+    if (props.table && refs.search.value) {
+      refs.search.value.query(show ? props.keyword : '')
+      props.table.render()
+    }
+  })
 }

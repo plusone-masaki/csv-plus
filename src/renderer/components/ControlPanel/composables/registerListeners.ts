@@ -7,6 +7,9 @@ export default (options: WritableComputedRef<Options>) => {
       case 'F': // Show search box
         if (event.ctrlKey) options.value.search = !options.value.search
         break
+      case 'ESCAPE': // Clear
+        options.value.search = false
+        break
     }
   })
 }

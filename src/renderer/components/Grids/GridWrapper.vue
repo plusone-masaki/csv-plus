@@ -30,6 +30,7 @@ import {
   PropType,
   Ref,
   ref,
+  watch,
 } from 'vue'
 import HandsOnTable from 'handsontable'
 import { Tab } from '@/renderer/types'
@@ -49,11 +50,18 @@ export default defineComponent({
     tab: { type: Object as PropType<Tab>, required: true },
     active: { type: Boolean as PropType<boolean>, required: true },
   },
-  setup: (props, context) => ({
-    keyword: ref(''),
-    onLoad: (table: Ref<HandsOnTable>) => context.emit('load', table),
-    onEdit: () => context.emit('edit'),
-  }),
+  setup: (props, context) => {
+    watch(
+      () => props.tab.options.search,
+      show => show && props.tab.table?.deselectCell(),
+    )
+
+    return {
+      keyword: ref(''),
+      onLoad: (table: Ref<HandsOnTable>) => context.emit('load', table),
+      onEdit: () => context.emit('edit'),
+    }
+  },
 })
 </script>
 
