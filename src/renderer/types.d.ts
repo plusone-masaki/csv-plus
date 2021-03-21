@@ -3,6 +3,7 @@ import HandsOnTable from 'handsontable'
 declare type Options = {
   hasHeader: boolean;
   search: boolean;
+  printMode: boolean;
 }
 
 declare type FileMeta = {

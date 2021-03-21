@@ -8,6 +8,8 @@ import HandsOnTable from 'handsontable'
 import { Props } from './types'
 import 'handsontable/languages/ja-JP'
 
+const LICENSE_KEY = 'non-commercial-and-evaluation'
+
 export default (props: Props, context: SetupContext) => {
   const wrapper = ref<HTMLDivElement>()
   const search = ref<HandsOnTable.plugins.Search|null>(null)
@@ -21,13 +23,17 @@ export default (props: Props, context: SetupContext) => {
     dragToScroll: true,
     filters: true,
     language: 'ja-JP',
-    licenseKey: 'non-commercial-and-evaluation',
+    licenseKey: LICENSE_KEY,
     manualColumnResize: true,
     manualRowResize: true,
-    minSpareCols: 1,
-    minSpareRows: 1,
+    minSpareCols: Number(!props.options.printMode),
+    minSpareRows: Number(!props.options.printMode),
+    outsideClickDeselects: false,
+    renderAllRows: props.options.printMode,
     rowHeaders: true,
     search: true,
+    viewportColumnRenderingOffset: props.options.printMode ? props.file.data.length : 'auto',
+    viewportRowRenderingOffset: props.options.printMode ? props.file.data.length : 'auto',
     afterChange: (_: unknown, src: HandsOnTable.ChangeSource) => {
       if (!['loadData'].includes(src)) context.emit('edit')
     },

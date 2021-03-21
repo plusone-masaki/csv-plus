@@ -8,8 +8,8 @@ import { useTab } from './types'
 
 export default ({ state, addTab, closeTab }: useTab) => {
   const activeTab = computed({
-    get: () => state.tabs.find((file: FileData) => file.path === state.active),
-    set: (tab: Tab) => {
+    get: () => state.tabs.find((tab: Tab) => tab.file.path === state.active),
+    set: tab => {
       const index = state.tabs.findIndex((file: FileData) => file.path === state.active)
       state.tabs[index] = tab
     },

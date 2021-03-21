@@ -10,6 +10,7 @@ import { useTab } from './types'
 const defaultOptions = (): Options => ({
   hasHeader: false,
   search: false,
+  printMode: false,
 })
 
 const defaultMeta = (): FileMeta => ({

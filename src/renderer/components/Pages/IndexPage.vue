@@ -2,6 +2,7 @@
 div.layout
   control-panel(
     v-model="options"
+    :table="activeTab.table"
     @add="addTab"
     @open="open"
     @save="save"
