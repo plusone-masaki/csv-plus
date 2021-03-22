@@ -6,7 +6,6 @@ import chardet from 'chardet'
 import iconv from 'iconv-lite'
 import { Match } from 'chardet/lib/match'
 import * as channels from '@/common/channels'
-import { Options } from '@/renderer/types'
 
 const MAX_PRELOAD_FILESIZE = 200 * 1024
 const DEFAULT_ENCODING = 'UTF-8'
@@ -116,14 +115,12 @@ export default class CSVLoader {
             label: path.split(process.platform === 'win32' ? '\\' : '/').pop() || '',
             path,
             data,
-            dirty: false,
-            options: {
-              hasHeader: false,
-              delimiter: options.delimiter,
+            meta: {
+              delimiter: options.delimiter as string,
               quoteChar: '"',
               escapeChar: '"',
               encoding,
-            } as Options,
+            },
           }
 
           await this.ready

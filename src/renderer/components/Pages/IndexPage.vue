@@ -2,31 +2,26 @@
 div.layout
   control-panel(
     v-model="options"
+    :table="activeTab.table"
     @add="addTab"
     @open="open"
     @save="save"
   )
 
   navigation-tabs(
-    v-model="state.files"
+    v-model="state.tabs"
     v-model:active="state.active"
     @add="addTab"
     @close="closeTab"
   )
 
   grid-wrapper(
-    v-show="file.path === state.active"
-    v-for="file in state.files"
-    :file="file"
-    :active="file.path === state.active"
-    :key="file.path"
-    @load="onLoad"
+    v-for="tab in state.tabs"
+    :tab="tab"
+    :active="tab.file.path === state.active"
+    :key="tab.file.path"
+    @load="tab.table = $event"
     @edit="onEdit"
-  )
-
-  footer-nav(
-    v-model="state.files"
-    :active="state.active"
   )
 </template>
 
@@ -37,7 +32,6 @@ import useFiles from './composables/useFiles'
 import ControlPanel from '@/renderer/components/ControlPanel/ControlPanel.vue'
 import NavigationTabs from '@/renderer/components/Tabs/NavigationTabs.vue'
 import GridWrapper from '@/renderer/components/Grids/GridWrapper.vue'
-import FooterNav from '@/renderer/components/Footer/FooterNav.vue'
 
 export default defineComponent({
   name: 'IndexPage',
@@ -45,7 +39,6 @@ export default defineComponent({
     ControlPanel,
     NavigationTabs,
     GridWrapper,
-    FooterNav,
   },
   setup () {
     const tabs = useTabs()
@@ -58,6 +51,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="sass">
-</style>

@@ -27,6 +27,11 @@ export default [
         accelerator: 'Ctrl+Shift+S',
         click: FileMenu.saveAs,
       },
+      // {
+      //   label: '印刷',
+      //   accelerator: 'Ctrl+Shift+P',
+      //   click: FileMenu.print,
+      // },
       // { type: 'separator' },
       // {
       //   label: '設定',

@@ -16,9 +16,14 @@ div.control-panel
       icon="save"
       @click="save"
     )
+    toolbar-switch(
+      :title="$t('control_panel.print')"
+      icon="printer"
+      @click="print"
+    )
     toolbar-separator
     toolbar-switch(
-      v-model="options.enableSearch"
+      v-model="options.search"
       :title="$t('control_panel.search')"
       icon="search"
     )
@@ -29,29 +34,6 @@ div.control-panel
       :title="$t('control_panel.set_header')"
       icon="table-header"
     )
-
-    // TODO: Search
-    //text-input(
-    //  v-model="keywords.search"
-    //  icon="search"
-    //)
-    //toolbar-separator
-
-    // TODO: Delimiter
-    //toolbar-radio(
-    //  v-model="options.delimiter"
-    //  value=","
-    //  title="コンマ区切り"
-    //  icon="comma"
-    //  size="33"
-    //)
-    //toolbar-radio(
-    //  v-model="options.delimiter"
-    //  value="\t"
-    //  title="タブ区切り"
-    //  icon="tab"
-    //)
-    //toolbar-separator
 </template>
 
 <script lang="ts">
@@ -60,33 +42,33 @@ import {
   PropType,
   WritableComputedRef,
 } from 'vue'
+import HandsOnTable from 'handsontable'
 import { Options } from '@/renderer/types'
 import vModel from '@/renderer/utils/v-model'
 import Toolbar from '@/renderer/components/ControlPanel/Toolbar.vue'
 import ToolbarSwitch from '@/renderer/components/ControlPanel/ToolbarSwitch.vue'
 import ToolbarRadio from '@/renderer/components/ControlPanel/ToolbarRadio.vue'
 import ToolbarSeparator from '@/renderer/components/ControlPanel/ToolbarSeparator.vue'
-import TextInput from '@/renderer/components/Form/TextInput.vue'
 import useEvents from './composables/useEvents'
 import registerListeners from './composables/registerListeners'
 
 export default defineComponent({
   name: 'ControlPanel',
   components: {
-    TextInput,
     Toolbar,
     ToolbarSwitch,
     ToolbarRadio,
     ToolbarSeparator,
   },
   props: {
-    modelValue: { type: Object as PropType<Options> },
+    modelValue: { type: Object as PropType<Options>, required: true },
+    table: { type: Object as PropType<HandsOnTable|null>, default: null },
   },
   setup (props, context) {
-    const options = vModel('modelValue', props, context)
-    const events = useEvents(context)
+    const options = vModel('modelValue', props, context) as WritableComputedRef<Options>
+    const events = useEvents(props, context, options)
 
-    registerListeners(options as WritableComputedRef<Options>)
+    registerListeners(options)
 
     return {
       options,

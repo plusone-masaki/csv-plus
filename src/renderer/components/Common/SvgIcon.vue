@@ -31,6 +31,7 @@ export default defineComponent({
         file: Icon.mdiFileOutline,
         'folder-open': Icon.mdiFolderOpenOutline,
         save: Icon.mdiContentSave,
+        printer: Icon.mdiPrinter,
       })),
     }
   },

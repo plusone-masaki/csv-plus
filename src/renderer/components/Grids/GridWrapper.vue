@@ -1,20 +1,27 @@
 <template lang="pug">
-section.content
+section.content(v-show="active")
+  div.content__overlay
+    transition(name="slide-y-transition")
+      search-box(
+        v-if="tab.options.search"
+        v-model="keyword"
+        :absolute="true"
+        :top="true"
+        :right="true"
+      )
+
   grid-table(
-    v-bind="file"
+    v-bind="tab"
     :active="active"
     :keyword="keyword"
-    @load="onLoad"
     @edit="onEdit"
+    @load="onLoad"
   )
-  div.content__overlay
-    search-box(
-      v-show="file.options.enableSearch"
-      v-model="keyword"
-      absolute
-      top
-      right
-    )
+
+footer-nav(
+  v-show="active"
+  v-model="tab"
+)
 </template>
 
 <script lang="ts">
@@ -23,27 +30,38 @@ import {
   PropType,
   Ref,
   ref,
+  watch,
 } from 'vue'
 import HandsOnTable from 'handsontable'
-import { FileData } from '@/renderer/types'
+import { Tab } from '@/renderer/types'
 import GridTable from '@/renderer/components/Grids/GridTable.vue'
 import SearchBox from '@/renderer/components/Form/SearchBox.vue'
+import FooterNav from '@/renderer/components/Footer/FooterNav.vue'
 
 export default defineComponent({
-  name: 'Wrapper',
+  name: 'GridWrapper',
   components: {
     GridTable,
     SearchBox,
+    FooterNav,
   },
+  emits: ['load', 'edit'],
   props: {
-    file: { type: Object as PropType<FileData>, required: true },
+    tab: { type: Object as PropType<Tab>, required: true },
     active: { type: Boolean as PropType<boolean>, required: true },
   },
-  setup: (props, context) => ({
-    keyword: ref(''),
-    onLoad: (table: Ref<HandsOnTable>) => context.emit('load', table),
-    onEdit: () => context.emit('edit'),
-  }),
+  setup: (props, context) => {
+    watch(
+      () => props.tab.options.search,
+      show => show && props.tab.table?.deselectCell(),
+    )
+
+    return {
+      keyword: ref(''),
+      onLoad: (table: Ref<HandsOnTable>) => context.emit('load', table),
+      onEdit: () => context.emit('edit'),
+    }
+  },
 })
 </script>
 

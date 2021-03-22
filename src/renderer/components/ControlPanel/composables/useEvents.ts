@@ -1,7 +1,20 @@
-import { SetupContext } from 'vue'
+import { SetupContext, WritableComputedRef } from 'vue'
+import { Options } from '@/renderer/types'
+import HandsOnTable from 'handsontable'
 
-export default (context: SetupContext) => ({
-  add: () => context.emit('add'),
-  save: () => context.emit('save'),
-  open: () => context.emit('open'),
-})
+export default (
+  props: Readonly<{ modelValue: Options; table: HandsOnTable|null }>,
+  context: SetupContext, options: WritableComputedRef<Options>,
+) => {
+  return {
+    add: () => context.emit('add'),
+    save: () => context.emit('save'),
+    open: () => context.emit('open'),
+    print: () => {
+      if (props.table) {
+        props.table.addHookOnce('afterRender', () => window.print())
+        options.value.printMode = true
+      }
+    },
+  }
+}

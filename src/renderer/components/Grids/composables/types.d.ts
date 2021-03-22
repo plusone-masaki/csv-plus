@@ -1,10 +1,10 @@
 import HandsOnTable from 'handsontable'
-import { Options } from '@/renderer/types'
+import { FileData, Options } from '@/renderer/types'
 
 export type Props = {
-  data: HandsOnTable.CellValue[][] | HandsOnTable.RowObject[];
-  options: Options;
-  path: string;
+  table: HandsOnTable | null;
+  file: FileData;
   active: boolean;
   keyword: string;
+  options: Options;
 }

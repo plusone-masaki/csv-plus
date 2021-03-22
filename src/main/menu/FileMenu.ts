@@ -48,6 +48,16 @@ export default class FileMenu {
   }
 
   /**
+   * [印刷]
+   *
+   * @param {MenuItem} menu
+   * @param {BrowserWindow} window
+   */
+  public static print (menu: MenuItem, window: BrowserWindow) {
+    window.webContents.print()
+  }
+
+  /**
    * [設定]
    *
    * @param {MenuItem} menu

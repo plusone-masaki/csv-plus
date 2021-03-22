@@ -8,27 +8,32 @@ import HandsOnTable from 'handsontable'
 import { Props } from './types'
 import 'handsontable/languages/ja-JP'
 
+const LICENSE_KEY = 'non-commercial-and-evaluation'
+
 export default (props: Props, context: SetupContext) => {
   const wrapper = ref<HTMLDivElement>()
-  const table = ref<HandsOnTable|null>(null)
   const search = ref<HandsOnTable.plugins.Search|null>(null)
   const filter = ref<HandsOnTable.plugins.Filters|null>(null)
   const settings = computed((): HandsOnTable.GridSettings => ({
-    data: props.options.hasHeader ? props.data.slice(1) : props.data,
-    colHeaders: props.options.hasHeader ? props.data[0] as string[] : true,
+    data: props.options.hasHeader ? props.file.data.slice(1) : props.file.data,
+    colHeaders: props.options.hasHeader ? props.file.data[0] as string[] : true,
     columnSorting: true,
     contextMenu: true,
     copyPaste: true,
     dragToScroll: true,
     filters: true,
     language: 'ja-JP',
-    licenseKey: 'non-commercial-and-evaluation',
+    licenseKey: LICENSE_KEY,
     manualColumnResize: true,
     manualRowResize: true,
-    minSpareCols: 1,
-    minSpareRows: 1,
+    minSpareCols: Number(!props.options.printMode),
+    minSpareRows: Number(!props.options.printMode),
+    outsideClickDeselects: false,
+    renderAllRows: props.options.printMode,
     rowHeaders: true,
     search: true,
+    viewportColumnRenderingOffset: props.options.printMode ? props.file.data.length : 'auto',
+    viewportRowRenderingOffset: props.options.printMode ? props.file.data.length : 'auto',
     afterChange: (_: unknown, src: HandsOnTable.ChangeSource) => {
       if (!['loadData'].includes(src)) context.emit('edit')
     },
@@ -37,16 +42,14 @@ export default (props: Props, context: SetupContext) => {
   onMounted(() => {
     if (wrapper.value) {
       const handsOnTable = new HandsOnTable(wrapper.value, settings.value)
-      table.value = handsOnTable
       search.value = handsOnTable.getPlugin('search')
       filter.value = handsOnTable.getPlugin('filters')
-      context.emit('load', table)
+      context.emit('load', handsOnTable)
     }
   })
 
   return {
     wrapper,
-    table,
     search,
     filter,
     settings,

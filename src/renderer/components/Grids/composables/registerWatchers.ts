@@ -8,7 +8,6 @@ import HandsOnTable from 'handsontable'
 import { Props } from './types'
 
 type Refs = {
-  table: Ref<HandsOnTable|null>;
   search: Ref<HandsOnTable.plugins.Search|null>;
   filter: Ref<HandsOnTable.plugins.Filters|null>;
   wrapper: Ref<HTMLDivElement|undefined>;
@@ -16,26 +15,34 @@ type Refs = {
 }
 
 export default (props: Props, context: SetupContext, refs: Refs) => {
-  watch(() => props.path, () => {
-    if (refs.table.value) refs.table.value.loadData(props.data)
+  watch(() => props.file.path, () => {
+    if (props.table) props.table.loadData(props.file.data)
   })
 
   watch(() => props.active, async active => {
-    if (active && refs.table.value) {
+    if (active && props.table) {
+      context.emit('load', props.table)
       await nextTick()
-      refs.table.value.render()
+      props.table.render()
     }
   })
 
   watch(() => refs.settings.value, settings => {
-    if (refs.table.value) refs.table.value.updateSettings(settings)
+    if (props.table) props.table.updateSettings(settings)
   })
 
   // Search
   watch(() => props.keyword, keyword => {
-    if (refs.table.value && refs.search.value) {
+    if (props.table && refs.search.value) {
       refs.search.value.query(keyword)
-      refs.table.value.render()
+      props.table.render()
+    }
+  })
+
+  watch(() => props.options.search, show => {
+    if (props.table && refs.search.value) {
+      refs.search.value.query(show ? props.keyword : '')
+      props.table.render()
     }
   })
 }
