@@ -58,7 +58,6 @@ export default defineComponent({
   &__input
     background: transparent
     border: none
-    color: #cfcfcf
     font-size: 16px
     outline: none !important
     padding: 4px
