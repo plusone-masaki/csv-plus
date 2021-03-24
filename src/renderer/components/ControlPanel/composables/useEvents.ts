@@ -1,5 +1,5 @@
 import { SetupContext, WritableComputedRef } from 'vue'
-import { Options } from '@/renderer/types'
+import { Options } from '@/common/types'
 import HandsOnTable from 'handsontable'
 
 export default (

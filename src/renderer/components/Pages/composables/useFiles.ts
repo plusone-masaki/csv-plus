@@ -3,7 +3,7 @@ import { computed, nextTick } from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
 import HandsOnTable from 'handsontable'
 import * as channels from '@/common/channels'
-import { FileData, Tab } from '@/renderer/types'
+import { FileData, Tab } from '@/common/types'
 import { useTab } from './types'
 
 export default ({ state, addTab, closeTab }: useTab) => {

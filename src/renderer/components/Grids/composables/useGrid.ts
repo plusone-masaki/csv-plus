@@ -4,11 +4,29 @@ import {
   ref,
   SetupContext,
 } from 'vue'
-import HandsOnTable from 'handsontable'
-import { Props } from './types'
+import HandsOnTable from 'handsontable/base'
+import {
+  registerPlugin,
+  AutoColumnSize,
+  ContextMenu,
+  CopyPaste,
+  DragToScroll,
+  Filters,
+  Search,
+} from 'handsontable/plugins'
 import 'handsontable/languages/ja-JP'
+import { Props } from './types'
 
-const LICENSE_KEY = 'non-commercial-and-evaluation'
+const LICENSE_KEY = 'non-commercial-and-evaluation';
+
+[
+  AutoColumnSize,
+  ContextMenu,
+  CopyPaste,
+  DragToScroll,
+  Filters,
+  Search,
+].forEach(plugin => registerPlugin(plugin))
 
 export default (props: Props, context: SetupContext) => {
   const wrapper = ref<HTMLDivElement>()
@@ -16,6 +34,8 @@ export default (props: Props, context: SetupContext) => {
   const filter = ref<HandsOnTable.plugins.Filters|null>(null)
   const settings = computed((): HandsOnTable.GridSettings => ({
     data: props.options.hasHeader ? props.file.data.slice(1) : props.file.data,
+    autoColumnSize: { syncLimit: 10 },
+    autoRowSize: false,
     colHeaders: props.options.hasHeader ? props.file.data[0] as string[] : true,
     columnSorting: true,
     contextMenu: true,

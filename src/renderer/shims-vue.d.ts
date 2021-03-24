@@ -8,3 +8,8 @@ declare module '*.json' {
   const data: any
   export default data
 }
+
+declare module 'handsontable/plugins' {
+  import HandsOnTable from 'handsontable'
+  export = HandsOnTable.plugins
+}

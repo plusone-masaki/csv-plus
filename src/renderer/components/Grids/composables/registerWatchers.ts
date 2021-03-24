@@ -21,7 +21,6 @@ export default (props: Props, context: SetupContext, refs: Refs) => {
 
   watch(() => props.active, async active => {
     if (active && props.table) {
-      context.emit('load', props.table)
       await nextTick()
       props.table.render()
     }

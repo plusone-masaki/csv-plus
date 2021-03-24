@@ -33,7 +33,7 @@ import {
   watch,
 } from 'vue'
 import HandsOnTable from 'handsontable'
-import { Tab } from '@/renderer/types'
+import { Tab } from '@/common/types'
 import GridTable from '@/renderer/components/Grids/GridTable.vue'
 import SearchBox from '@/renderer/components/Form/SearchBox.vue'
 import FooterNav from '@/renderer/components/Footer/FooterNav.vue'

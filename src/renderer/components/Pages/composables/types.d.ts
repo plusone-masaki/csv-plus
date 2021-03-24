@@ -1,5 +1,5 @@
 import { reactive, ref } from 'vue'
-import { FileData, Options, Tab } from '@/renderer/types'
+import { FileData, Options, Tab } from '@/common/types'
 
 export type useTab = {
   state: reactive<{

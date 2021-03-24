@@ -1,4 +1,4 @@
-import { FileData } from '@/renderer/types'
+import { FileData } from './types'
 
 // Files
 export const FILE_OPEN = 'FILE_OPEN'

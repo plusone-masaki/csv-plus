@@ -4,7 +4,7 @@ import csvStringify from 'csv-stringify/lib/sync'
 import HandsOnTable from 'handsontable'
 import * as channels from '@/common/channels'
 import { vueI18n } from '@/common/plugins/i18n'
-import { FileData, Tab, Options, FileMeta } from '@/renderer/types'
+import { FileData, Tab, Options, FileMeta } from '@/common/types'
 import { useTab } from './types'
 
 const defaultOptions = (): Options => ({

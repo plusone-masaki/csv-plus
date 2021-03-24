@@ -22,7 +22,7 @@ div.tabs
 <script lang="ts">
 import { PropType, defineComponent } from 'vue'
 import VueDraggable from 'vuedraggable'
-import { Tab } from '@/renderer/types'
+import { Tab } from '@/common/types'
 import vModel from '@/renderer/utils/v-model'
 import NavigationTab from '@/renderer/components/Tabs/NavigationTab.vue'
 import NavigationAddTab from '@/renderer/components/Tabs/NavigationAddTab.vue'

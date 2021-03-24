@@ -10,7 +10,7 @@ import {
   reactive,
   WritableComputedRef,
 } from 'vue'
-import { Tab } from '@/renderer/types'
+import { Tab } from '@/common/types'
 import vModel from '@/renderer/utils/v-model'
 import FooterNavItem from '@/renderer/components/Footer/FooterNavItem.vue'
 

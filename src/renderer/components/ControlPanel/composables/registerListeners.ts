@@ -1,4 +1,4 @@
-import { Options } from '@/renderer/types'
+import { Options } from '@/common/types'
 import { WritableComputedRef } from 'vue'
 
 export default (options: WritableComputedRef<Options>) => {

@@ -43,7 +43,7 @@ import {
   WritableComputedRef,
 } from 'vue'
 import HandsOnTable from 'handsontable'
-import { Options } from '@/renderer/types'
+import { Options } from '@/common/types'
 import vModel from '@/renderer/utils/v-model'
 import Toolbar from '@/renderer/components/ControlPanel/Toolbar.vue'
 import ToolbarSwitch from '@/renderer/components/ControlPanel/ToolbarSwitch.vue'
