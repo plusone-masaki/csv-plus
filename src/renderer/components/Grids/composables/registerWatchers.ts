@@ -1,5 +1,4 @@
 import {
-  nextTick,
   Ref,
   SetupContext,
   watch,
@@ -17,13 +16,6 @@ type Refs = {
 export default (props: Props, context: SetupContext, refs: Refs) => {
   watch(() => props.file.path, () => {
     if (props.table) props.table.loadData(props.file.data)
-  })
-
-  watch(() => props.active, async active => {
-    if (active && props.table) {
-      await nextTick()
-      props.table.render()
-    }
   })
 
   watch(() => refs.settings.value, settings => {

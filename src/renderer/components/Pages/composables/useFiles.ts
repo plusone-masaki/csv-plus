@@ -20,7 +20,6 @@ export default ({ state, addTab, closeTab }: useTab) => {
     if (!activeTab.value || !activeTab.value.table) return data
 
     const rows = data.slice()
-
     const emptyRows = activeTab.value.table.countEmptyRows(true)
     rows.splice(data.length - emptyRows, emptyRows)
 
@@ -32,6 +31,8 @@ export default ({ state, addTab, closeTab }: useTab) => {
   // ファイルを開く
   const open = () => ipcRenderer.send(channels.FILE_OPEN)
   ipcRenderer.on(channels.FILE_LOADED, (e: IpcRendererEvent, file: channels.FILE_LOADED) => {
+    if (!file) return
+
     // データ未操作の場合、初期表示のタブは削除
     if (state.tabs.length === 1 && activeTab.value?.file.path === 'newTab0' && !activeTab.value.dirty) closeTab(activeTab.value)
 

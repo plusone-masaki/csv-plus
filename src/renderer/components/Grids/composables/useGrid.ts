@@ -1,6 +1,7 @@
 import {
   computed,
   onMounted,
+  onBeforeUnmount,
   ref,
   SetupContext,
 } from 'vue'
@@ -66,6 +67,10 @@ export default (props: Props, context: SetupContext) => {
       filter.value = handsOnTable.getPlugin('filters')
       context.emit('load', handsOnTable)
     }
+  })
+
+  onBeforeUnmount(() => {
+    if (props.table) props.table.destroy()
   })
 
   return {

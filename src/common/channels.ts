@@ -9,7 +9,7 @@ export const FILE_SAVE_AS = 'FILE_SAVE_AS'
 export const FILE_SAVE_COMPLETE = 'FILE_SAVE_COMPLETE'
 export const FILE_DESTROY_CONFIRM = 'FILE_DESTROY_CONFIRM'
 
-export type FILE_LOADED = FileData
+export type FILE_LOADED = FileData|undefined
 export type FILE_SAVE = { path: string; data: string }
 export type FILE_SAVE_AS = FILE_SAVE
 export type FILE_SAVE_COMPLETE = string

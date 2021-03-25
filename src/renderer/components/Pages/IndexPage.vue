@@ -16,11 +16,9 @@ div.layout
   )
 
   grid-wrapper(
-    v-for="tab in state.tabs"
-    :tab="tab"
-    :active="tab.file.path === state.active"
-    :key="tab.file.path"
-    @load="tab.table = $event"
+    :tab="activeTab"
+    :key="activeTab.file.path"
+    @load="activeTab.table = $event"
     @edit="onEdit"
   )
 </template>

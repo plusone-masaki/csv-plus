@@ -17,7 +17,6 @@ export default defineComponent({
     table: { type: Object as PropType<HandsOnTable|null>, default: null },
     file: { type: Object as PropType<FileData>, required: true },
     options: { type: Object as PropType<Options>, required: true },
-    active: { type: Boolean as PropType<boolean>, required: true },
     keyword: { type: String as PropType<string>, required: true },
   },
   setup (props, context) {

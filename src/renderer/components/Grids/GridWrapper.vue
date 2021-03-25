@@ -1,5 +1,5 @@
 <template lang="pug">
-section.content(v-show="active")
+section.content
   div.content__overlay
     transition(name="slide-y-transition")
       search-box(
@@ -12,16 +12,12 @@ section.content(v-show="active")
 
   grid-table(
     v-bind="tab"
-    :active="active"
     :keyword="keyword"
     @edit="onEdit"
     @load="onLoad"
   )
 
-footer-nav(
-  v-show="active"
-  v-model="tab"
-)
+footer-nav(v-model="tab")
 </template>
 
 <script lang="ts">
@@ -48,7 +44,6 @@ export default defineComponent({
   emits: ['load', 'edit'],
   props: {
     tab: { type: Object as PropType<Tab>, required: true },
-    active: { type: Boolean as PropType<boolean>, required: true },
   },
   setup: (props, context) => {
     watch(
