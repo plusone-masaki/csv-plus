@@ -6,12 +6,14 @@ declare type Options = {
   printMode: boolean;
 }
 
+declare type Linefeed = 'CR' | 'CRLF' | 'LF'
+
 declare type FileMeta = {
   delimiter: string;
   quoteChar: string;
   escapeChar: string;
   encoding: string;
-  linefeed: 'CR' | 'CRLF' | 'LF';
+  linefeed: Linefeed;
 }
 
 declare type FileData = {

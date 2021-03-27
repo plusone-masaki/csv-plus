@@ -1,4 +1,3 @@
-import os from 'os'
 import fs from 'fs'
 import Stream, { Transform } from 'stream'
 import { EventEmitter } from 'events'
@@ -7,18 +6,11 @@ import csvParse from 'csv-parse'
 import chardet from 'chardet'
 import iconv from 'iconv-lite'
 import { Match } from 'chardet/lib/match'
+import { FileMeta, Linefeed } from '@/common/types'
 import * as channels from '@/common/channels'
-import { FileMeta } from '@/common/types'
+import { defaultLinefeed } from '@/common/plugins/helpers'
 
-// const MAX_PRELOAD_FILESIZE = 200 * 1024
 const DEFAULT_ENCODING = 'UTF-8'
-
-const transformOptions = (): Stream.TransformOptions => ({
-  transform (chunk: Buffer, encoding: BufferEncoding, next: Stream.TransformCallback) {
-    this.push(chunk)
-    next()
-  },
-})
 
 export default class CSVLoader {
   readonly ready?: Promise<boolean>
@@ -30,7 +22,7 @@ export default class CSVLoader {
     quoteChar: '"',
     escapeChar: '"',
     encoding: DEFAULT_ENCODING,
-    linefeed: os.EOL,
+    linefeed: defaultLinefeed(),
   }
 
   public constructor () {
@@ -117,7 +109,7 @@ export default class CSVLoader {
       let linefeed = ''
       if (data.indexOf('\r') !== -1) linefeed += 'CR'
       if (data.indexOf('\n') !== -1) linefeed += 'LF'
-      this.meta.linefeed = linefeed || os.EOL
+      this.meta.linefeed = linefeed as Linefeed || defaultLinefeed()
     })
     return stream
   }

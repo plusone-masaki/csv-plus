@@ -1,22 +1,12 @@
-import os from 'os'
 import { ipcRenderer } from 'electron'
 import { computed, reactive, ref } from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
 import HandsOnTable from 'handsontable'
+import { FileData, Tab, Options, FileMeta } from '@/common/types'
 import * as channels from '@/common/channels'
 import { vueI18n } from '@/common/plugins/i18n'
-import { FileData, Tab, Options, FileMeta } from '@/common/types'
+import { defaultLinefeed } from '@/common/plugins/helpers'
 import { useTab } from './types'
-
-const defaultLinefeed = () => {
-  switch (os.EOL) {
-    case '\r': return 'CR'
-    case '\r\n': return 'CRLF'
-    case '\n':
-    default:
-      return 'LF'
-  }
-}
 
 const defaultOptions = (): Options => ({
   hasHeader: false,
@@ -94,7 +84,7 @@ export default (): useTab => {
     const index = state.tabs.findIndex(st => st === tab)
     state.tabs.splice(index, 1)
 
-    if (!state.tabs.length) return
+    if (!state.tabs.length) addTab()
     if (!state.tabs.find(st => st.file.path === state.active)) {
       state.active = state.tabs[index]?.file.path || state.tabs[0].file.path
     }
