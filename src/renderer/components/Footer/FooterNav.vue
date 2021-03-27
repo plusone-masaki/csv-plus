@@ -1,6 +1,7 @@
 <template lang="pug">
 footer.footer-nav
-  footer-nav-item {{ tab.file.meta.encoding }}
+  footer-nav-item {{ tab.file.meta.linefeed }}
+  footer-nav-item {{ tab.file.meta.encoding || 'no' }}
 </template>
 
 <script lang="ts">

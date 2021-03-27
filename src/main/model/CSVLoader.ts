@@ -1,4 +1,6 @@
+import os from 'os'
 import fs from 'fs'
+import Stream, { Transform } from 'stream'
 import { EventEmitter } from 'events'
 import { BrowserWindow, dialog } from 'electron'
 import csvParse from 'csv-parse'
@@ -6,14 +8,30 @@ import chardet from 'chardet'
 import iconv from 'iconv-lite'
 import { Match } from 'chardet/lib/match'
 import * as channels from '@/common/channels'
+import { FileMeta } from '@/common/types'
 
-const MAX_PRELOAD_FILESIZE = 200 * 1024
+// const MAX_PRELOAD_FILESIZE = 200 * 1024
 const DEFAULT_ENCODING = 'UTF-8'
 
+const transformOptions = (): Stream.TransformOptions => ({
+  transform (chunk: Buffer, encoding: BufferEncoding, next: Stream.TransformCallback) {
+    this.push(chunk)
+    next()
+  },
+})
+
 export default class CSVLoader {
-  private ready?: Promise<boolean>
+  readonly ready?: Promise<boolean>
+
   private event: EventEmitter = new EventEmitter()
   private window: BrowserWindow|null = null
+  private meta: FileMeta = {
+    delimiter: ',',
+    quoteChar: '"',
+    escapeChar: '"',
+    encoding: DEFAULT_ENCODING,
+    linefeed: os.EOL,
+  }
 
   public constructor () {
     const event = this.event
@@ -30,7 +48,6 @@ export default class CSVLoader {
 
   public async open (path: string) {
     if (!await CSVLoader.isFile(path)) throw Error('File not found.')
-
     await this.parse(path)
   }
 
@@ -57,25 +74,52 @@ export default class CSVLoader {
   }
 
   /**
-   * 文字コード判別
-   * ファイルの一部を読み込んで判定する
+   * 文字コードの判別
    *
    * @private
-   * @param {string} path
-   * @return {Promise<string>}
+   * @return {Stream.Transform}
    */
-  private static async detectEncoding (path: string): Promise<string> {
-    const encoding = await chardet.detectFile(path, { sampleSize: MAX_PRELOAD_FILESIZE })
+  private detectEncoding (): Stream.Transform {
+    const stream = new Stream.Transform({
+      transform (chunk: Buffer, encoding: BufferEncoding, next: Stream.TransformCallback) {
+        this.push(chunk)
+        next()
+      },
+    })
+    stream.once('data', (chunk: Buffer) => {
+      const candidates = chardet.analyse(chunk)
+      if (candidates.some(match => match.name === DEFAULT_ENCODING)) {
+        this.meta.encoding = DEFAULT_ENCODING
+      } else {
+        const match = candidates.reduce((acc: Match, encode: Match) => acc && acc.confidence >= encode.confidence ? acc : encode)
+        this.meta.encoding = match.name
+      }
+    })
+    return stream
+  }
 
-    if (typeof encoding === 'string' && encoding === 'UTF-32BE') return DEFAULT_ENCODING
-    if (typeof encoding === 'string') return encoding
-
-    if (encoding) {
-      const match = encoding.reduce((acc: Match, encode: Match) => acc && acc.confidence >= encode.confidence ? acc : encode)
-      return match.name
-    }
-
-    return DEFAULT_ENCODING
+  /**
+   * 改行コードの判別
+   *
+   * @private
+   * @return {Stream.Transform}
+   */
+  private detectLinefeed (): Stream.Transform {
+    let data = ''
+    const stream = new Stream.Transform({
+      transform (chunk: Buffer, encoding: BufferEncoding, next: Stream.TransformCallback) {
+        data += chunk
+        this.push(chunk)
+        next()
+      },
+    })
+    stream.on('end', () => {
+      let linefeed = ''
+      if (data.indexOf('\r') !== -1) linefeed += 'CR'
+      if (data.indexOf('\n') !== -1) linefeed += 'LF'
+      this.meta.linefeed = linefeed || os.EOL
+    })
+    return stream
   }
 
   /**
@@ -96,15 +140,16 @@ export default class CSVLoader {
 
   private async parse (path: string) {
     try {
-      const encoding = await CSVLoader.detectEncoding(path)
       const options: csvParse.Options = {
         bom: true,
-        delimiter: CSVLoader.guessDelimiter(path),
+        delimiter: this.meta.delimiter = CSVLoader.guessDelimiter(path),
         relaxColumnCount: true,
       }
 
       fs.createReadStream(path)
-        .pipe(iconv.decodeStream(encoding))
+        .pipe(this.detectEncoding())
+        .pipe(iconv.decodeStream(this.meta.encoding))
+        .pipe(this.detectLinefeed())
         .pipe(csvParse(options, async (error: Error | undefined, data: string[][]) => {
           if (error) {
             dialog.showErrorBox('ファイルを開けませんでした', 'ファイル形式が間違っていないかご確認下さい')
@@ -115,12 +160,7 @@ export default class CSVLoader {
             label: path.split(process.platform === 'win32' ? '\\' : '/').pop() || '',
             path,
             data,
-            meta: {
-              delimiter: options.delimiter as string,
-              quoteChar: '"',
-              escapeChar: '"',
-              encoding,
-            },
+            meta: this.meta,
           }
 
           await this.ready

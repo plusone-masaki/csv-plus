@@ -1,3 +1,4 @@
+import os from 'os'
 import { ipcRenderer } from 'electron'
 import { computed, reactive, ref } from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
@@ -6,6 +7,16 @@ import * as channels from '@/common/channels'
 import { vueI18n } from '@/common/plugins/i18n'
 import { FileData, Tab, Options, FileMeta } from '@/common/types'
 import { useTab } from './types'
+
+const defaultLinefeed = () => {
+  switch (os.EOL) {
+    case '\r': return 'CR'
+    case '\r\n': return 'CRLF'
+    case '\n':
+    default:
+      return 'LF'
+  }
+}
 
 const defaultOptions = (): Options => ({
   hasHeader: false,
@@ -18,6 +29,7 @@ const defaultMeta = (): FileMeta => ({
   quoteChar: '"',
   escapeChar: '"',
   encoding: 'UTF-8',
+  linefeed: defaultLinefeed(),
 })
 
 export default (): useTab => {

@@ -11,6 +11,7 @@ declare type FileMeta = {
   quoteChar: string;
   escapeChar: string;
   encoding: string;
+  linefeed: 'CR' | 'CRLF' | 'LF';
 }
 
 declare type FileData = {
