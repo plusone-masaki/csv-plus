@@ -20,12 +20,13 @@ div.tabs
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent } from 'vue'
+import { PropType, defineComponent, WritableComputedRef } from 'vue'
 import VueDraggable from 'vuedraggable'
 import { Tab } from '@/renderer/types'
 import vModel from '@/renderer/utils/v-model'
-import NavigationTab from '@/renderer/components/Tabs/NavigationTab.vue'
-import NavigationAddTab from '@/renderer/components/Tabs/NavigationAddTab.vue'
+import NavigationTab from './NavigationTab.vue'
+import NavigationAddTab from './NavigationAddTab.vue'
+import registerListeners from './composables/registerListeners'
 
 export default defineComponent({
   name: 'NavigationTabs',
@@ -37,14 +38,16 @@ export default defineComponent({
 
   setup (props, context) {
     const models = {
-      tabs: vModel('modelValue', props, context),
-      activeTab: vModel('active', props, context),
+      tabs: vModel('modelValue', props, context) as WritableComputedRef<Tab[]>,
+      activeTab: vModel('active', props, context) as WritableComputedRef<string>,
     }
 
     const methods = {
       onAdd: () => context.emit('add'),
       onClose: (tab: Tab) => context.emit('close', tab),
     }
+
+    registerListeners(models, methods)
 
     return {
       ...models,

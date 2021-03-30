@@ -84,7 +84,7 @@ export default (): useTab => {
 
     if (!state.tabs.length) return
     if (!state.tabs.find(st => st.file.path === state.active)) {
-      state.active = state.tabs[index]?.file.path || state.tabs[0].file.path
+      state.active = state.tabs[index]?.file.path || state.tabs[index - 1].file.path
     }
   }
 
