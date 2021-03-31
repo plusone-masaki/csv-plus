@@ -1,21 +1,28 @@
 <template lang="pug">
-div.footer-nav__item(@click="onClick")
+div.footer-nav-label(
+  :class="{ '--active': active }"
+  @click="active = !active"
+)
   slot
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
+import vModel from '@/renderer/utils/v-model'
 
 export default defineComponent({
-  name: 'FooterNavItem',
+  name: 'FooterNavLabel',
+  props: {
+    modelValue: { type: Boolean as PropType<boolean>, default: false },
+  },
   setup: (props, context) => ({
-    onClick: () => context.emit('click'),
+    active: vModel('modelValue', props, context),
   }),
 })
 </script>
 
 <style lang="sass" scoped>
-.footer-nav__item
+.footer-nav-label
   font-size: 12px
   padding: 0 8px
   position: relative
@@ -29,7 +36,4 @@ export default defineComponent({
     top: 0
     left: 0
     width: 100%
-
-  &:hover::before
-    background: rgba(0, 0, 0, 0.08)
 </style>

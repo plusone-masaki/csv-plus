@@ -1,6 +1,6 @@
 import HandsOnTable from 'handsontable'
 
-declare type Options = {
+declare interface Options {
   hasHeader: boolean;
   search: boolean;
   printMode: boolean;
@@ -8,7 +8,7 @@ declare type Options = {
 
 declare type Linefeed = 'CR' | 'CRLF' | 'LF'
 
-declare type FileMeta = {
+declare interface FileMeta {
   delimiter: string;
   quoteChar: string;
   escapeChar: string;
@@ -16,14 +16,14 @@ declare type FileMeta = {
   linefeed: Linefeed;
 }
 
-declare type FileData = {
+declare interface FileData {
   label: string;
   path: string;
   data: HandsOnTable.CellValue[][] | HandsOnTable.RowObject[];
   meta: FileMeta;
 }
 
-declare type Tab = {
+declare interface Tab {
   id: number;
   table: HandsOnTable | null;
   dirty: boolean;

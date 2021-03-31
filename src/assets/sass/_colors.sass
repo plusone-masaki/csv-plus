@@ -55,6 +55,19 @@ html
   border-top: 1px solid map-get($light-theme, "darken")
   color: map-get(map-get($light-theme, "font-color"), "base")
 
+  &-label
+    &:hover::before, &.--active::before
+      background: rgba(0, 0, 0, 0.08)
+
+  &-menu
+    border: 1px solid map-get($light-theme, "darken")
+
+    &__item
+      background: map-get($light-theme, "theme")
+
+      &:hover
+        background: map-get($light-theme, "darken")
+
 //@media (prefers-color-scheme: dark)
 //  .control-panel
 //    fill: map-get($dark-theme, "font-color")

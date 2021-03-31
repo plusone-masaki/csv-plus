@@ -1,23 +1,15 @@
 import { ipcRenderer, IpcRendererEvent } from 'electron'
-import { computed, nextTick } from 'vue'
+import { nextTick } from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
 import HandsOnTable from 'handsontable'
 import * as channels from '@/common/channels'
-import { FileData, Tab } from '@/common/types'
+import { Tab } from '@/common/types'
 import { useTab } from './types'
 
-export default ({ state, addTab, closeTab }: useTab) => {
-  const activeTab = computed({
-    get: () => state.tabs.find((tab: Tab) => tab.file.path === state.active),
-    set: tab => {
-      const index = state.tabs.findIndex((file: FileData) => file.path === state.active)
-      state.tabs[index] = tab
-    },
-  })
-
+export default ({ state, activeTab, addTab, closeTab }: useTab) => {
   // 末尾の空要素を削除する
   const _trimEmptyCells = (data: HandsOnTable.CellValue[][]|HandsOnTable.RowObject[]): HandsOnTable.CellValue[][]|HandsOnTable.RowObject[] => {
-    if (!activeTab.value || !activeTab.value.table) return data
+    if (!activeTab.value.table) return data
 
     const rows = data.slice()
     const emptyRows = activeTab.value.table.countEmptyRows(true)
@@ -34,11 +26,17 @@ export default ({ state, addTab, closeTab }: useTab) => {
     if (!file) return
 
     // データ未操作の場合、初期表示のタブは削除
-    if (state.tabs.length === 1 && activeTab.value?.file.path === 'newTab0' && !activeTab.value.dirty) closeTab(activeTab.value)
+    if (
+      state.tabs.length === 1 &&
+      activeTab.value.id === 1 &&
+      !activeTab.value.dirty
+    ) {
+      closeTab(activeTab.value)
+    }
 
     const exists = state.tabs.find((tab: Tab) => tab.file.path === file.path)
     if (exists) {
-      state.active = exists.path
+      state.active = exists.id
     } else {
       addTab(file)
     }
@@ -57,8 +55,7 @@ export default ({ state, addTab, closeTab }: useTab) => {
   // ファイルを保存
   const save = (channelName?: string) => {
     if (!channelName) channelName = channels.FILE_SAVE
-
-    if (!activeTab.value) return
+    if (activeTab.value.id === -1) return
 
     const file: channels.FILE_SAVE = {
       path: activeTab.value.file.path,
@@ -69,11 +66,11 @@ export default ({ state, addTab, closeTab }: useTab) => {
   ipcRenderer.on(channels.FILE_SAVE, () => save(channels.FILE_SAVE))
   ipcRenderer.on(channels.FILE_SAVE_AS, () => save(channels.FILE_SAVE_AS))
   ipcRenderer.on(channels.FILE_SAVE_COMPLETE, async (e: IpcRendererEvent, path: channels.FILE_SAVE_COMPLETE) => {
-    if (!activeTab.value) return
+    if (activeTab.value.id === -1) return
 
     // 既に同じファイルを開いていた場合は閉じる
-    if (path !== state.active) {
-      const sameFileIndex = state.tabs.findIndex((file: FileData) => file.path === path)
+    if (path !== activeTab.value.file.path) {
+      const sameFileIndex = state.tabs.findIndex(({ file }: Tab) => file.path === path)
       sameFileIndex === -1 || state.tabs.splice(sameFileIndex, 1)
       await nextTick()
     }

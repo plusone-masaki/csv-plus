@@ -10,9 +10,9 @@ div.tabs
     template(#item="{ element }")
       navigation-tab(
         :label="element.file.label"
-        :active="activeTab === element.file.path"
+        :active="activeId === element.id"
         :is-dirty="element.dirty"
-        @click="activeTab = element.file.path"
+        @click="activeId = element.id"
         @close="onClose(element)"
       )
 
@@ -32,13 +32,13 @@ export default defineComponent({
   components: { NavigationAddTab, NavigationTab, VueDraggable },
   props: {
     modelValue: { type: Array as PropType<Tab[]>, required: true },
-    active: { type: String as PropType<string>, required: true },
+    active: { type: Number as PropType<number>, required: true },
   },
 
   setup (props, context) {
     const models = {
       tabs: vModel('modelValue', props, context),
-      activeTab: vModel('active', props, context),
+      activeId: vModel('active', props, context),
     }
 
     const methods = {

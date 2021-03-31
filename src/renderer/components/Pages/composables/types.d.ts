@@ -1,4 +1,4 @@
-import { reactive, ref } from 'vue'
+import { reactive, ref, WritableComputedRef } from 'vue'
 import { FileData, Options, Tab } from '@/common/types'
 
 export type useTab = {
@@ -9,6 +9,7 @@ export type useTab = {
   }>;
 
   options: ref<Options>;
+  activeTab: WritableComputedRef<Tab>;
 
   onEdit: () => void;
   addTab: (fileData?: FileData) => void;

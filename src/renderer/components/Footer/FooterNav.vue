@@ -1,24 +1,38 @@
 <template lang="pug">
 footer.footer-nav
-  footer-nav-item {{ tab.file.meta.linefeed }}
-  footer-nav-item {{ tab.file.meta.encoding || 'no' }}
+  footer-nav-label(v-model="menu.linefeed")
+    | {{ tab.file.meta.linefeed }}
+    footer-nav-menu(
+      v-if="menu.linefeed"
+      v-model="tab.file.meta.linefeed"
+      :items="items.linefeed"
+    )
+  footer-nav-label {{ tab.file.meta.encoding }}
 </template>
 
 <script lang="ts">
 import {
-  defineComponent,
+  defineComponent, onBeforeUnmount, onMounted,
   PropType,
   reactive,
   WritableComputedRef,
 } from 'vue'
 import { Tab } from '@/common/types'
 import vModel from '@/renderer/utils/v-model'
-import FooterNavItem from '@/renderer/components/Footer/FooterNavItem.vue'
+import FooterNavLabel from '@/renderer/components/Footer/FooterNavLabel.vue'
+import FooterNavMenu from '@/renderer/components/Footer/FooterNavMenu.vue'
+
+interface Menu {
+  [key: string]: boolean;
+  linefeed: boolean;
+  encoding: boolean;
+}
 
 export default defineComponent({
   name: 'FooterNav',
   components: {
-    FooterNavItem,
+    FooterNavMenu,
+    FooterNavLabel,
   },
   props: {
     modelValue: { type: Object as PropType<Tab>, required: true },
@@ -32,6 +46,19 @@ export default defineComponent({
         summary: NaN,
       },
     })
+
+    const menu: Menu = reactive({
+      linefeed: false,
+      encoding: false,
+    })
+
+    const items = {
+      linefeed: [
+        { label: 'LF (MacOS/Linux)', value: 'LF' },
+        { label: 'CRLF (Windows)', value: 'CRLF' },
+        { label: 'CR (旧MacOS)', value: 'CR' },
+      ],
+    }
 
     // if (props.table) {
     //   // 選択中のセルに関する情報を返す
@@ -60,9 +87,26 @@ export default defineComponent({
     //   }, props.table)
     // }
 
+    const closeDropdown = (e: MouseEvent) => {
+      const target = e.target as HTMLElement|null
+      if (target && !(target.classList.contains('footer-nav-label') && target.classList.contains('--active'))) {
+        Object.keys(menu).forEach(key => { menu[key] = false })
+      }
+    }
+
+    // ドロップダウン制御
+    onMounted(() => {
+      document.addEventListener('click', closeDropdown)
+    })
+    onBeforeUnmount(() => {
+      document.removeEventListener('click', closeDropdown)
+    })
+
     return {
       tab,
       tableInfo,
+      menu,
+      items,
     }
   },
 })
@@ -73,6 +117,5 @@ export default defineComponent({
   display: flex
   height: 18px
   justify-content: flex-end
-  overflow-x: hidden
   padding: 0 4px
 </style>

@@ -22,30 +22,48 @@ const defaultMeta = (): FileMeta => ({
   linefeed: defaultLinefeed(),
 })
 
+const emptyTab = (): Tab => ({
+  id: -1,
+  table: null,
+  dirty: false,
+  file: {
+    label: '',
+    path: '',
+    data: [],
+    meta: defaultMeta(),
+  },
+  options: defaultOptions(),
+})
+
 export default (): useTab => {
   const { t } = vueI18n
 
   const count = ref(0)
   const state = reactive({
     count,
-    active: '',
+    active: -1,
     tabs: [] as Tab[],
+  })
+
+  const activeTab = computed({
+    get: () => state.tabs.find((tab: Tab) => tab.id === state.active) || emptyTab(),
+    set: tabData => {
+      const index = state.tabs.findIndex(tab => tab.id === state.active)
+      if (index !== -1) state.tabs[index] = tabData
+    },
   })
 
   const options = computed<Options>({
     get: () => {
-      const tab = state.tabs.find(tab => tab.file.path === state.active)
-      return tab ? tab.options : defaultOptions()
+      return activeTab.value.options
     },
     set: options => {
-      const index = state.tabs.findIndex((tab: Tab) => tab.file.path === state.active)
-      if (index !== -1) state.tabs[index].options = options
+      activeTab.value.options = options
     },
   })
 
   const onEdit = () => {
-    const fileData = state.tabs.find(tab => tab.file.path === state.active)
-    if (fileData) fileData.dirty = true
+    if (activeTab.value) activeTab.value.dirty = true
   }
 
   const addTab = (file?: FileData) => {
@@ -67,7 +85,7 @@ export default (): useTab => {
     }
 
     state.tabs.push(tab)
-    state.active = file.path
+    state.active = tab.id
   }
 
   const closeTab = async (tab: Tab) => {
@@ -81,12 +99,12 @@ export default (): useTab => {
       if (!await ipcRenderer.invoke(channels.FILE_DESTROY_CONFIRM, item)) return
     }
 
-    const index = state.tabs.findIndex(st => st === tab)
+    const index = state.tabs.findIndex(t => t.id === tab.id)
     state.tabs.splice(index, 1)
 
-    if (!state.tabs.length) addTab()
-    if (!state.tabs.find(st => st.file.path === state.active)) {
-      state.active = state.tabs[index]?.file.path || state.tabs[0].file.path
+    // if (!state.tabs.length) addTab()
+    if (!activeTab.value) {
+      state.active = state.tabs[index]?.id || state.tabs[0].id
     }
   }
 
@@ -96,6 +114,7 @@ export default (): useTab => {
   return {
     state,
     options,
+    activeTab,
     onEdit,
     addTab,
     closeTab,

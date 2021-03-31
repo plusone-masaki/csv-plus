@@ -11,6 +11,7 @@ section.content
       )
 
   grid-table(
+    v-if="tab.id !== -1"
     v-bind="tab"
     :keyword="keyword"
     @edit="onEdit"

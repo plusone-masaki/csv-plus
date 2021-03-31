@@ -2,7 +2,7 @@
 div.layout
   control-panel(
     v-model="options"
-    :table="activeTab.table"
+    v-bind="activeTab"
     @add="addTab"
     @open="open"
     @save="save"
@@ -17,7 +17,7 @@ div.layout
 
   grid-wrapper(
     :tab="activeTab"
-    :key="activeTab.file.path"
+    :key="activeTab.id"
     @load="activeTab.table = $event"
     @edit="onEdit"
   )
