@@ -17,7 +17,7 @@ div.layout
 
   grid-wrapper(
     :tab="activeTab"
-    :key="activeTab.id"
+    :key="activeTab && activeTab.id"
     @load="activeTab.table = $event"
     @edit="onEdit"
   )

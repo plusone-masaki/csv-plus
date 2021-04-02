@@ -22,19 +22,6 @@ const defaultMeta = (): FileMeta => ({
   linefeed: defaultLinefeed(),
 })
 
-const emptyTab = (): Tab => ({
-  id: -1,
-  table: null,
-  dirty: false,
-  file: {
-    label: '',
-    path: '',
-    data: [],
-    meta: defaultMeta(),
-  },
-  options: defaultOptions(),
-})
-
 export default (): useTab => {
   const { t } = vueI18n
 
@@ -46,19 +33,19 @@ export default (): useTab => {
   })
 
   const activeTab = computed({
-    get: () => state.tabs.find((tab: Tab) => tab.id === state.active) || emptyTab(),
+    get: () => state.tabs.find((tab: Tab) => tab.id === state.active),
     set: tabData => {
       const index = state.tabs.findIndex(tab => tab.id === state.active)
-      if (index !== -1) state.tabs[index] = tabData
+      if (index !== -1) state.tabs[index] = tabData as Tab
     },
   })
 
   const options = computed<Options>({
     get: () => {
-      return activeTab.value.options
+      return activeTab.value?.options || defaultOptions()
     },
     set: options => {
-      activeTab.value.options = options
+      if (activeTab.value) activeTab.value.options = options
     },
   })
 
@@ -102,9 +89,10 @@ export default (): useTab => {
     const index = state.tabs.findIndex(t => t.id === tab.id)
     state.tabs.splice(index, 1)
 
-    // if (!state.tabs.length) addTab()
-    if (!activeTab.value) {
-      state.active = state.tabs[index]?.id || state.tabs[0].id
+    if (state.tabs.length && state.tabs.every(tab => tab.id !== activeTab.value?.id)) {
+      state.active = state.tabs[index]?.id || state.tabs[index - 1]?.id || state.tabs[0].id
+    } else if (!state.tabs.length) {
+      state.active = -1
     }
   }
 

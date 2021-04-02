@@ -9,7 +9,7 @@ import { useTab } from './types'
 export default ({ state, activeTab, addTab, closeTab }: useTab) => {
   // 末尾の空要素を削除する
   const _trimEmptyCells = (data: HandsOnTable.CellValue[][]|HandsOnTable.RowObject[]): HandsOnTable.CellValue[][]|HandsOnTable.RowObject[] => {
-    if (!activeTab.value.table) return data
+    if (!activeTab.value?.table) return data
 
     const rows = data.slice()
     const emptyRows = activeTab.value.table.countEmptyRows(true)
@@ -28,8 +28,8 @@ export default ({ state, activeTab, addTab, closeTab }: useTab) => {
     // データ未操作の場合、初期表示のタブは削除
     if (
       state.tabs.length === 1 &&
-      activeTab.value.id === 1 &&
-      !activeTab.value.dirty
+      activeTab.value?.id === 1 &&
+      !activeTab.value?.dirty
     ) {
       closeTab(activeTab.value)
     }
@@ -55,7 +55,7 @@ export default ({ state, activeTab, addTab, closeTab }: useTab) => {
   // ファイルを保存
   const save = (channelName?: string) => {
     if (!channelName) channelName = channels.FILE_SAVE
-    if (activeTab.value.id === -1) return
+    if (!activeTab.value) return
 
     const file: channels.FILE_SAVE = {
       path: activeTab.value.file.path,
@@ -66,7 +66,7 @@ export default ({ state, activeTab, addTab, closeTab }: useTab) => {
   ipcRenderer.on(channels.FILE_SAVE, () => save(channels.FILE_SAVE))
   ipcRenderer.on(channels.FILE_SAVE_AS, () => save(channels.FILE_SAVE_AS))
   ipcRenderer.on(channels.FILE_SAVE_COMPLETE, async (e: IpcRendererEvent, path: channels.FILE_SAVE_COMPLETE) => {
-    if (activeTab.value.id === -1) return
+    if (!activeTab.value) return
 
     // 既に同じファイルを開いていた場合は閉じる
     if (path !== activeTab.value.file.path) {

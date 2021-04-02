@@ -1,13 +1,14 @@
 <template lang="pug">
 footer.footer-nav
-  footer-nav-label(v-model="menu.linefeed")
-    | {{ tab.file.meta.linefeed }}
-    footer-nav-menu(
-      v-if="menu.linefeed"
-      v-model="tab.file.meta.linefeed"
-      :items="items.linefeed"
-    )
-  footer-nav-label {{ tab.file.meta.encoding }}
+  template(v-if="tab")
+    footer-nav-label(v-model="menu.linefeed")
+      | {{ tab.file.meta.linefeed }}
+      footer-nav-menu(
+        v-if="menu.linefeed"
+        v-model="tab.file.meta.linefeed"
+        :items="items.linefeed"
+      )
+    footer-nav-label {{ tab.file.meta.encoding }}
 </template>
 
 <script lang="ts">
@@ -35,10 +36,10 @@ export default defineComponent({
     FooterNavLabel,
   },
   props: {
-    modelValue: { type: Object as PropType<Tab>, required: true },
+    modelValue: { type: Object as PropType<Tab|undefined>, default: undefined },
   },
   setup (props, context) {
-    const tab = vModel('modelValue', props, context) as WritableComputedRef<Tab>
+    const tab = vModel('modelValue', props, context) as WritableComputedRef<Tab|undefined>
     const tableInfo = reactive({
       selected: {
         cols: 0,

@@ -3,7 +3,7 @@ section.content
   div.content__overlay
     transition(name="slide-y-transition")
       search-box(
-        v-if="tab.options.search"
+        v-if="tab && tab.options.search"
         v-model="keyword"
         :absolute="true"
         :top="true"
@@ -11,14 +11,14 @@ section.content
       )
 
   grid-table(
-    v-if="tab.id !== -1"
+    v-if="tab"
     v-bind="tab"
     :keyword="keyword"
     @edit="onEdit"
     @load="onLoad"
   )
 
-footer-nav(v-model="tab")
+footer-nav(v-if="tab" v-model="tab")
 </template>
 
 <script lang="ts">
@@ -44,12 +44,12 @@ export default defineComponent({
   },
   emits: ['load', 'edit'],
   props: {
-    tab: { type: Object as PropType<Tab>, required: true },
+    tab: { type: Object as PropType<Tab|undefined>, default: undefined },
   },
   setup: (props, context) => {
     watch(
-      () => props.tab.options.search,
-      show => show && props.tab.table?.deselectCell(),
+      () => props.tab?.options.search,
+      show => show && props.tab?.table?.deselectCell(),
     )
 
     return {

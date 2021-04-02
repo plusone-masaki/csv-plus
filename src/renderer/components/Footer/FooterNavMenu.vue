@@ -24,7 +24,7 @@ export default defineComponent({
     items: { type: Array as PropType<MenuItem[]>, required: true },
   },
   setup: (props, context) => ({
-    value: vModel('modelType', props, context),
+    value: vModel('modelValue', props, context),
   }),
 })
 </script>

@@ -9,7 +9,7 @@ export type useTab = {
   }>;
 
   options: ref<Options>;
-  activeTab: WritableComputedRef<Tab>;
+  activeTab: WritableComputedRef<Tab|undefined>;
 
   onEdit: () => void;
   addTab: (fileData?: FileData) => void;
