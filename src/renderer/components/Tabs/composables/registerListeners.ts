@@ -20,7 +20,6 @@ export default (models: Models, methods: Methods) => {
       // tab-close
       case 'F4': {
         const activeTab: Tab|undefined = models.tabs.value.find(tab => tab.file.path === models.activeTab.value)
-        console.log('Ctrl+F4', activeTab && activeTab.file)
         if (event.ctrlKey && activeTab) methods.onClose(activeTab)
         break
       }
