@@ -58,6 +58,15 @@ export default (props: Props, context: SetupContext) => {
     afterChange: (_: unknown, src: HandsOnTable.ChangeSource) => {
       if (!['loadData'].includes(src)) context.emit('edit')
     },
+    afterSelection: (startRow: number, startCol: number, endRow: number, endCol: number) => {
+      if (!props.table) return
+      const values = props.table.getData(startRow, startCol, endRow, endCol).flat()
+      props.calculation.selected = {
+        rowLength: endRow - startRow,
+        colLength: endCol - startCol,
+        summary: values.reduce((a, b) => a + Number(b), 0),
+      }
+    },
   }))
 
   onMounted(() => {

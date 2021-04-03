@@ -1,6 +1,7 @@
 <template lang="pug">
 footer.footer-nav
   template(v-if="tab")
+    footer-nav-label {{ tab.calculation.selected.summary || '' }}
     footer-nav-label(v-model="menu.linefeed")
       | {{ tab.file.meta.linefeed }}
       footer-nav-menu(
@@ -16,6 +17,7 @@ import {
   defineComponent, onBeforeUnmount, onMounted,
   PropType,
   reactive,
+  readonly,
   WritableComputedRef,
 } from 'vue'
 import { Tab } from '@/common/types'
@@ -40,53 +42,19 @@ export default defineComponent({
   },
   setup (props, context) {
     const tab = vModel('modelValue', props, context) as WritableComputedRef<Tab|undefined>
-    const tableInfo = reactive({
-      selected: {
-        cols: 0,
-        rows: 0,
-        summary: NaN,
-      },
-    })
 
     const menu: Menu = reactive({
       linefeed: false,
       encoding: false,
     })
 
-    const items = {
+    const items = readonly({
       linefeed: [
         { label: 'LF (MacOS/Linux)', value: 'LF' },
         { label: 'CRLF (Windows)', value: 'CRLF' },
         { label: 'CR (旧MacOS)', value: 'CR' },
       ],
-    }
-
-    // if (props.table) {
-    //   // 選択中のセルに関する情報を返す
-    //   HandsOnTable.hooks.add('afterSelection', (startRow: number, startCol: number, endRow: number, endCol: number) => {
-    //     tableInfo.selected.rows = endRow - startRow + 1
-    //     tableInfo.selected.cols = endCol - startCol + 1
-    //
-    //     const ranges = props.table?.getSelectedRange() || []
-    //     const data = props.table?.getData() || [[]]
-    //     let summary = 0
-    //     ranges.forEach(range => {
-    //       const fromCell = range.from
-    //       const toCell = range.to
-    //       for (let row = fromCell.row; row <= toCell.row; row++) {
-    //         for (let col = fromCell.col; col <= toCell.col; col++) {
-    //           summary += data[row][col]
-    //           if (isNaN(summary)) {
-    //             tableInfo.selected.summary = NaN
-    //             return
-    //           }
-    //         }
-    //       }
-    //     })
-    //
-    //     tableInfo.selected.summary = summary
-    //   }, props.table)
-    // }
+    })
 
     const closeDropdown = (e: MouseEvent) => {
       const target = e.target as HTMLElement|null
@@ -105,7 +73,6 @@ export default defineComponent({
 
     return {
       tab,
-      tableInfo,
       menu,
       items,
     }

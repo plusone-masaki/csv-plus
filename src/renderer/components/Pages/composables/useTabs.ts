@@ -2,7 +2,7 @@ import { ipcRenderer } from 'electron'
 import { computed, reactive, ref } from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
 import HandsOnTable from 'handsontable'
-import { FileData, Tab, Options, FileMeta } from '@/common/types'
+import { FileData, Tab, Options, FileMeta, Calculation } from '@/common/types'
 import * as channels from '@/common/channels'
 import { vueI18n } from '@/common/plugins/i18n'
 import { defaultLinefeed } from '@/common/plugins/helpers'
@@ -20,6 +20,14 @@ const defaultMeta = (): FileMeta => ({
   escapeChar: '"',
   encoding: 'UTF-8',
   linefeed: defaultLinefeed(),
+})
+
+const defaultCalculation = (): Calculation => ({
+  selected: {
+    rowLength: 0,
+    colLength: 0,
+    summary: NaN,
+  },
 })
 
 export default (): useTab => {
@@ -66,9 +74,10 @@ export default (): useTab => {
     const tab: Tab = {
       id: count.value++,
       table: null,
+      file,
       dirty: false,
       options: defaultOptions(),
-      file,
+      calculation: defaultCalculation(),
     }
 
     state.tabs.push(tab)
