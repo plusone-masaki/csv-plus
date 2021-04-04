@@ -60,11 +60,15 @@ export default (props: Props, context: SetupContext) => {
     },
     afterSelection: (startRow: number, startCol: number, endRow: number, endCol: number) => {
       if (!props.table) return
+
+      const rowLength = endRow - startRow
+      const colLength = endCol - startCol
+
       const values = props.table.getData(startRow, startCol, endRow, endCol).flat()
       props.calculation.selected = {
-        rowLength: endRow - startRow,
-        colLength: endCol - startCol,
-        summary: values.reduce((a, b) => a + Number(b), 0),
+        rowLength,
+        colLength,
+        summary: (rowLength || colLength) && values.reduce((a, b) => a + Number(b), 0),
       }
     },
   }))
