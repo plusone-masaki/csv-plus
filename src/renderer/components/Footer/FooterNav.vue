@@ -1,7 +1,7 @@
 <template lang="pug">
 footer.footer-nav
   template(v-if="tab")
-    footer-nav-label {{ tab.calculation.selected.summary || '' }}
+    footer-nav-label {{ tab.calculation.selected.summary ? $t('footer.summary') + tab.calculation.selected.summary : '' }}
     footer-nav-label(v-model="menu.linefeed")
       | {{ tab.file.meta.linefeed }}
       footer-nav-menu(
