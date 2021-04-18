@@ -19,3 +19,4 @@ export type FILE_DESTROY_CONFIRM = { name: string; path: string; data: string }
 export const MENU_SELECT_ALL = 'MENU_SELECT_ALL'
 export const MENU_UNDO = 'MENU_UNDO'
 export const MENU_REDO = 'MENU_REDO'
+export const MENU_PRINT = 'MENU_PRINT'

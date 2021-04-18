@@ -1,5 +1,5 @@
 <template lang="pug">
-section.content
+section.content(:id="`grid-wrapper-${tab.id}`")
   div.content__overlay
     transition(name="slide-y-transition")
       search-box(

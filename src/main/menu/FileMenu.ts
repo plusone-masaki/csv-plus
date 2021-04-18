@@ -54,7 +54,7 @@ export default class FileMenu {
    * @param {BrowserWindow} window
    */
   public static print (menu: MenuItem, window: BrowserWindow) {
-    window.webContents.print()
+    window.webContents.send(channels.MENU_PRINT)
   }
 
   /**
