@@ -90,6 +90,7 @@ export default (): useTab => {
       const item = {
         name: tab.file.label,
         path: tab.file.path,
+        meta: JSON.stringify(tab.file.meta),
         data: csvStringify(tab.file.data),
       }
       if (!await ipcRenderer.invoke(channels.FILE_DESTROY_CONFIRM, item)) return

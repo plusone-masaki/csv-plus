@@ -4,10 +4,11 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 // import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import CSVLoader from '@/main/model/CSVLoader'
 import './events'
+import * as browserWindow from '@/common/browserWindow'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const csvLoader = new CSVLoader()
-let win: BrowserWindow
+let window: BrowserWindow
 let filepath: string
 
 app.setName('CSV+')
@@ -19,10 +20,10 @@ protocol.registerSchemesAsPrivileged([
 
 async function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({
+  window = new BrowserWindow({
     title: 'CSV+',
-    width: 1024,
-    height: 768,
+    width: browserWindow.WIDTH,
+    height: browserWindow.HEIGHT,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
@@ -33,8 +34,8 @@ async function createWindow () {
   })
 
   // File load from arguments
-  win.webContents.on('did-finish-load', () => {
-    csvLoader.setWindow(win)
+  window.webContents.on('did-finish-load', () => {
+    csvLoader.initialize().setWindow(window)
     const argv = process.argv
     if (argv.length >= 2 && argv[1]) {
       filepath = argv[1]
@@ -44,12 +45,12 @@ async function createWindow () {
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
-    await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string)
-    if (!process.env.IS_TEST) win.webContents.openDevTools()
+    await window.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string)
+    if (!process.env.IS_TEST) window.webContents.openDevTools()
   } else {
     createProtocol('app')
     // Load the index.html when not in development
-    return win.loadURL('app://./index.html')
+    return window.loadURL('app://./index.html')
   }
 }
 
@@ -64,7 +65,7 @@ app.on('will-finish-launching', () => {
     e.preventDefault()
     filepath = path
 
-    if (win && win.isDestroyed()) return createWindow()
+    if (window && window.isDestroyed()) return createWindow()
   })
 })
 

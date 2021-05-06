@@ -24,7 +24,7 @@ export default class FileMenu {
     const files = dialog.showOpenDialogSync(window, { properties: ['openFile', 'multiSelections'] })
     if (!files) return
 
-    files.forEach((path: string) => csvLoader.setWindow(window as BrowserWindow).open(path))
+    files.forEach((path: string) => csvLoader.initialize().setWindow(window as BrowserWindow).open(path))
   }
 
   /**
@@ -108,7 +108,8 @@ export default class FileMenu {
     if (!file.path) return false
 
     try {
-      csvLoader.save(file.path, file.data)
+      const fileMeta = JSON.parse(file.meta)
+      csvLoader.save(file.path, file.data, fileMeta)
       window.webContents.send(channels.FILE_SAVE_COMPLETE, file.path)
       return true
     } catch (e) {

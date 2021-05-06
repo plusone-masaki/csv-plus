@@ -1,7 +1,9 @@
 <template lang="pug">
 footer.footer-nav
   template(v-if="tab")
-    footer-nav-label {{ tab.calculation.selected.summary ? $t('footer.summary') + tab.calculation.selected.summary : '' }}
+    footer-nav-label(v-if="tab.calculation.selected.summary")
+      | {{ $t('footer.summary') + tab.calculation.selected.summary }}
+
     footer-nav-label(v-model="menu.linefeed")
       | {{ tab.file.meta.linefeed }}
       footer-nav-menu(
@@ -9,27 +11,23 @@ footer.footer-nav
         v-model="tab.file.meta.linefeed"
         :items="items.linefeed"
       )
-    footer-nav-label {{ tab.file.meta.encoding }}
+
+    footer-nav-label(v-model="menu.encoding")
+      | {{ tab.file.meta.encoding }}
+      footer-nav-menu(
+        v-if="menu.encoding"
+        v-model="tab.file.meta.encoding"
+        :items="items.encoding"
+        @change="changeEncoding"
+      )
 </template>
 
 <script lang="ts">
-import {
-  defineComponent, onBeforeUnmount, onMounted,
-  PropType,
-  reactive,
-  readonly,
-  WritableComputedRef,
-} from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Tab } from '@/common/types'
-import vModel from '@/renderer/utils/v-model'
 import FooterNavLabel from '@/renderer/components/Footer/FooterNavLabel.vue'
 import FooterNavMenu from '@/renderer/components/Footer/FooterNavMenu.vue'
-
-interface Menu {
-  [key: string]: boolean;
-  linefeed: boolean;
-  encoding: boolean;
-}
+import useMenu from '@/renderer/components/Footer/composables/useMenu'
 
 export default defineComponent({
   name: 'FooterNav',
@@ -41,40 +39,10 @@ export default defineComponent({
     modelValue: { type: Object as PropType<Tab|undefined>, default: undefined },
   },
   setup (props, context) {
-    const tab = vModel('modelValue', props, context) as WritableComputedRef<Tab|undefined>
-
-    const menu: Menu = reactive({
-      linefeed: false,
-      encoding: false,
-    })
-
-    const items = readonly({
-      linefeed: [
-        { label: 'LF (MacOS/Linux)', value: 'LF' },
-        { label: 'CRLF (Windows)', value: 'CRLF' },
-        { label: 'CR (旧MacOS)', value: 'CR' },
-      ],
-    })
-
-    const closeDropdown = (e: MouseEvent) => {
-      const target = e.target as HTMLElement|null
-      if (target && !(target.classList.contains('footer-nav-label') && target.classList.contains('--active'))) {
-        Object.keys(menu).forEach(key => { menu[key] = false })
-      }
-    }
-
-    // ドロップダウン制御
-    onMounted(() => {
-      document.addEventListener('click', closeDropdown)
-    })
-    onBeforeUnmount(() => {
-      document.removeEventListener('click', closeDropdown)
-    })
+    const menu = useMenu(props, context)
 
     return {
-      tab,
-      menu,
-      items,
+      ...menu,
     }
   },
 })

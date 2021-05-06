@@ -18,9 +18,9 @@ import {
 import 'handsontable/languages/ja-JP'
 import { Props } from './types'
 
-const LICENSE_KEY = 'non-commercial-and-evaluation';
+const LICENSE_KEY = 'non-commercial-and-evaluation'
 
-[
+;[
   AutoColumnSize,
   ContextMenu,
   CopyPaste,

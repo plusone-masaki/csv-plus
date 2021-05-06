@@ -1,0 +1,1 @@
+export const MAX_CELL_STRING_LENGTH = 5120

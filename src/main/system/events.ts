@@ -3,6 +3,8 @@ import * as channels from '@/common/channels'
 import FileMenu from '@/main/menu/FileMenu'
 // import EditMenu from '@/main/menu/EditMenu'
 import CSVLoader from '@/main/model/CSVLoader'
+import { FileMeta } from '@/common/types'
+import fs from 'fs'
 
 const csvLoader = new CSVLoader()
 
@@ -18,7 +20,33 @@ ipcMain.on(channels.FILE_OPEN, (e: IpcMainEvent) => {
 
 ipcMain.on(channels.FILE_DROPPED, (e: IpcMainEvent, paths: Array<string>) => {
   const window = getWindow(e.sender)
-  paths.forEach(async path => window.webContents.send(channels.FILE_LOADED, await csvLoader.setWindow(window).open(path)))
+  paths.forEach(async path => {
+    const csv = await csvLoader.initialize().setWindow(window).open(path)
+    window.webContents.send(channels.FILE_LOADED, csv)
+  })
+})
+
+ipcMain.on(channels.FILE_RELOAD, (e: IpcMainEvent, path: string, meta: string) => {
+  try {
+    if (!fs.statSync(path).isFile()) return
+
+    const BUTTON_RELOAD = 1
+
+    const window = getWindow(e.sender)
+    const fileMeta: FileMeta = JSON.parse(meta)
+    const selected = dialog.showMessageBoxSync(window, {
+      title: process.env.npm_package_name,
+      message: '設定した文字コードでファイルを再読込しますか？',
+      buttons: [
+        '閉じる',
+        '再読込',
+      ],
+    })
+
+    if (selected === BUTTON_RELOAD) {
+      csvLoader.setWindow(window).setMeta(fileMeta).open(path)
+    }
+  } catch (e) {}
 })
 
 ipcMain.on(channels.FILE_SAVE, (e: IpcMainEvent, file: channels.FILE_SAVE) => {
@@ -39,7 +67,7 @@ ipcMain.handle(channels.FILE_DESTROY_CONFIRM, (e: IpcMainInvokeEvent, file: chan
   const BUTTON_SAVE = 2
 
   const window = getWindow(e.sender)
-  const pressed = dialog.showMessageBoxSync(window, {
+  const selected = dialog.showMessageBoxSync(window, {
     title: process.env.npm_package_name,
     message: `${file.name} の変更を保存しますか？`,
     detail: '保存しない場合、変更は失われます。',
@@ -51,6 +79,6 @@ ipcMain.handle(channels.FILE_DESTROY_CONFIRM, (e: IpcMainInvokeEvent, file: chan
     cancelId: BUTTON_CANCEL,
   })
 
-  if (pressed === BUTTON_SAVE) return FileMenu.executeSave(channels.FILE_SAVE, file, getWindow(e.sender))
-  return pressed === BUTTON_NO_SAVE
+  if (selected === BUTTON_SAVE) return FileMenu.executeSave(channels.FILE_SAVE, file, getWindow(e.sender))
+  return selected === BUTTON_NO_SAVE
 })

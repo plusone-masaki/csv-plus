@@ -37,6 +37,7 @@ export default ({ state, activeTab, addTab, closeTab }: useTab) => {
     const exists = state.tabs.find((tab: Tab) => tab.file.path === file.path)
     if (exists) {
       state.active = exists.id
+      exists.file = file
     } else {
       addTab(file)
     }
@@ -57,9 +58,11 @@ export default ({ state, activeTab, addTab, closeTab }: useTab) => {
     if (!channelName) channelName = channels.FILE_SAVE
     if (!activeTab.value) return
 
+    const fileData = activeTab.value.file
     const file: channels.FILE_SAVE = {
-      path: activeTab.value.file.path,
-      data: csvStringify(_trimEmptyCells(activeTab.value.file.data)),
+      path: fileData.path,
+      meta: JSON.stringify(fileData.meta),
+      data: csvStringify(_trimEmptyCells(fileData.data), fileData.meta),
     }
     ipcRenderer.send(channelName, file)
   }
@@ -78,7 +81,6 @@ export default ({ state, activeTab, addTab, closeTab }: useTab) => {
     activeTab.value.dirty = false
     activeTab.value.file.label = path.split('/').pop() || ''
     activeTab.value.file.path = path
-    state.active = path
   })
 
   return {

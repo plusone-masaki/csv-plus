@@ -2,8 +2,9 @@
 ul.footer-nav-menu
   li.footer-nav-menu__item(
     v-for="(item, index) in items"
+    :class="{ '--active': value === item.value }"
     :key="index"
-    @click="value = item.value"
+    @click="onChange(item.value)"
   )
     | {{ item.label }}
 </template>
@@ -23,9 +24,20 @@ export default defineComponent({
     modelValue: { type: String as PropType<string>, required: true },
     items: { type: Array as PropType<MenuItem[]>, required: true },
   },
-  setup: (props, context) => ({
-    value: vModel('modelValue', props, context),
-  }),
+  setup: (props, context) => {
+    const value = vModel('modelValue', props, context)
+    const onChange = (itemValue: string) => {
+      if (value.value === itemValue) return
+
+      value.value = itemValue
+      context.emit('change', itemValue)
+    }
+
+    return {
+      value,
+      onChange,
+    }
+  },
 })
 </script>
 
@@ -34,6 +46,8 @@ export default defineComponent({
   bottom: 100%
   list-style: none
   margin: 0
+  max-height: 100px
+  overflow-y: auto
   padding: 0
   position: absolute
   right: -4px

@@ -1,9 +1,4 @@
-import {
-  ipcMain,
-  IpcMainEvent,
-  BrowserWindow,
-  MenuItem,
-} from 'electron'
+import { BrowserWindow, MenuItem } from 'electron'
 import * as channels from '@/common/channels'
 
 export default class EditMenu {
