@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron'
-import { WritableComputedRef } from 'vue'
+import { SetupContext, WritableComputedRef } from 'vue'
 import { Options } from '@/common/types'
 import * as channels from '@/common/channels'
 
@@ -10,7 +10,7 @@ interface Events {
   print: () => void;
 }
 
-export default (options: WritableComputedRef<Options>, events: Events) => {
+export default (options: WritableComputedRef<Options>, context: SetupContext, events: Events) => {
   /**
    * Window events
    */

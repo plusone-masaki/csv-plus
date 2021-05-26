@@ -16,6 +16,7 @@ div.layout
   )
 
   grid-wrapper(
+    v-if="activeTab"
     :tab="activeTab"
     :key="activeTab && activeTab.id"
     @load="activeTab.table = $event"

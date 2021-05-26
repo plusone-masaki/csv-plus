@@ -68,7 +68,7 @@ export default defineComponent({
     const options = vModel('modelValue', props, context) as WritableComputedRef<Options>
     const events = useEvents(props, context, options)
 
-    registerListeners(options, events)
+    registerListeners(options, context, events)
 
     return {
       options,

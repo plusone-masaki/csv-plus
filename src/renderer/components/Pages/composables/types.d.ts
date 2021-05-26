@@ -3,6 +3,7 @@ import { FileData, Options, Tab } from '@/common/types'
 
 export type useTab = {
   state: reactive<{
+    busy: boolean;
     count: ref<number>;
     active: string;
     tabs: Tab[];

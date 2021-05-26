@@ -28,7 +28,7 @@ export default ({ state, activeTab, addTab, closeTab }: useTab) => {
     // データ未操作の場合、初期表示のタブは削除
     if (
       state.tabs.length === 1 &&
-      activeTab.value?.id === 1 &&
+      activeTab.value?.id === 0 &&
       !activeTab.value?.dirty
     ) {
       closeTab(activeTab.value)
@@ -59,10 +59,12 @@ export default ({ state, activeTab, addTab, closeTab }: useTab) => {
     if (!activeTab.value) return
 
     const fileData = activeTab.value.file
+    const options = { ...fileData.meta }
+    delete options.encoding
     const file: channels.FILE_SAVE = {
       path: fileData.path,
       meta: JSON.stringify(fileData.meta),
-      data: csvStringify(_trimEmptyCells(fileData.data), fileData.meta),
+      data: csvStringify(_trimEmptyCells(fileData.data), options),
     }
     ipcRenderer.send(channelName, file)
   }
