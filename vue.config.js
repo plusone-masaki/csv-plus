@@ -51,6 +51,9 @@ module.exports = {
             name: 'Tab separated values',
           },
         ],
+        publish: {
+          provider: 'github',
+        },
       },
     },
   },
