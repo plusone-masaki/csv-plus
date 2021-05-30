@@ -12,13 +12,14 @@ export default defineComponent({
 })
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass">
 .toolbar
   border-left: 8px solid
 
   &__content
     align-items: center
     display: flex
+    padding: 2px 0
     white-space: nowrap
 
   &__icon
