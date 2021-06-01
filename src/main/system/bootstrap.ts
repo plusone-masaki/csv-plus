@@ -31,7 +31,7 @@ async function createWindow () {
       nodeIntegration: true,
       contextIsolation: false,
     },
-    icon: path.resolve(__dirname, '../build/icons/icon.png'),
+    icon: app.isPackaged ? path.join(process.resourcesPath, 'public/icon.png') : path.join(__static, 'icon.png'),
   })
 
   // File load from arguments
@@ -51,7 +51,7 @@ async function createWindow () {
   } else {
     createProtocol('app')
     // Load the index.html when not in development
-    return window.loadURL('app://./index.html')
+    await window.loadURL('app://./index.html')
   }
 }
 

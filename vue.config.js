@@ -12,6 +12,11 @@ module.exports = {
       builderOptions: {
         appId: 'csv-plus',
         productName: 'CSV+',
+        extraResources: {
+          from: 'public',
+          to: 'public',
+          filter: '**/*.png',
+        },
         nsis: {
           oneClick: false,
           perMachine: true,
@@ -31,8 +36,10 @@ module.exports = {
           },
         },
         linux: {
-          category: 'Development',
+          artifactName: 'CSV+.${ext}',
+          category: 'Office',
           target: [
+            'AppImage',
             'deb',
           ],
           mimeTypes: [

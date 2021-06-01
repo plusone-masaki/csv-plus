@@ -1,5 +1,9 @@
 import HandsOnTable from 'handsontable'
 
+declare global {
+  const __static: string
+}
+
 declare type Linefeed = 'CR' | 'CRLF' | 'LF'
 declare type SupportedEncoding =
   'UTF-8' |
