@@ -2,13 +2,13 @@ import * as path from 'path'
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 // import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
-import CSVLoader from '@/main/model/CSVLoader'
+import CSVFile from '@/main/model/CSVFile'
 import './auto-update'
 import './events'
 import * as browserWindow from '@/common/browserWindow'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
-const csvLoader = new CSVLoader()
+const csvLoader = new CSVFile()
 let window: BrowserWindow
 let filepath: string
 

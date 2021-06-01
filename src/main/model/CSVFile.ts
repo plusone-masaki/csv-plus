@@ -20,7 +20,7 @@ const defaultFileMeta = (): FileMeta => ({
   linefeed: defaultLinefeed(),
 })
 
-export default class CSVLoader {
+export default class CSVFile {
   readonly _ready?: Promise<boolean>
 
   private _event: EventEmitter = new EventEmitter()
@@ -52,7 +52,7 @@ export default class CSVLoader {
   }
 
   public async open (path: string) {
-    if (!await CSVLoader._isFile(path)) throw Error('File not found.')
+    if (!await CSVFile._isFile(path)) throw Error('File not found.')
     await this.parse(path)
   }
 
@@ -154,7 +154,7 @@ export default class CSVLoader {
     try {
       const options: csvParse.Options = {
         bom: true,
-        delimiter: this._meta.delimiter = CSVLoader._guessDelimiter(path),
+        delimiter: this._meta.delimiter = CSVFile._guessDelimiter(path),
         relaxColumnCount: true,
       }
 
@@ -167,13 +167,17 @@ export default class CSVLoader {
             return
           }
 
-          if (CSVLoader._hasOverflowCell(data)) {
+          // 例外処理
+          if (CSVFile._hasOverflowCell(data)) {
             dialog.showErrorBox(
               'ファイルを開けませんでした',
               `最大文字数を越えるセルがあります。\nセルあたりの最大文字数は ${files.MAX_CELL_STRING_LENGTH} 文字です。`,
             )
             return
           }
+
+          // メタデータの補完
+          if (!this._meta.encoding) this._meta.encoding = DEFAULT_ENCODING
 
           const payload: channels.FILE_LOADED = {
             label: path.split(process.platform === 'win32' ? '\\' : '/').pop() || '',

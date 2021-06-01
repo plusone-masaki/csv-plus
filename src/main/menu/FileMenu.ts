@@ -1,13 +1,15 @@
 import {
+  app,
+  dialog,
   BrowserWindow,
   MenuItem,
-  dialog,
 } from 'electron'
 import * as fs from 'fs'
 import * as channels from '@/common/channels'
-import CSVLoader from '@/main/model/CSVLoader'
+import CSVFile from '@/main/model/CSVFile'
+import { FILE_FILTERS } from '@/common/files'
 
-const csvLoader = new CSVLoader()
+const csvLoader = new CSVFile()
 
 export default class FileMenu {
   public static open (window: BrowserWindow): void
@@ -21,7 +23,11 @@ export default class FileMenu {
    */
   public static open (menu: MenuItem|BrowserWindow, window?: BrowserWindow) {
     window = window || menu as BrowserWindow
-    const files = dialog.showOpenDialogSync(window, { properties: ['openFile', 'multiSelections'] })
+    const files = dialog.showOpenDialogSync(window, {
+      defaultPath: app.getPath('documents'),
+      properties: ['openFile', 'multiSelections'],
+      filters: FILE_FILTERS,
+    })
     if (!files) return
 
     files.forEach((path: string) => csvLoader.initialize().setWindow(window as BrowserWindow).open(path))
@@ -128,7 +134,8 @@ export default class FileMenu {
   private static _selectPath (window: BrowserWindow, path?: string): string {
     return dialog.showSaveDialogSync(window, {
       title: '名前を付けて保存',
-      defaultPath: path,
+      defaultPath: path || app.getPath('documents'),
+      filters: FILE_FILTERS,
       properties: [
         'createDirectory',
         'showOverwriteConfirmation',

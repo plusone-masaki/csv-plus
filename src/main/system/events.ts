@@ -2,11 +2,11 @@ import { BrowserWindow, dialog, ipcMain, IpcMainEvent, IpcMainInvokeEvent, WebCo
 import * as channels from '@/common/channels'
 import FileMenu from '@/main/menu/FileMenu'
 // import EditMenu from '@/main/menu/EditMenu'
-import CSVLoader from '@/main/model/CSVLoader'
+import CSVFile from '@/main/model/CSVFile'
 import { FileMeta } from '@/common/types'
 import fs from 'fs'
 
-const csvLoader = new CSVLoader()
+const csvLoader = new CSVFile()
 
 const getWindow = (contents: WebContents): BrowserWindow => {
   const window = BrowserWindow.fromWebContents(contents)
