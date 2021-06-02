@@ -1,37 +1,18 @@
-## Welcome to GitHub Pages
+# CSV+
 
-You can use the [editor on GitHub](https://github.com/plusone-masaki/csv-plus/edit/main/docs/index.md) to maintain and preview the content for your website in Markdown files.
+CSV+ はクロスプラットフォームで動作するフリーのCSVエディタです。
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+タブエディタなので、1つのウィンドウで一度に複数のファイルを開くことができます。
 
-### Markdown
+Windows, Linuxでの動作をサポートしています。
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+※現在このソフトは試験版です。
+不具合やご要望は [m_enomoto@plus-one.tech](mailto:m_enomoto@plus-one.tech) までご連絡ください。
 
-```markdown
-Syntax highlighted code block
 
-# Header 1
-## Header 2
-### Header 3
+## 主な機能
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/plusone-masaki/csv-plus/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+- 複数のファイルをまとめて管理できるタブ機能
+- セルの並び替え・検索
+- 選択したセルの合計値を計算する集計機能
+- 文字コード・改行コードの変換
