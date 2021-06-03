@@ -1,1 +1,7 @@
 theme: jekyll-theme-cayman
+title: CSV+
+description: シンプルで使いやすいCSVエディタ
+show_downloads: true
+google_analytics: UA-155750684-1
+github:
+  zip_url: https://github.com/plusone-masaki/csv-plus/releases
