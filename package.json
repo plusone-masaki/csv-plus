@@ -1,0 +1,22 @@
+{
+  "name": "csv-plus",
+  "version": "0.0.1",
+  "description": "シンプルで使いやすい、タブCSVエディタ",
+  "main": "index.js",
+  "authors": {
+    "name": "Masaki Enomoto",
+    "email": "m_enomoto@plus-one.tech"
+  },
+  "repository": "https://github.com/plusone-masaki/csv-plus.git/csv-plus",
+  "scripts": {
+    "dev": "vuepress dev src",
+    "build": "vuepress build src"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vuepress": "^1.5.3"
+  },
+  "dependencies": {
+    "@mdi/js": "^5.9.55"
+  }
+}
