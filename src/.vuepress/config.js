@@ -38,8 +38,12 @@ module.exports = {
         link: '/download/',
       },
       {
+        text: 'guide',
+        link: '/guide/',
+      },
+      {
         text: 'Config',
-        link: '/config/'
+        link: '/config/',
       },
     ],
     sidebar: {

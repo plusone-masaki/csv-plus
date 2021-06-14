@@ -2,7 +2,7 @@
 home: true
 heroImage: /logo.png
 actionText: ダウンロード →
-actionLink: /downloads/
+actionLink: /download/
 features:
   - title: 複数OSに対応
     details: |
