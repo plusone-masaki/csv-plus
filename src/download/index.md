@@ -1,11 +1,10 @@
 ---
 home: true
-heroText: CSV+をダウンロード
+heroText: ダウンロード
+pageClass: download
 tagline: お使いのOSを選択してください
 ---
 
 <DownloadButtons />
 
-<div style="text-align: center">
-    インストールの詳しい方法についてはこちら
-</div>
+インストールの詳しい方法については [こちら](/guide/install)

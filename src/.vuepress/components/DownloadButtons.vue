@@ -22,7 +22,7 @@
       <DownloadButton
           href=""
           title="MacOS"
-          subtitle="(.app)"
+          subtitle="(.dmg)"
       />
     </div>
   </div>

@@ -38,22 +38,17 @@ module.exports = {
         link: '/download/',
       },
       {
-        text: 'guide',
+        text: '使い方',
         link: '/guide/',
-      },
-      {
-        text: 'Config',
-        link: '/config/',
       },
     ],
     sidebar: {
       '/guide/': [
         {
-          title: 'Guide',
+          title: '使い方',
           collapsable: false,
           children: [
-            '',
-            'using-vue',
+            'install',
           ],
         },
       ],
