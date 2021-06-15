@@ -11,6 +11,7 @@ module.exports = {
       nodeIntegration: true,
       builderOptions: {
         appId: 'csv-plus',
+        afterSign: 'scripts/notarize.js',
         productName: 'CSV+',
         extraResources: {
           from: 'public',
@@ -23,6 +24,10 @@ module.exports = {
         },
         mac: {
           category: 'public.app-category.developer-tools',
+          hardenedRuntime: true,
+          gatekeeperAssess: false,
+          entitlements: "build/entitlements.mac.plist",
+          entitlementsInherit: "build/entitlements.mac.plist",
           target: [
             'dmg',
           ],
