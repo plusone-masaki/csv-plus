@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-win:
-    runs-on: windows-latest
+    runs-on: windows-2019
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
@@ -17,8 +17,30 @@ jobs:
       - name: Build and Publish
         run: yarn electron:build --publish always
 
+  build-macos:
+    runs-on: macos-11.0
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_ID_PASS: ${{ secrets.APPLE_ID_PASS }}
+      ASC_PROVIDER: ${{ secrets.ASC_PROVIDER }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Yarn install
+        run: yarn
+      - name: Apple codesigning
+        uses: apple-actions/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
+          p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
+      - name: Generate key chain
+        run: xcrun altool --store-password-in-keychain-item "AC_PASSWORD" -u $APPLE_ID -p $APPLE_ID_PASS
+      - name: Build and Publish
+        run: yarn electron:build --publish always
+
   build-linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
