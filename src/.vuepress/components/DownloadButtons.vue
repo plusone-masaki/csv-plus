@@ -71,13 +71,9 @@ export default {
     }
   },
   async mounted () {
-    axios.defaults = {
-      headers: { accept: 'application/vnd.github.v3+json' },
-      baseURL: 'https://api.github.com',
-    }
-
     // 最新のリリース情報を取得
-    const { data } = await axios.get('/repos/plusone-masaki/csv-plus/releases/latest')
+    const url = 'https://api.github.com/repos/plusone-masaki/csv-plus/releases/latest'
+    const { data } = await axios.get(url, { headers: { accept: 'application/vnd.github.v3+json' } })
     data.assets.forEach(asset => {
       if (/\.msi$/.test(asset.name)) this.downloads.windows = asset
       if (/\.dmg$/.test(asset.name)) this.downloads.mac = asset
