@@ -12,6 +12,17 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
       - uses: actions/checkout@v2
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: node_modules
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - name: Yarn install
         run: yarn
       - name: Build and Publish
@@ -27,6 +38,17 @@ jobs:
       ASC_PROVIDER: ${{ secrets.ASC_PROVIDER }}
     steps:
       - uses: actions/checkout@v2
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: node_modules
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - name: Yarn install
         run: yarn
       - name: Apple codesigning
@@ -45,6 +67,17 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
       - uses: actions/checkout@v2
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: node_modules
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - name: Yarn install
         run: yarn
       - name: Build and Publish
