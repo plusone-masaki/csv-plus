@@ -54,13 +54,6 @@ import axios from 'axios'
 import MdiIcon from './common/MdiIcon'
 import DownloadButton from './DownloadButton'
 
-axios.defaults = {
-  headers: {
-    accept: 'application/vnd.github.v3+json',
-  },
-  baseURL: 'https://api.github.com',
-}
-
 export default {
   name: 'DownloadButtons',
   components: {
@@ -78,6 +71,11 @@ export default {
     }
   },
   async mounted () {
+    axios.defaults = {
+      headers: { accept: 'application/vnd.github.v3+json' },
+      baseURL: 'https://api.github.com',
+    }
+
     // 最新のリリース情報を取得
     const { data } = await axios.get('/repos/plusone-masaki/csv-plus/releases/latest')
     data.assets.forEach(asset => {
