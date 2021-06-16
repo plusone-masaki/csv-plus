@@ -10,7 +10,7 @@ module.exports = {
    */
   description: description,
 
-  base: '/csv-plus',
+  base: '/csv-plus/',
   dest: 'docs',
 
   /**
