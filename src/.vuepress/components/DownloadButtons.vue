@@ -1,46 +1,48 @@
 <template>
 <div class="downloads">
-  <div class="downloads__os">
+  <div v-if="downloads.windows" class="downloads__os">
     <div class="downloads__os--icon">
       <MdiIcon icon="windows" />
     </div>
 
     <div class="downloads__os--buttons">
       <DownloadButton
-          href=""
           title="Windows"
-          subtitle="(.msi)"
+          :subtitle="downloads.windows.name"
+          :href="downloads.windows.browser_download_url"
       />
     </div>
   </div>
 
-  <div class="downloads__os">
+  <div v-if="downloads.mac" class="downloads__os">
     <div class="downloads__os--icon">
       <MdiIcon icon="apple" />
     </div>
     <div class="downloads__os--buttons">
       <DownloadButton
-          href=""
           title="MacOS"
-          subtitle="(.dmg)"
+          :subtitle="downloads.mac.name"
+          :href="downloads.mac.browser_download_url"
       />
     </div>
   </div>
 
-  <div class="downloads__os">
+  <div v-if="downloads.ubuntu || downloads.linux" class="downloads__os">
     <div class="downloads__os--icon">
       <MdiIcon icon="linux" />
     </div>
     <div class="downloads__os--buttons">
       <DownloadButton
-          href=""
+          v-if="downloads.ubuntu"
           title="Ubuntu"
-          subtitle="(.deb)"
+          :subtitle="downloads.ubuntu.name"
+          :href="downloads.ubuntu.browser_download_url"
       />
       <DownloadButton
-          href=""
+          v-if="downloads.linux"
           title="Linux"
-          subtitle="(.AppImage)"
+          :subtitle="downloads.linux.name"
+          :href="downloads.linux.browser_download_url"
       />
     </div>
   </div>
@@ -48,14 +50,42 @@
 </template>
 
 <script>
+import axios from 'axios'
 import MdiIcon from './common/MdiIcon'
 import DownloadButton from './DownloadButton'
+
+axios.defaults = {
+  headers: {
+    accept: 'application/vnd.github.v3+json',
+  },
+  baseURL: 'https://api.github.com',
+}
 
 export default {
   name: 'DownloadButtons',
   components: {
     MdiIcon,
     DownloadButton,
+  },
+  data () {
+    return {
+      downloads: {
+        windows: null,
+        mac: null,
+        ubuntu: null,
+        linux: null,
+      },
+    }
+  },
+  async mounted () {
+    // 最新のリリース情報を取得
+    const { data } = await axios.get('/repos/plusone-masaki/csv-plus/releases/latest')
+    data.assets.forEach(asset => {
+      if (/\.msi$/.test(asset.name)) this.downloads.windows = asset
+      if (/\.dmg$/.test(asset.name)) this.downloads.mac = asset
+      if (/\.deb$/.test(asset.name)) this.downloads.ubuntu = asset
+      if (/\.AppImage$/.test(asset.name)) this.downloads.linux = asset
+    })
   },
 }
 </script>

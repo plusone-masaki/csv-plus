@@ -10,6 +10,8 @@ module.exports = {
    */
   description: description,
 
+  dest: 'docs',
+
   /**
    * Extra tags to be injected to the page HTML `<head>`
    *
@@ -29,7 +31,8 @@ module.exports = {
   themeConfig: {
     repo: 'https://github.com/plusone-masaki/csv-plus',
     editLinks: false,
-    docsDir: '',
+    docsDir: 'docs',
+    docsBranch: 'docs',
     editLinkText: '',
     lastUpdated: false,
     nav: [
@@ -47,9 +50,6 @@ module.exports = {
         {
           title: '使い方',
           collapsable: false,
-          children: [
-            'install',
-          ],
         },
       ],
     },

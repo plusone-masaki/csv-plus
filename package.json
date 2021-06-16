@@ -19,6 +19,7 @@
     "vuepress": "^1.5.3"
   },
   "dependencies": {
-    "@mdi/js": "^5.9.55"
+    "@mdi/js": "^5.9.55",
+    "axios": "^0.21.1"
   }
 }
