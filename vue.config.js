@@ -41,7 +41,6 @@ module.exports = {
           },
         },
         linux: {
-          artifactName: 'CSV+.${ext}',
           category: 'Office',
           target: [
             'AppImage',
