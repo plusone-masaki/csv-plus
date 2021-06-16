@@ -7,7 +7,7 @@ exports.default = async function notarizing(context) {
   const appName = context.packager.appInfo.productFilename
 
   return await notarize({
-    appBundleId: "com.example.myapp", //★自分のアプリのBundleID(appId)に変更★
+    appBundleId: 'tech.plus-one.csv-plus',
     appPath: `${appOutDir}/${appName}.app`,
     appleId: process.env.APPLE_ID,
     appleIdPassword: process.env.APPLE_ID_PASS,
