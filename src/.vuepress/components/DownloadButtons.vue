@@ -8,7 +8,7 @@
     <div class="downloads__os--buttons">
       <DownloadButton
           title="Windows"
-          :subtitle="downloads.windows.name"
+          subtitle="(.msi)"
           :href="downloads.windows.browser_download_url"
       />
     </div>
@@ -21,7 +21,7 @@
     <div class="downloads__os--buttons">
       <DownloadButton
           title="MacOS"
-          :subtitle="downloads.mac.name"
+          subtitle="(.dmg)"
           :href="downloads.mac.browser_download_url"
       />
     </div>
@@ -35,13 +35,13 @@
       <DownloadButton
           v-if="downloads.ubuntu"
           title="Ubuntu"
-          :subtitle="downloads.ubuntu.name"
+          subtitle="(.deb)"
           :href="downloads.ubuntu.browser_download_url"
       />
       <DownloadButton
           v-if="downloads.linux"
           title="Linux"
-          :subtitle="downloads.linux.name"
+          subtitle="(.AppImage)"
           :href="downloads.linux.browser_download_url"
       />
     </div>
@@ -72,14 +72,16 @@ export default {
   },
   async mounted () {
     // 最新のリリース情報を取得
-    const url = 'https://api.github.com/repos/plusone-masaki/csv-plus/releases/latest'
+    const url = 'https://api.github.com/repos/plusone-masaki/csv-plus/releases'
     const { data } = await axios.get(url, { headers: { accept: 'application/vnd.github.v3+json' } })
-    data.assets.forEach(asset => {
-      if (/\.msi$/.test(asset.name)) this.downloads.windows = asset
-      if (/\.dmg$/.test(asset.name)) this.downloads.mac = asset
-      if (/\.deb$/.test(asset.name)) this.downloads.ubuntu = asset
-      if (/\.AppImage$/.test(asset.name)) this.downloads.linux = asset
-    })
+    data
+      .filter(release => !release.draft)[0]
+      .assets.forEach(asset => {
+        if (/\.msi$/.test(asset.name)) this.downloads.windows = asset
+        if (/\.dmg$/.test(asset.name)) this.downloads.mac = asset
+        if (/\.deb$/.test(asset.name)) this.downloads.ubuntu = asset
+        if (/\.AppImage$/.test(asset.name)) this.downloads.linux = asset
+      })
   },
 }
 </script>
