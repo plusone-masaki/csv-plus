@@ -17,15 +17,12 @@ module.exports = {
           to: 'public',
           filter: '**/*.png',
         },
-        nsis: {
-          oneClick: false,
-          perMachine: true,
+        win: {
+          target: ['msi'],
         },
         mac: {
           category: 'public.app-category.developer-tools',
-          target: [
-            'dmg',
-          ],
+          target: ['dmg'],
           extendInfo: {
             CFBundleDocumentTypes: [
               {
