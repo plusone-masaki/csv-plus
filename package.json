@@ -1,6 +1,6 @@
 {
   "name": "csv-plus",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "CSV tab editor",
   "author": "Masaki Enomoto <m_enomoto@plus-one.tech>",
   "license": "MIT",
@@ -44,6 +44,7 @@
     "@vue/eslint-config-typescript": "^5.0.2",
     "@vue/test-utils": "^2.0.0-0",
     "electron-devtools-installer": "^3.1.1",
+    "electron-notarize": "^1.0.0",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
