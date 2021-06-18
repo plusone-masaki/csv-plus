@@ -7,7 +7,7 @@ OSによってインストール方法が変わりますが、
 
 ## Windows
 
-1. [ダウンロードページ](/download) で「Windows」のダウンロードボタンをクリックします。
+1. [ダウンロードページ](/csv-plus/download) で「Windows」のダウンロードボタンをクリックします。
 2. ダウンロードしてきた `csv-plus-setup-[x.x.x].msi` をダブルクリックして起動します。
 3. **Microsoft Defender SmartScreen** というダイアログが出て **「実行しない」しか押せない**
    というパターンがありますが、 **「詳細情報」をクリックしてから「実行」を押すことでインストールができます。**
@@ -21,20 +21,20 @@ OSによってインストール方法が変わりますが、
 
 ## MacOS
 
-1. [ダウンロードページ](/download) で「MacOS」のダウンロードボタンをクリックします。
+1. [ダウンロードページ](/csv-plus/download) で「MacOS」のダウンロードボタンをクリックします。
 2. ダウンロードしてきた `csv-plus-setup-[x.x.x].dmg` をダブルクリックして起動します。
 3. `CSV+.app` ファイルをアプリケーションに追加します。
 
 
 ## Debian/Ubuntu(.deb)
 
-1. [ダウンロードページ](/download) で「Ubuntu(.deb)」のダウンロードボタンをクリックします。
+1. [ダウンロードページ](/csv-plus/download) で「Ubuntu(.deb)」のダウンロードボタンをクリックします。
 2. ダウンロードしてきた `csv-plus-setup-[x.x.x].deb` をダブルクリックして起動します。
 3. ダイアログの案内に従ってインストールを行ってください。
 
 
 ## Linux(.AppImage)
 
-1. [ダウンロードページ](/download) で「Ubuntu(.deb)」のダウンロードボタンをクリックします。
+1. [ダウンロードページ](/csv-plus/download) で「Ubuntu(.deb)」のダウンロードボタンをクリックします。
 2. ダウンロードしてきた `csv-plus-setup-[x.x.x].AppImage` に実行権限(x)を追加します。
 3. AppImage ファイルをダブルクリックすると起動します。

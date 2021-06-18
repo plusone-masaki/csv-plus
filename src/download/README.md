@@ -7,4 +7,4 @@ tagline: お使いのOSを選択してください
 
 <DownloadButtons />
 
-インストールの詳しい方法については [こちら](/guide/install)
+インストールの詳しい方法については [こちら](/csv-plus/guide)
