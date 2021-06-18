@@ -61,6 +61,7 @@ module.exports = {
    * Apply plugins，ref：https://v1.vuepress.vuejs.org/zh/plugin/
    */
   plugins: [
+    ['@vuepress/google-analytics', { ga: 'UA-155750684-1' }],
     '@vuepress/plugin-back-to-top',
     '@vuepress/plugin-medium-zoom',
   ],
