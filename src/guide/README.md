@@ -35,6 +35,6 @@ OSによってインストール方法が変わりますが、
 
 ## Linux(.AppImage)
 
-1. [ダウンロードページ](/csv-plus/download) で「Ubuntu(.deb)」のダウンロードボタンをクリックします。
+1. [ダウンロードページ](/csv-plus/download) で「Linux(.AppImage)」のダウンロードボタンをクリックします。
 2. ダウンロードしてきた `csv-plus-setup-[x.x.x].AppImage` に実行権限(x)を追加します。
 3. AppImage ファイルをダブルクリックすると起動します。
