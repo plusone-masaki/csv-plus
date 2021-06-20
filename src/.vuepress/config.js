@@ -23,11 +23,6 @@ module.exports = {
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
     ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }],
     ['link', { rel: 'icon', type: 'image/png', href: '/logo.png' }],
-    ['script', {
-      'data-ad-client': 'ca-pub-9835503912749997',
-      src:'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
-      async: true,
-    }],
   ],
 
   /**
@@ -67,6 +62,7 @@ module.exports = {
    */
   plugins: [
     ['@vuepress/google-analytics', { ga: 'UA-155750684-1' }],
+    ['@vuepress/google-adsense', { adClient: 'ca-pub-9835503912749997' }],
     '@vuepress/plugin-back-to-top',
     '@vuepress/plugin-medium-zoom',
   ],

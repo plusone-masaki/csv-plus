@@ -17,7 +17,8 @@
     "@vuepress/plugin-google-analytics": "^1.8.2",
     "pug": "^3.0.2",
     "pug-plain-loader": "^1.1.0",
-    "vuepress": "^1.5.3"
+    "vuepress": "^1.5.3",
+    "vuepress-plugin-google-adsense": "^0.2.1"
   },
   "dependencies": {
     "@mdi/js": "^5.9.55",
