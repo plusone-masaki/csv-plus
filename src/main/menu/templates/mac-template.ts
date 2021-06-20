@@ -48,6 +48,7 @@ export default [
       {
         label: '新規作成',
         accelerator: 'Alt+Insert',
+        click: FileMenu.newFile,
       },
       { type: 'separator' },
       {
