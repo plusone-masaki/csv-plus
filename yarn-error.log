@@ -1,8 +1,8 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/bin/yarn add -D @vuepress/google-analytics
+  /usr/local/bin/node /usr/local/bin/yarn
 
 PATH: 
-  /home/m_enomoto/.yarn/bin:/home/m_enomoto/.anyenv/envs/phpenv/shims:/home/m_enomoto/.anyenv/envs/phpenv/bin:/home/m_enomoto/.anyenv/bin:/home/m_enomoto/Projects/Private/csv-plus/node_modules/.bin:/home/m_enomoto/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+  /home/m_enomoto/.yarn/bin:/home/m_enomoto/.anyenv/envs/phpenv/shims:/home/m_enomoto/.anyenv/envs/phpenv/bin:/home/m_enomoto/.anyenv/bin:/home/m_enomoto/Projects/Private/csv-plus-docs/node_modules/.bin:/home/m_enomoto/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
 Yarn version: 
   1.22.4
@@ -14,17 +14,12 @@ Platform:
   linux x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@vuepress%2fgoogle-analytics: Not found
-      at Request.params.callback [as _callback] (/home/m_enomoto/.config/yarn/global/node_modules/yarn/lib/cli.js:66987:18)
-      at Request.self.callback (/home/m_enomoto/.config/yarn/global/node_modules/yarn/lib/cli.js:140748:22)
-      at Request.emit (events.js:315:20)
-      at Request.<anonymous> (/home/m_enomoto/.config/yarn/global/node_modules/yarn/lib/cli.js:141720:10)
-      at Request.emit (events.js:315:20)
-      at IncomingMessage.<anonymous> (/home/m_enomoto/.config/yarn/global/node_modules/yarn/lib/cli.js:141642:12)
-      at Object.onceWrapper (events.js:421:28)
-      at IncomingMessage.emit (events.js:327:22)
-      at endReadableNT (_stream_readable.js:1225:12)
-      at processTicksAndRejections (internal/process/task_queues.js:84:21)
+  SyntaxError: /home/m_enomoto/Projects/Private/csv-plus-docs/package.json: Unexpected token } in JSON at position 535
+      at JSON.parse (<anonymous>)
+      at /home/m_enomoto/.config/yarn/global/node_modules/yarn/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/home/m_enomoto/.config/yarn/global/node_modules/yarn/lib/cli.js:310:30)
+      at /home/m_enomoto/.config/yarn/global/node_modules/yarn/lib/cli.js:321:13
 
 npm manifest: 
   {
@@ -43,9 +38,10 @@ npm manifest:
     },
     "license": "MIT",
     "devDependencies": {
+      "@vuepress/plugin-google-analytics": "^1.8.2",
       "pug": "^3.0.2",
       "pug-plain-loader": "^1.1.0",
-      "vuepress": "^1.5.3"
+      "vuepress": "^1.5.3",
     },
     "dependencies": {
       "@mdi/js": "^5.9.55",
@@ -1229,6 +1225,11 @@ Lockfile:
     integrity sha512-JmXAQg8D7J8mcKe2Ue3BZ9dOCzJMJXP4Cnkkc/IrqfDg0ET0l96gYWZohCqlvRIWt4f0VPiFAO4FLYrW+hko+g==
     dependencies:
       lodash.debounce "^4.0.8"
+  
+  "@vuepress/plugin-google-analytics@^1.8.2":
+    version "1.8.2"
+    resolved "https://registry.yarnpkg.com/@vuepress/plugin-google-analytics/-/plugin-google-analytics-1.8.2.tgz#96cf65f1f0ecbb3bcf6b0d10089dafe2aea875bc"
+    integrity sha512-BMFayLzT2BvXmnhM9mDHw0UPU7J0pH1X9gQA4HmZxOf7f3+atK5eJGsc1Ia/+1FTG2ESvhFLUU/CC3h5arjEJw==
   
   "@vuepress/plugin-last-updated@1.8.2":
     version "1.8.2"
@@ -7954,6 +7955,11 @@ Lockfile:
     dependencies:
       "@vuepress/shared-utils" "^1.2.0"
       markdown-it-container "^2.0.0"
+  
+  vuepress-plugin-google-adsense@^0.2.1:
+    version "0.2.1"
+    resolved "https://registry.yarnpkg.com/vuepress-plugin-google-adsense/-/vuepress-plugin-google-adsense-0.2.1.tgz#04bd7e421542992d193bf15951dc882bcd561e0f"
+    integrity sha512-6t6jLEPf1NISBsHxIzCYe4SfXlkk5I9MRR94GfV1HTMEyblYXEEGAra60FOWvoq2leB4rshdasabUp56PzunwA==
   
   vuepress-plugin-smooth-scroll@^0.0.3:
     version "0.0.3"
