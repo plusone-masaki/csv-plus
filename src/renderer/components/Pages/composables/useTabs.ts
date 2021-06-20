@@ -40,7 +40,7 @@ export default (): useTab => {
     tabs: [] as Tab[],
   })
 
-  const activeTab = computed({
+  const activeTab = computed<Tab|undefined>({
     get: () => state.tabs.find((tab: Tab) => tab.id === state.active),
     set: tabData => {
       const index = state.tabs.findIndex(tab => tab.id === state.active)
@@ -83,6 +83,7 @@ export default (): useTab => {
     state.tabs.push(tab)
     state.active = tab.id
   }
+  ipcRenderer.on(channels.FILE_NEW, () => addTab())
 
   const closeTab = async (tab: Tab) => {
     // ファイルが未保存の場合は確認ダイアログを表示

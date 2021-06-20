@@ -1,6 +1,7 @@
 import { FileData } from './types'
 
 // Files
+export const FILE_NEW = 'FILE_NEW'
 export const FILE_OPEN = 'FILE_OPEN'
 export const FILE_DROPPED = 'FILE_DROPPED'
 export const FILE_LOADED = 'FILE_LOADED'

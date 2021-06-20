@@ -12,6 +12,10 @@ import { FILE_FILTERS } from '@/common/files'
 const csvLoader = new CSVFile()
 
 export default class FileMenu {
+  public static newFile (menu: MenuItem, window: BrowserWindow) {
+    window.webContents.send(channels.FILE_NEW)
+  }
+
   public static open (window: BrowserWindow): void
   public static open (menu: MenuItem, window: BrowserWindow): void
 
