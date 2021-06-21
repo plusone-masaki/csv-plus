@@ -65,8 +65,7 @@
         <td>Windows</td>
         <td>{{ release.tag_name }}</td>
         <td>
-          <a :href="downloads.zip.browser_download_url"></a>
-          {{ downloads.zip.name }}
+          <a :href="downloads.zip.browser_download_url">{{ downloads.zip.name }}</a>
         </td>
         <td>{{ release.created_at }}</td>
       </tr>
