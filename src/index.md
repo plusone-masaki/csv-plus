@@ -49,7 +49,7 @@ data-full-width-responsive="true"></ins>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 .content__default
     text-align: center
 </style>
