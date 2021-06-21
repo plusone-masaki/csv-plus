@@ -86,6 +86,7 @@ export default class CSVFile {
    */
   private _decode (): Stream.Transform {
     const meta = this._meta
+    let buffer: Buffer = Buffer.from('')
     return new Stream.Transform({
       transform (chunk: Buffer, _: BufferEncoding, next: Stream.TransformCallback) {
         if (!meta.encoding) {
@@ -98,7 +99,13 @@ export default class CSVFile {
           }
         }
 
-        this.push(iconv.decode(chunk, meta.encoding))
+        const endOfRow = chunk.lastIndexOf('\n')
+        this.push(iconv.decode(Buffer.concat([buffer, chunk.slice(0, endOfRow)]), meta.encoding))
+        buffer = chunk.slice(endOfRow)
+        next()
+      },
+      final (next: Stream.TransformCallback) {
+        this.push(iconv.decode(buffer, meta.encoding))
         next()
       },
     })
@@ -115,8 +122,7 @@ export default class CSVFile {
     const stream = new Stream.Transform({
       transform (chunk: Buffer, encoding: BufferEncoding, next: Stream.TransformCallback) {
         data += chunk
-        this.push(chunk)
-        next()
+        next(null, chunk)
       },
     })
 
@@ -163,6 +169,7 @@ export default class CSVFile {
         .pipe(this._detectLinefeed())
         .pipe(csvParse(options, async (error: Error | undefined, data: string[][]) => {
           if (error) {
+            console.log(error)
             dialog.showErrorBox('ファイルを開けませんでした', 'ファイル形式が間違っていないかご確認下さい')
             return
           }
