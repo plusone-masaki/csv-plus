@@ -19,14 +19,24 @@ module.exports = {
           filter: '**/*.png',
         },
         win: {
-          target: ['msi'],
+          target: ['msi', 'zip'],
+          fileAssociations: [
+            {
+              ext: ['csv'],
+              description: 'Comma separated values',
+            },
+            {
+              ext: ['tsv'],
+              description: 'Tab separated values',
+            },
+          ],
         },
         mac: {
           category: 'public.app-category.developer-tools',
           hardenedRuntime: true,
           gatekeeperAssess: false,
-          entitlements: "build/entitlements.mac.plist",
-          entitlementsInherit: "build/entitlements.mac.plist",
+          entitlements: 'build/entitlements.mac.plist',
+          entitlementsInherit: 'build/entitlements.mac.plist',
           target: ['dmg'],
           extendInfo: {
             CFBundleDocumentTypes: [
