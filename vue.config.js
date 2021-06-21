@@ -10,7 +10,7 @@ module.exports = {
       mainProcessWatch: ['src/main/**/*'],
       nodeIntegration: true,
       builderOptions: {
-        appId: 'csv-plus',
+        appId: 'tech.plus-one.csv-plus',
         afterSign: 'scripts/notarize.js',
         productName: 'CSV+',
         extraResources: {
@@ -19,17 +19,20 @@ module.exports = {
           filter: '**/*.png',
         },
         win: {
-          target: ['msi', 'zip'],
-          fileAssociations: [
-            {
-              ext: ['csv'],
-              description: 'Comma separated values',
-            },
-            {
-              ext: ['tsv'],
-              description: 'Tab separated values',
-            },
-          ],
+          target: ['zip', 'nsis'],
+          fileAssociations: {
+            ext: ['csv', 'tsv'],
+          },
+        },
+        nsis: {
+          oneClick: false,
+          perMachine: true,
+          createDesktopShortcut: true,
+          runAfterFinish: true,
+          createStartMenuShortcut: true,
+          shortcutName: 'CSV+',
+          allowToChangeInstallationDirectory: true,
+          installerLanguages: ['ja_JP'],
         },
         mac: {
           category: 'public.app-category.developer-tools',
