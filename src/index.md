@@ -18,3 +18,14 @@ features:
         誰にとっても使いやすく軽快なエディタを目指しました。
 footer: Made by Plus one
 ---
+
+<!-- CSV+トップ -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-9835503912749997"
+data-ad-slot="5490238785"
+data-ad-format="auto"
+data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
