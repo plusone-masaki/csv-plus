@@ -3,7 +3,7 @@ name: Draft a new release
 on:
   push:
     branches:
-      - develop
+      - main
 
 jobs:
   build-win:
@@ -26,7 +26,7 @@ jobs:
       - name: Yarn install
         run: yarn
       - name: Build and Publish
-        run: yarn electron:build --publish onTagOrDraft
+        run: yarn electron:build --publish always
 
   build-macos:
     runs-on: macos-10.15
@@ -59,7 +59,7 @@ jobs:
       - name: Generate key chain
         run: xcrun altool --store-password-in-keychain-item "AC_PASSWORD" -u $APPLE_ID -p $APPLE_ID_PASS
       - name: Build and Publish
-        run: yarn electron:build --publish onTagOrDraft
+        run: yarn electron:build --publish always
 
   build-linux:
     runs-on: ubuntu-20.04
@@ -81,4 +81,4 @@ jobs:
       - name: Yarn install
         run: yarn
       - name: Build and Publish
-        run: yarn electron:build --publish onTagOrDraft
+        run: yarn electron:build --publish always
