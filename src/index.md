@@ -19,6 +19,25 @@ features:
 footer: Made by Plus one
 ---
 
+### タブで複数のCSVを一元管理
+
+ファイルのドラッグ＆ドロップにも対応し、 複数のファイルをまとめて開けます。
+
+![プレビュー](/csv-plus/assets/img/preview.png)
+
+
+<br>
+<br>
+
+### 文字コード・改行コードの変換に対応
+
+![文字コードの変更](/csv-plus/assets/img/encoding.png)
+
+**ShiftJIS** や **UTF-8** をはじめとした、 様々なエンコーディングに対応。
+改行コードの変更も簡単に行なえます。
+
+
+
 <!-- CSV+トップ -->
 <ins class="adsbygoogle"
 style="display:block"
@@ -29,3 +48,8 @@ data-full-width-responsive="true"></ins>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
+
+<style lang="stylus">
+.content__default
+    text-align: center
+</style>
