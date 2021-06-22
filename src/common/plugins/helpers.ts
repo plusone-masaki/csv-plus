@@ -3,7 +3,6 @@ import { Linefeed } from '@/common/types'
 
 export const defaultLinefeed = (): Linefeed => {
   switch (os.EOL) {
-    case '\r': return 'CR'
     case '\r\n': return 'CRLF'
     case '\n':
     default:
