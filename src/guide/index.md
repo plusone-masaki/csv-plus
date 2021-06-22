@@ -51,3 +51,18 @@ CSV+のフォルダごと移動させるか、ショートカットをご利用�
 1. [ダウンロードページ](/csv-plus/download) で「Linux(.AppImage)」のダウンロードボタンをクリックします。
 2. ダウンロードしてきた `csv-plus-setup-[x.x.x].AppImage` に実行権限(x)を追加します。
 3. AppImage ファイルをダブルクリックすると起動します。
+
+<br>
+<br>
+<br>
+
+<!-- CSV+使い方 -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-9835503912749997"
+data-ad-slot="2237157972"
+data-ad-format="auto"
+data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>

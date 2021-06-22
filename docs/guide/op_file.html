@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>ファイル操作 | CSV+</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" type="image/png" href="/csv-plus/logo.png">
+    <script data-ad-client="ca-pub-9835503912749997" async="true" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <meta name="description" content="シンプルで使いやすい、タブCSVエディタ">
+    <meta name="theme-color" content="#3eaf7c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    <link rel="preload" href="/csv-plus/assets/css/0.styles.86ac08bd.css" as="style"><link rel="preload" href="/csv-plus/assets/js/app.e90e5f92.js" as="script"><link rel="preload" href="/csv-plus/assets/js/3.efdfafd9.js" as="script"><link rel="preload" href="/csv-plus/assets/js/15.f41a93f6.js" as="script"><link rel="prefetch" href="/csv-plus/assets/js/1.181f859f.js"><link rel="prefetch" href="/csv-plus/assets/js/10.36aa2911.js"><link rel="prefetch" href="/csv-plus/assets/js/11.9f2d8fac.js"><link rel="prefetch" href="/csv-plus/assets/js/12.b49ef6e7.js"><link rel="prefetch" href="/csv-plus/assets/js/13.d575a3c4.js"><link rel="prefetch" href="/csv-plus/assets/js/14.d34262d3.js"><link rel="prefetch" href="/csv-plus/assets/js/16.ed473c3d.js"><link rel="prefetch" href="/csv-plus/assets/js/4.242aa784.js"><link rel="prefetch" href="/csv-plus/assets/js/5.032b098e.js"><link rel="prefetch" href="/csv-plus/assets/js/6.779dc70d.js"><link rel="prefetch" href="/csv-plus/assets/js/7.3f15581e.js"><link rel="prefetch" href="/csv-plus/assets/js/8.e499d3dc.js"><link rel="prefetch" href="/csv-plus/assets/js/9.85d3e3ee.js">
+    <link rel="stylesheet" href="/csv-plus/assets/css/0.styles.86ac08bd.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/csv-plus/" class="home-link router-link-active"><!----> <span class="site-name">CSV+</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/csv-plus/download/" class="nav-link">
+  ダウンロード
+</a></div><div class="nav-item"><a href="/csv-plus/guide/" class="nav-link router-link-active">
+  使い方
+</a></div> <a href="https://github.com/plusone-masaki/csv-plus" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/csv-plus/download/" class="nav-link">
+  ダウンロード
+</a></div><div class="nav-item"><a href="/csv-plus/guide/" class="nav-link router-link-active">
+  使い方
+</a></div> <a href="https://github.com/plusone-masaki/csv-plus" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>使い方</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/csv-plus/guide/" aria-current="page" class="sidebar-link">インストール方法</a></li><li><a href="/csv-plus/guide/op_seat.html" class="sidebar-link">シート操作</a></li><li><a href="/csv-plus/guide/op_file.html" aria-current="page" class="active sidebar-link">ファイル操作</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/csv-plus/guide/op_file.html#■-新規作成-alt-insert" class="sidebar-link">■ 新規作成 Alt + Insert</a></li><li class="sidebar-sub-header"><a href="/csv-plus/guide/op_file.html#■-ファイルを開く-alt-o" class="sidebar-link">■ ファイルを開く Alt + O</a></li><li class="sidebar-sub-header"><a href="/csv-plus/guide/op_file.html#■-上書き保存-ctrl-s" class="sidebar-link">■ 上書き保存 Ctrl + S</a></li><li class="sidebar-sub-header"><a href="/csv-plus/guide/op_file.html#■-名前を付けて保存-ctrl-shift-s" class="sidebar-link">■ 名前を付けて保存 Ctrl + Shift + S</a></li></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="ファイル操作"><a href="#ファイル操作" class="header-anchor">#</a> ファイル操作</h1> <h2 id="■-新規作成-alt-insert"><a href="#■-新規作成-alt-insert" class="header-anchor">#</a> ■ 新規作成 <code>Alt + Insert</code></h2> <p>新しいタブを作成します。</p> <p>新しいタブには 100行×26列 のシートが生成されます。</p> <h2 id="■-ファイルを開く-alt-o"><a href="#■-ファイルを開く-alt-o" class="header-anchor">#</a> ■ ファイルを開く <code>Alt + O</code></h2> <p>ファイルを開き、新しいタブに表示します。</p> <p>この操作はファイルをCSV+の画面に直接ドラッグ＆ドロップすることでも行えます。
+また複数のファイルを同時にドロップすることも可能です。</p> <h2 id="■-上書き保存-ctrl-s"><a href="#■-上書き保存-ctrl-s" class="header-anchor">#</a> ■ 上書き保存 <code>Ctrl + S</code></h2> <p>ファイルを上書き保存します。</p> <p>新しいタブの場合、「名前を付けて保存」と同じ動作をします。</p> <h2 id="■-名前を付けて保存-ctrl-shift-s"><a href="#■-名前を付けて保存-ctrl-shift-s" class="header-anchor">#</a> ■ 名前を付けて保存 <code>Ctrl + Shift + S</code></h2> <p>ファイルに名前を付けて保存します。</p> <p>元のファイルは変更されません。</p> <br> <br> <br> <p><ins data-ad-client="ca-pub-9835503912749997" data-ad-slot="2237157972" data-ad-format="auto" data-full-width-responsive="true" class="adsbygoogle" style="display:block;"></ins> <script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></p></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/csv-plus/guide/op_seat.html" class="prev">
+        シート操作
+      </a></span> <!----></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/csv-plus/assets/js/app.e90e5f92.js" defer></script><script src="/csv-plus/assets/js/3.efdfafd9.js" defer></script><script src="/csv-plus/assets/js/15.f41a93f6.js" defer></script>
+  </body>
+</html>

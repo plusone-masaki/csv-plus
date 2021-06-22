@@ -27,7 +27,7 @@ module.exports = {
       'data-ad-client': 'ca-pub-9835503912749997',
       async: true,
       src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
-    }]
+    }],
   ],
 
   /**
@@ -57,6 +57,11 @@ module.exports = {
         {
           title: '使い方',
           collapsable: false,
+          children: [
+            '',
+            'op_seat',
+            'op_file',
+          ],
         },
       ],
     },
