@@ -51,8 +51,12 @@ class Shortcut {
 
 const shortcut = new Shortcut()
 
+// TODO: キーコンフィグ機能の実装後にこの処理を移す
 shortcut.addKeybinding('tab_close', process.platform === 'darwin' ? { key: 'W', altKey: true } : { key: 'F4', ctrlKey: true })
 shortcut.addKeybinding('select_all', { key: 'A', ctrlKey: process.platform !== 'darwin', metaKey: process.platform === 'darwin' })
+shortcut.addKeybinding('copy', { key: 'C', ctrlKey: process.platform !== 'darwin', metaKey: process.platform === 'darwin' })
+shortcut.addKeybinding('cut', { key: 'X', ctrlKey: process.platform !== 'darwin', metaKey: process.platform === 'darwin' })
+shortcut.addKeybinding('paste', { key: 'V', ctrlKey: process.platform !== 'darwin', metaKey: process.platform === 'darwin' })
 shortcut.addKeybinding('undo', { key: 'Z', ctrlKey: process.platform !== 'darwin', metaKey: process.platform === 'darwin' })
 shortcut.addKeybinding('redo', { key: 'Z', ctrlKey: process.platform !== 'darwin', metaKey: process.platform === 'darwin', shiftKey: true })
 shortcut.addKeybinding('search', { key: 'F', ctrlKey: process.platform !== 'darwin', metaKey: process.platform === 'darwin' })

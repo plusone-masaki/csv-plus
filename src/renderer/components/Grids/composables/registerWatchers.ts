@@ -51,6 +51,11 @@ export default (props: Props, context: SetupContext, refs: Refs) => {
       shortcut.addShortcutEvent('select_all', props.table.selectAll)
       shortcut.addShortcutEvent('undo', props.table.undo!)
       shortcut.addShortcutEvent('redo', props.table.redo!)
+      if (process.platform === 'darwin') {
+        shortcut.addShortcutEvent('copy', () => props.table.getSelected() && document.execCommand('copy'))
+        shortcut.addShortcutEvent('cut', () => props.table.getSelected() && document.execCommand('cut'))
+        shortcut.addShortcutEvent('paste', () => props.table.getSelected() && document.execCommand('paste'))
+      }
     }
   })
 

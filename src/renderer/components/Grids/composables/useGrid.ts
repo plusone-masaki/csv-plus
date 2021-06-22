@@ -12,7 +12,6 @@ import { Props } from './types'
 export default (props: Props, context: SetupContext) => {
   const wrapper = ref<HTMLDivElement>()
   const search = ref<HandsOnTable.plugins.Search|null>(null)
-  console.log('row', (props.file.data.length.toString().length * 10) + 10)
   const settings = computed((): HandsOnTable.GridSettings => ({
     data: props.options.hasHeader ? props.file.data.slice(1) : props.file.data,
     autoColumnSize: { syncLimit: 10 },
