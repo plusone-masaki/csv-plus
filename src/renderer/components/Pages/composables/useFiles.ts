@@ -1,14 +1,13 @@
 import { ipcRenderer, IpcRendererEvent } from 'electron'
 import { nextTick } from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
-import HandsOnTable from 'handsontable'
 import * as channels from '@/common/channels'
 import { Tab } from '@/common/types'
 import { useTab } from './types'
 
 export default ({ state, activeTab, addTab, closeTab }: useTab) => {
   // 末尾の空要素を削除する
-  const _trimEmptyCells = (data: HandsOnTable.CellValue[][]|HandsOnTable.RowObject[]): HandsOnTable.CellValue[][]|HandsOnTable.RowObject[] => {
+  const _trimEmptyCells = (data: string[][]): string[][] => {
     if (!activeTab.value?.table) return data
 
     const rows = data.slice()

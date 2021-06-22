@@ -4,7 +4,7 @@ declare global {
   const __static: string
 }
 
-declare type Linefeed = 'CR' | 'CRLF' | 'LF'
+declare type Linefeed = 'CRLF' | 'LF'
 declare type SupportedEncoding =
   'UTF-8' |
   'UTF-16' |
@@ -38,40 +38,58 @@ declare type SupportedEncoding =
   'KOI8-R' |
   ''
 
+declare interface KeyBind {
+  key: string
+  shiftKey?: boolean
+  ctrlKey?: boolean
+  altKey?: boolean
+  metaKey?: boolean
+}
+
+declare interface ShortcutEvent {
+  name: string
+  callback: () => void
+}
+
+interface Table extends HandsOnTable {
+  undo: () => void
+  redo: () => void
+}
+
 declare interface FileMeta {
-  delimiter: string;
-  quoteChar: string;
-  escapeChar: string;
-  linefeed: Linefeed;
-  encoding: SupportedEncoding;
+  delimiter: string
+  quoteChar: string
+  escapeChar: string
+  linefeed: Linefeed
+  encoding: SupportedEncoding
 }
 
 declare interface FileData {
-  label: string;
-  path: string;
-  data: HandsOnTable.CellValue[][];
-  meta: FileMeta;
+  label: string
+  path: string
+  data: HandsOnTable.CellValue[][]
+  meta: FileMeta
 }
 
 declare interface Options {
-  hasHeader: boolean;
-  search: boolean;
-  printMode: boolean;
+  hasHeader: boolean
+  search: boolean
+  printMode: boolean
 }
 
 declare interface Calculation {
   selected: {
-    rowLength: number;
-    colLength: number;
-    summary: number;
-  };
+    rowLength: number
+    colLength: number
+    summary: number
+  }
 }
 
 declare interface Tab {
-  id: number;
-  table: HandsOnTable | null;
-  dirty: boolean;
-  file: FileData;
-  options: Options;
-  calculation: Calculation;
+  id: number
+  table: Table | null
+  dirty: boolean
+  file: FileData
+  options: Options
+  calculation: Calculation
 }
