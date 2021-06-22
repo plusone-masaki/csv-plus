@@ -49,6 +49,9 @@ export default (props: Props, context: SetupContext, refs: Refs) => {
 
       // Key bindings
       shortcut.addShortcutEvent('select_all', props.table.selectAll)
+      // shortcut.addShortcutEvent('copy', () => props.table.getSelected() && document.execCommand('copy'))
+      // shortcut.addShortcutEvent('cut', () => props.table.getSelected() && document.execCommand('cut'))
+      // shortcut.addShortcutEvent('paste', () => props.table.getSelected() && document.execCommand('paste'))
       shortcut.addShortcutEvent('undo', props.table.undo!)
       shortcut.addShortcutEvent('redo', props.table.redo!)
     }
