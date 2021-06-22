@@ -32,7 +32,6 @@ export default (props: Props, context: SetupContext) => {
     linefeed: [
       { label: 'LF (MacOS/Linux)', value: 'LF' },
       { label: 'CRLF (Windows)', value: 'CRLF' },
-      { label: 'CR (旧MacOS)', value: 'CR' },
     ],
 
     encoding: [

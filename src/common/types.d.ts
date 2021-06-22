@@ -4,7 +4,7 @@ declare global {
   const __static: string
 }
 
-declare type Linefeed = 'CR' | 'CRLF' | 'LF'
+declare type Linefeed = 'CRLF' | 'LF'
 declare type SupportedEncoding =
   'UTF-8' |
   'UTF-16' |

@@ -20,6 +20,14 @@ const defaultFileMeta = (): FileMeta => ({
   linefeed: defaultLinefeed(),
 })
 
+const linefeedChar = (linefeed: string) => {
+  switch (linefeed) {
+    case 'CRLF': return '\r\n'
+    case 'LF': return '\n'
+    default: return defaultLinefeed()
+  }
+}
+
 export default class CSVFile {
   readonly _ready?: Promise<boolean>
 
@@ -57,6 +65,7 @@ export default class CSVFile {
   }
 
   public save (path: string, data: string, options: FileMeta) {
+    data = data.replace('\n', linefeedChar(options.linefeed))
     fs.writeFile(path, iconv.encode(data, options.encoding), error => {
       if (error) throw error
     })
