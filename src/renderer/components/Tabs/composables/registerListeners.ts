@@ -1,5 +1,6 @@
 import { Tab } from '@/common/types'
 import { WritableComputedRef } from 'vue'
+import Shortcut from '@/renderer/utils/Shortcut'
 
 type Models = {
   tabs: WritableComputedRef<Tab[]>;
@@ -12,17 +13,8 @@ interface Methods {
 }
 
 export default (models: Models, methods: Methods) => {
-  /**
-   * Key bindings
-   */
-  document.addEventListener('keydown', (event: KeyboardEvent) => {
-    switch (event.key.toUpperCase()) {
-      // tab-close
-      case 'F4': {
-        const activeTab: Tab|undefined = models.tabs.value.find(tab => tab.id === models.activeId.value)
-        if (event.ctrlKey && activeTab) methods.onClose(activeTab)
-        break
-      }
-    }
+  Shortcut.addShortcutEvent('tab_close', () => {
+    const activeTab = models.tabs.value.find(tab => tab.id === models.activeId.value)
+    if (activeTab) methods.onClose(activeTab)
   })
 }

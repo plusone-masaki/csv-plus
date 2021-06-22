@@ -5,34 +5,14 @@ import {
   ref,
   SetupContext,
 } from 'vue'
-import HandsOnTable from 'handsontable/base'
-import {
-  registerPlugin,
-  AutoColumnSize,
-  ContextMenu,
-  CopyPaste,
-  DragToScroll,
-  Filters,
-  Search,
-} from 'handsontable/plugins'
+import HandsOnTable from 'handsontable'
 import 'handsontable/languages/ja-JP'
 import { Props } from './types'
-
-const LICENSE_KEY = 'non-commercial-and-evaluation'
-
-;[
-  AutoColumnSize,
-  ContextMenu,
-  CopyPaste,
-  DragToScroll,
-  Filters,
-  Search,
-].forEach(plugin => registerPlugin(plugin))
 
 export default (props: Props, context: SetupContext) => {
   const wrapper = ref<HTMLDivElement>()
   const search = ref<HandsOnTable.plugins.Search|null>(null)
-  const filter = ref<HandsOnTable.plugins.Filters|null>(null)
+  console.log('row', (props.file.data.length.toString().length * 10) + 10)
   const settings = computed((): HandsOnTable.GridSettings => ({
     data: props.options.hasHeader ? props.file.data.slice(1) : props.file.data,
     autoColumnSize: { syncLimit: 10 },
@@ -44,7 +24,6 @@ export default (props: Props, context: SetupContext) => {
     dragToScroll: true,
     filters: true,
     language: 'ja-JP',
-    licenseKey: LICENSE_KEY,
     manualColumnResize: true,
     manualRowResize: true,
     minSpareCols: Number(!props.options.printMode),
@@ -55,7 +34,7 @@ export default (props: Props, context: SetupContext) => {
     search: true,
     viewportColumnRenderingOffset: props.options.printMode ? props.file.data.length : 'auto',
     viewportRowRenderingOffset: props.options.printMode ? props.file.data.length : 'auto',
-    afterChange: (_: unknown, src: HandsOnTable.ChangeSource) => {
+    afterChange: (_: unknown, src) => {
       if (!['loadData'].includes(src)) context.emit('edit')
     },
     afterSelection: (startRow: number, startCol: number, endRow: number, endCol: number) => {
@@ -64,7 +43,7 @@ export default (props: Props, context: SetupContext) => {
       const rowLength = endRow - startRow
       const colLength = endCol - startCol
 
-      const values = props.table.getData(startRow, startCol, endRow, endCol).flat()
+      const values = props.table.getData(startRow, startCol, endRow, endCol).flat() as string[]
       props.calculation.selected = {
         rowLength,
         colLength,
@@ -77,7 +56,6 @@ export default (props: Props, context: SetupContext) => {
     if (wrapper.value) {
       const handsOnTable = new HandsOnTable(wrapper.value, settings.value)
       search.value = handsOnTable.getPlugin('search')
-      filter.value = handsOnTable.getPlugin('filters')
       context.emit('load', handsOnTable)
     }
   })
@@ -89,7 +67,6 @@ export default (props: Props, context: SetupContext) => {
   return {
     wrapper,
     search,
-    filter,
     settings,
   }
 }

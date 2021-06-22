@@ -2,6 +2,7 @@ import { ipcRenderer } from 'electron'
 import { WritableComputedRef } from 'vue'
 import { Options } from '@/common/types'
 import * as channels from '@/common/channels'
+import shortcut from '@/renderer/utils/Shortcut'
 
 interface Events {
   add: () => void;
@@ -26,14 +27,6 @@ export default (options: WritableComputedRef<Options>, events: Events) => {
   /**
    * Key bindings
    */
-  document.addEventListener('keydown', (event: KeyboardEvent) => {
-    switch (event.key.toUpperCase()) {
-      case 'F': // Show search box
-        if (event.ctrlKey) options.value.search = !options.value.search
-        break
-      case 'ESCAPE': // Clear
-        options.value.search = false
-        break
-    }
-  })
+  shortcut.addShortcutEvent('search', () => { options.value.search = !options.value.search })
+  shortcut.addShortcutEvent('search_close', () => { options.value.search = false })
 }
