@@ -21,7 +21,10 @@
     "new_tab": "新しいタブ"
   },
   "footer": {
-    "summary": "合計:"
+    "summary": "合計:",
+    "bom": "BOM",
+    "bom_enable": "BOM付き",
+    "bom_disable": "BOM無し"
   },
   "shortcut": {
     "add": "新規作成",

@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron'
 import {
+  computed,
   onBeforeUnmount,
   onMounted,
   reactive,
@@ -66,6 +67,15 @@ export default (props: Props, context: SetupContext) => {
     ],
   })
 
+  const withBOM = computed(() => {
+    const bomEncoding = [
+      'UTF-8',
+      'UTF-16',
+      'UTF-32',
+    ]
+    return !!tab.value && bomEncoding.includes(tab.value.file.meta.encoding)
+  })
+
   const changeEncoding = () => {
     if (!props.modelValue) return
     const file = props.modelValue.file
@@ -91,6 +101,7 @@ export default (props: Props, context: SetupContext) => {
     tab,
     menu,
     items,
+    withBOM,
     changeEncoding,
     closeDropdown,
   }

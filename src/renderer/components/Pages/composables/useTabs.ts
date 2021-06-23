@@ -19,6 +19,7 @@ const defaultMeta = (): FileMeta => ({
   quoteChar: '"',
   escapeChar: '"',
   encoding: 'UTF-8',
+  bom: false,
   linefeed: defaultLinefeed(),
 })
 
