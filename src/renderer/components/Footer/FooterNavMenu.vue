@@ -46,7 +46,7 @@ export default defineComponent({
   bottom: 100%
   list-style: none
   margin: 0
-  max-height: 100px
+  max-height: 124px
   overflow-y: auto
   padding: 0
   position: absolute
@@ -56,4 +56,7 @@ export default defineComponent({
 
   &__item
     padding: 1px 8px
+
+::-webkit-scrollbar
+  width: 5px
 </style>
