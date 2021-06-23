@@ -5,6 +5,7 @@ import { BrowserWindow, dialog } from 'electron'
 import csvParse from 'csv-parse'
 import chardet from 'chardet'
 import iconv from 'iconv-lite'
+import * as hasBom from 'has-bom'
 import { Match } from 'chardet/lib/match'
 import { FileMeta, Linefeed, SupportedEncoding } from '@/common/types'
 import * as channels from '@/common/channels'
@@ -17,6 +18,7 @@ const defaultFileMeta = (): FileMeta => ({
   quoteChar: '"',
   escapeChar: '"',
   encoding: '',
+  bom: false,
   linefeed: defaultLinefeed(),
 })
 
@@ -66,7 +68,7 @@ export default class CSVFile {
 
   public save (path: string, data: string, options: FileMeta) {
     data = data.replace('\n', linefeedChar(options.linefeed))
-    fs.writeFile(path, iconv.encode(data, options.encoding), error => {
+    fs.writeFile(path, iconv.encode(data, options.encoding, { addBOM: options.bom }), error => {
       if (error) throw error
     })
   }
@@ -99,6 +101,7 @@ export default class CSVFile {
     return new Stream.Transform({
       transform (chunk: Buffer, _: BufferEncoding, next: Stream.TransformCallback) {
         if (!meta.encoding) {
+          meta.bom = hasBom(chunk)
           const candidates = chardet.analyse(chunk)
           if (candidates.some(match => match.name === DEFAULT_ENCODING)) {
             meta.encoding = DEFAULT_ENCODING
@@ -127,18 +130,18 @@ export default class CSVFile {
    * @return {Stream.Transform}
    */
   private _detectLinefeed (): Stream.Transform {
-    let data = ''
+    let linefeed = ''
     const stream = new Stream.Transform({
       transform (chunk: Buffer, encoding: BufferEncoding, next: Stream.TransformCallback) {
-        data += chunk
+        if (!linefeed) {
+          if (chunk.indexOf('\r\n') !== -1) linefeed = 'CRLF'
+          else if (chunk.indexOf('\n') !== -1) linefeed = 'LF'
+        }
         next(null, chunk)
       },
     })
 
     stream.on('end', () => {
-      let linefeed = ''
-      if (data.indexOf('\r') !== -1) linefeed += 'CR'
-      if (data.indexOf('\n') !== -1) linefeed += 'LF'
       this._meta.linefeed = linefeed as Linefeed || defaultLinefeed()
     })
 
@@ -170,6 +173,7 @@ export default class CSVFile {
       const options: csvParse.Options = {
         bom: true,
         delimiter: this._meta.delimiter = CSVFile._guessDelimiter(path),
+        relax: true,
         relaxColumnCount: true,
       }
 
@@ -178,7 +182,7 @@ export default class CSVFile {
         .pipe(this._detectLinefeed())
         .pipe(csvParse(options, async (error: Error | undefined, data: string[][]) => {
           if (error) {
-            console.log(error)
+            console.error(error)
             dialog.showErrorBox('ファイルを開けませんでした', 'ファイル形式が間違っていないかご確認下さい')
             return
           }

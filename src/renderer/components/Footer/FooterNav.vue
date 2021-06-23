@@ -30,7 +30,7 @@ footer.footer-nav
       v-model="tab.file.meta.bom"
       :title="$t(tab.file.meta.bom ? 'footer.bom_enable' : 'footer.bom_disable')"
       small
-      @click="tab.file.meta.bom = !tab.file.meta.bom"
+      @click="changeBOM"
     )
       | {{ $t('footer.bom') }}
 </template>
