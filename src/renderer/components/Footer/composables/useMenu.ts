@@ -78,8 +78,15 @@ export default (props: Props, context: SetupContext) => {
 
   const changeEncoding = () => {
     if (!props.modelValue) return
+    props.modelValue.dirty = true
     const file = props.modelValue.file
     ipcRenderer.send(channels.FILE_RELOAD, file.path, JSON.stringify(file.meta))
+  }
+
+  const changeBOM = () => {
+    if (!props.modelValue) return
+    props.modelValue.dirty = true
+    props.modelValue.file.meta.bom = !props.modelValue.file.meta.bom
   }
 
   const closeDropdown = (e: MouseEvent) => {
@@ -103,6 +110,7 @@ export default (props: Props, context: SetupContext) => {
     items,
     withBOM,
     changeEncoding,
+    changeBOM,
     closeDropdown,
   }
 }
