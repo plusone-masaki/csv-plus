@@ -62,6 +62,7 @@ declare interface FileMeta {
   escapeChar: string
   linefeed: Linefeed
   encoding: SupportedEncoding
+  bom: boolean
 }
 
 declare interface FileData {
