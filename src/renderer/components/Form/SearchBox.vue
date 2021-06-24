@@ -51,9 +51,14 @@ export default defineComponent({
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.08)
   padding: 2px 8px
   pointer-events: visible
+
+  &__input
+    font-size: 16px
+
 .slide-y-transition-leave-active, .slide-y-transition-enter-active
   transform: translateY(-100%)
   transition: all 0.1s linear
+
 .slide-y-transition-enter-to
   transform: translateY(0px)
 </style>
