@@ -18,9 +18,9 @@ const defaultMeta = (): FileMeta => ({
   delimiter: ',',
   quoteChar: '"',
   escapeChar: '"',
+  linefeed: defaultLinefeed(),
   encoding: 'UTF-8',
   bom: false,
-  linefeed: defaultLinefeed(),
 })
 
 const defaultCalculation = (): Calculation => ({

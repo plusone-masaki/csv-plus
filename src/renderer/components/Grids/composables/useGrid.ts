@@ -17,6 +17,7 @@ export default (props: Props, context: SetupContext) => {
     autoColumnSize: { syncLimit: 10 },
     autoRowSize: false,
     colHeaders: props.options.hasHeader ? props.file.data[0] as string[] : true,
+    colWidths: props.file.meta.colWidth,
     columnSorting: true,
     contextMenu: true,
     copyPaste: true,
