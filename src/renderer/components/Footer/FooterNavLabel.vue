@@ -6,8 +6,7 @@ div.footer-nav-label(:class="{ '--active': value }")
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, SetupContext } from 'vue'
-import vModel from '@/renderer/utils/v-model'
+import { defineComponent, PropType } from 'vue'
 
 export default defineComponent({
   name: 'FooterNavLabel',
