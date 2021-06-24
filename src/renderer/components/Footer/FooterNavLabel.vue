@@ -1,23 +1,20 @@
 <template lang="pug">
-div.footer-nav-label(
-  :class="{ '--active': active }"
-  @click="active = !active"
-)
-  slot
+div.footer-nav-label(:class="{ '--active': value }")
+  | {{ label }}
+  span(v-show="value")
+    slot
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { computed, defineComponent, PropType, SetupContext } from 'vue'
 import vModel from '@/renderer/utils/v-model'
 
 export default defineComponent({
   name: 'FooterNavLabel',
   props: {
-    modelValue: { type: Boolean as PropType<boolean>, default: false },
+    value: { type: Boolean as PropType<boolean>, default: false },
+    label: { type: String as PropType<string>, required: true },
   },
-  setup: (props, context) => ({
-    active: vModel('modelValue', props, context),
-  }),
 })
 </script>
 

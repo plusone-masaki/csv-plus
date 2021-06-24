@@ -4,7 +4,9 @@ import {
   onBeforeUnmount,
   onMounted,
   reactive,
-  readonly, SetupContext, WritableComputedRef,
+  ref,
+  SetupContext,
+  WritableComputedRef,
 } from 'vue'
 import * as channels from '@/common/channels'
 import { Tab } from '@/common/types'
@@ -24,12 +26,21 @@ interface Menu {
 export default (props: Props, context: SetupContext) => {
   const tab = vModel('modelValue', props, context) as WritableComputedRef<Tab|undefined>
 
+  const anyDelimiter = ref('')
+
   const menu: Menu = reactive({
+    delimiter: false,
     linefeed: false,
     encoding: false,
   })
 
-  const items = readonly({
+  const items = reactive({
+    delimiter: [
+      { label: 'カンマ区切り[,]', value: ',' },
+      { label: 'タブ区切り　[  ]', value: '\t' },
+      { label: 'その他', value: anyDelimiter.value, input: true },
+    ],
+
     linefeed: [
       { label: 'LF (MacOS/Linux)', value: 'LF' },
       { label: 'CRLF (Windows)', value: 'CRLF' },
@@ -76,8 +87,14 @@ export default (props: Props, context: SetupContext) => {
     return !!tab.value && bomEncoding.includes(tab.value.file.meta.encoding)
   })
 
-  const changeEncoding = () => {
+  const showMenu = (menuName: string) => {
+    Object.keys(menu).forEach(key => { menu[key] = (key === menuName) && !menu[key] })
+  }
+
+  const confirmReload = (menuName?: string) => {
+    if (menuName) showMenu(menuName)
     if (!props.modelValue) return
+
     props.modelValue.dirty = true
     const file = props.modelValue.file
     ipcRenderer.send(channels.FILE_RELOAD, file.path, JSON.stringify(file.meta))
@@ -109,7 +126,8 @@ export default (props: Props, context: SetupContext) => {
     menu,
     items,
     withBOM,
-    changeEncoding,
+    showMenu,
+    confirmReload,
     changeBOM,
     closeDropdown,
   }
