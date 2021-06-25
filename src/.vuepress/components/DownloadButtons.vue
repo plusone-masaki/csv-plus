@@ -1,5 +1,6 @@
 <template>
 <div class="downloads">
+  <h3 v-if="release" class="version">最新バージョン： {{ release.tag_name }}</h3>
   <div class="downloads__main">
     <div v-if="downloads.windows" class="downloads__os">
       <div class="downloads__os--icon">
@@ -116,6 +117,9 @@ export default {
 
 <style lang="stylus" scoped>
 .downloads
+  .version
+    text-align: center
+
   &__main
     border-bottom: solid 1px $borderColor
     display: flex
