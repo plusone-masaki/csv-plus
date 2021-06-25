@@ -1,10 +1,19 @@
-import { BrowserWindow, dialog, ipcMain, IpcMainEvent, IpcMainInvokeEvent, WebContents } from 'electron'
+import * as fs from 'fs'
+import * as path from 'path'
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  IpcMainEvent,
+  IpcMainInvokeEvent,
+  WebContents,
+} from 'electron'
 import * as channels from '@/common/channels'
 import FileMenu from '@/main/menu/FileMenu'
 // import EditMenu from '@/main/menu/EditMenu'
 import CSVFile from '@/main/model/CSVFile'
 import { FileMeta } from '@/common/types'
-import fs from 'fs'
 
 const csvLoader = new CSVFile()
 
@@ -81,4 +90,8 @@ ipcMain.handle(channels.FILE_DESTROY_CONFIRM, (e: IpcMainInvokeEvent, file: chan
 
   if (selected === BUTTON_SAVE) return FileMenu.executeSave(channels.FILE_SAVE, file, getWindow(e.sender))
   return selected === BUTTON_NO_SAVE
+})
+
+ipcMain.on(channels.TABS_SAVE, (e: IpcMainEvent, paths: string) => {
+  fs.writeFileSync(path.join(app.getPath('userData'), 'tab_history.json'), paths)
 })

@@ -1,11 +1,12 @@
 import { ipcRenderer } from 'electron'
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
 import HandsOnTable from 'handsontable'
 import { FileData, Tab, Options, FileMeta, Calculation } from '@/common/types'
 import * as channels from '@/common/channels'
 import { vueI18n } from '@/common/plugins/i18n'
 import { defaultLinefeed } from '@/common/plugins/helpers'
+import { persistentTabs } from '@/renderer/utils/persistentStates'
 import { useTab } from './types'
 
 const defaultOptions = (): Options => ({
@@ -41,6 +42,7 @@ export default (): useTab => {
     tabs: [] as Tab[],
   })
 
+  // computed
   const activeTab = computed<Tab|undefined>({
     get: () => state.tabs.find((tab: Tab) => tab.id === state.active),
     set: tabData => {
@@ -58,12 +60,16 @@ export default (): useTab => {
     },
   })
 
+  // watch
+  watch(() => state.tabs, () => persistentTabs(state.tabs))
+
+  // methods
   const onEdit = () => {
     if (activeTab.value) activeTab.value.dirty = true
   }
 
-  const addTab = (file?: FileData) => {
-    file = file || {
+  const addTab = (fileData?: FileData) => {
+    const file = fileData || {
       label: t('tabs.new_tab'),
       path: `newTab${count.value}`,
       data: HandsOnTable.helper.createEmptySpreadsheetData(100, 26),
@@ -83,6 +89,7 @@ export default (): useTab => {
 
     state.tabs.push(tab)
     state.active = tab.id
+    if (fileData) persistentTabs(state.tabs)
   }
   ipcRenderer.on(channels.FILE_NEW, () => addTab())
 
@@ -106,6 +113,8 @@ export default (): useTab => {
     } else if (!state.tabs.length) {
       state.active = -1
     }
+
+    persistentTabs(state.tabs)
   }
 
   // 新しいタブを1件作成しておく

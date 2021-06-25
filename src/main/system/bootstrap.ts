@@ -6,9 +6,10 @@ import CSVFile from '@/main/model/CSVFile'
 import './auto-update'
 import './events'
 import * as browserWindow from '@/common/browserWindow'
+import fs from 'fs'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
-const csvLoader = new CSVFile()
+const csvFile = new CSVFile()
 let window: BrowserWindow
 let filepath: string
 
@@ -18,6 +19,20 @@ app.setName('CSV+')
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
 ])
+
+const isFirstInstance = app.requestSingleInstanceLock()
+if (!isFirstInstance) {
+  app.quit()
+} else {
+  app.on('second-instance', (event, argv, workingDir) =>  {
+    if (argv.length >= 2 && argv[1]) filepath = argv[1]
+    if (filepath && filepath !== 'dist') csvFile.open(filepath)
+    if (window) {
+      if (window.isMinimized()) window.restore()
+      window.focus()
+    }
+  })
+}
 
 async function createWindow () {
   // Create the browser window.
@@ -36,12 +51,19 @@ async function createWindow () {
 
   // File load from arguments
   window.webContents.on('did-finish-load', () => {
-    csvLoader.initialize().setWindow(window)
+    csvFile.initialize().setWindow(window)
+    let paths: string[] = []
+    try {
+      const tabHistory = fs.readFileSync(path.join(app.getPath('userData'), 'tab_history.json'))
+      console.log('tabHistory', tabHistory.toString())
+      paths = paths.concat(JSON.parse(tabHistory.toString()) as string[])
+    } catch (e) {}
+
     const argv = process.argv
-    if (argv.length >= 2 && argv[1]) {
-      filepath = argv[1]
-    }
-    if (filepath && filepath !== 'dist') csvLoader.open(filepath)
+    if (argv.length >= 2 && argv[1]) filepath = argv[1]
+    if (filepath && filepath !== 'dist') paths.push(filepath)
+    console.log('paths', paths)
+    paths.forEach(path => csvFile.open(path))
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

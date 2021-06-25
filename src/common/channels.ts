@@ -18,6 +18,10 @@ export type FILE_SAVE_AS = FILE_SAVE
 export type FILE_SAVE_COMPLETE = string
 export type FILE_DESTROY_CONFIRM = { name: string; path: string; meta: string; data: string }
 
+// Tabs
+export const TABS_SAVE = 'TABS_SAVE'
+export const TABS_LOAD = 'TABS_LOAD'
+
 // Menus
 export const MENU_SELECT_ALL = 'MENU_SELECT_ALL'
 export const MENU_UNDO = 'MENU_UNDO'
