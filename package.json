@@ -25,6 +25,7 @@
     "handsontable": "6.2.2",
     "has-bom": "^0.1.0",
     "iconv-lite": "^0.6.2",
+    "sanitize-html": "^2.4.0",
     "vue": "^3",
     "vue-i18n": "^9.0.0-beta.18",
     "vuedraggable": "^4.0.1"
