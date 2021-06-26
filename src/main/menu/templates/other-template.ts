@@ -17,6 +17,16 @@ export default [
         accelerator: 'Ctrl+O',
         click: FileMenu.open,
       },
+      ...(process.platform === 'win32' ? [{
+        label: '最近開いたファイル',
+        role: 'recentDocuments',
+        submenu: [
+          {
+            label: '履歴を消去',
+            role: 'clearRecentDocuments',
+          },
+        ],
+      }] : []),
       { type: 'separator' },
       {
         label: '上書き保存',

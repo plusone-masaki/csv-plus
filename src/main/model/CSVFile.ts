@@ -1,7 +1,7 @@
 import fs from 'fs'
 import Stream, { Transform } from 'stream'
 import { EventEmitter } from 'events'
-import { BrowserWindow, dialog } from 'electron'
+import { app, BrowserWindow, dialog } from 'electron'
 import csvParse from 'csv-parse'
 import chardet from 'chardet'
 import iconv from 'iconv-lite'
@@ -64,6 +64,9 @@ export default class CSVFile {
   public async open (path: string) {
     if (!await CSVFile._isFile(path)) throw Error('File not found.')
     await this.parse(path)
+
+    // 最近使ったファイルに追加
+    app.addRecentDocument(path)
   }
 
   public save (path: string, data: string, options: FileMeta) {

@@ -56,6 +56,16 @@ export default [
         accelerator: 'CmdOrCtrl+O',
         click: FileMenu.open,
       },
+      {
+        label: '最近開いたファイル',
+        role: 'recentDocuments',
+        submenu: [
+          {
+            label: '履歴を消去',
+            role: 'clearRecentDocuments',
+          },
+        ],
+      },
       { type: 'separator' },
       {
         label: '上書き保存',
@@ -66,6 +76,11 @@ export default [
         label: '名前を付けて保存',
         accelerator: 'CmdOrCtrl+Shift+S',
         click: FileMenu.saveAs,
+      },
+      {
+        label: '印刷',
+        accelerator: 'CmdOrCtrl+Shift+P',
+        click: FileMenu.print,
       },
     ],
   },

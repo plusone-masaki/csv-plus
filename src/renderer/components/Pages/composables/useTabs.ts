@@ -68,6 +68,11 @@ export default (): useTab => {
     if (activeTab.value) activeTab.value.dirty = true
   }
 
+  /**
+   * タブを追加
+   *
+   * @param {FileData|undefined} fileData
+   */
   const addTab = (fileData?: FileData) => {
     const file = fileData || {
       label: t('tabs.new_tab'),
@@ -93,6 +98,11 @@ export default (): useTab => {
   }
   ipcRenderer.on(channels.FILE_NEW, () => addTab())
 
+  /**
+   * タブを閉じる
+   *
+   * @param {Tab} tab
+   */
   const closeTab = async (tab: Tab) => {
     // ファイルが未保存の場合は確認ダイアログを表示
     if (tab.dirty) {

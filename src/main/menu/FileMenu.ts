@@ -27,8 +27,13 @@ export default class FileMenu {
    */
   public static open (menu: MenuItem|BrowserWindow, window?: BrowserWindow) {
     window = window || menu as BrowserWindow
+
+    const defaultPath = process.platform === 'win32' ?
+      app.getPath('recent') || app.getPath('documents') :
+      app.getPath('documents')
+
     const files = dialog.showOpenDialogSync(window, {
-      defaultPath: app.getPath('documents'),
+      defaultPath,
       properties: ['openFile', 'multiSelections'],
       filters: FILE_FILTERS,
     })
@@ -136,9 +141,13 @@ export default class FileMenu {
    * @return {string}
    */
   private static _selectPath (window: BrowserWindow, path?: string): string {
+    const defaultPath = process.platform === 'win32' ?
+      path || app.getPath('recent') || app.getPath('documents') :
+      path || app.getPath('documents')
+
     return dialog.showSaveDialogSync(window, {
       title: '名前を付けて保存',
-      defaultPath: path || app.getPath('documents'),
+      defaultPath,
       filters: FILE_FILTERS,
       properties: [
         'createDirectory',
