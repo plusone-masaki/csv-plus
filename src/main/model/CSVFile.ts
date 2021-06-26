@@ -14,19 +14,19 @@ import { defaultLinefeed } from '@/common/plugins/helpers'
 
 const DEFAULT_ENCODING = 'UTF-8'
 const defaultFileMeta = (): FileMeta => ({
-  delimiter: ',',
+  delimiter: '',
   quoteChar: '"',
   escapeChar: '"',
+  linefeed: defaultLinefeed(),
   encoding: '',
   bom: false,
-  linefeed: defaultLinefeed(),
 })
 
-const linefeedChar = (linefeed: string) => {
+const linefeedChar = (linefeed: string): '\r\n'|'\n' => {
   switch (linefeed) {
     case 'CRLF': return '\r\n'
-    case 'LF': return '\n'
-    default: return defaultLinefeed()
+    case 'LF':
+    default: return '\n'
   }
 }
 
@@ -67,7 +67,7 @@ export default class CSVFile {
   }
 
   public save (path: string, data: string, options: FileMeta) {
-    data = data.replace('\n', linefeedChar(options.linefeed))
+    data = data.replace(/\n/g, linefeedChar(options.linefeed))
     fs.writeFile(path, iconv.encode(data, options.encoding, { addBOM: options.bom }), error => {
       if (error) throw error
     })
@@ -164,15 +164,17 @@ export default class CSVFile {
     }
   }
 
-  private static _hasOverflowCell (data: string[][]) {
-    return data.some(cols => cols.some(str => str.length > files.MAX_CELL_STRING_LENGTH))
+  private static _hasOverflow (data: string[][]) {
+    return data.length > files.MAX_ROW_LENGTH ||
+      data.some(cols => cols.length > files.MAX_COL_LENGTH)
   }
 
   private async parse (path: string) {
     try {
+      this._meta.delimiter = this._meta.delimiter || CSVFile._guessDelimiter(path)
       const options: csvParse.Options = {
         bom: true,
-        delimiter: this._meta.delimiter = CSVFile._guessDelimiter(path),
+        delimiter: this._meta.delimiter,
         relax: true,
         relaxColumnCount: true,
       }
@@ -187,14 +189,8 @@ export default class CSVFile {
             return
           }
 
-          // 例外処理
-          if (CSVFile._hasOverflowCell(data)) {
-            dialog.showErrorBox(
-              'ファイルを開けませんでした',
-              `最大文字数を越えるセルがあります。\nセルあたりの最大文字数は ${files.MAX_CELL_STRING_LENGTH} 文字です。`,
-            )
-            return
-          }
+          // 基準を越えるサイズの場合に列幅の自動計算をキャンセル
+          if (CSVFile._hasOverflow(data)) this._meta.colWidth = 120
 
           // メタデータの補完
           if (!this._meta.encoding) this._meta.encoding = DEFAULT_ENCODING

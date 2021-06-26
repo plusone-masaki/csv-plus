@@ -1,5 +1,5 @@
 <template lang="pug">
-label.text-input
+label.text-input(:style="{ height: `${height}px` }")
   span.text-input__icon(v-if="icon")
     svg-icon(
       :icon="icon"
@@ -26,7 +26,8 @@ export default defineComponent({
     modelValue: { type: [String, Number] as PropType<string|number>, required: true },
     icon: { type: String as PropType<string|undefined>, default: undefined },
     placeholder: { type: String as PropType<string|undefined>, default: undefined },
-    width: { type: Number as PropType<number>, default: 180 },
+    height: { type: [Number, String] as PropType<number|string>, default: 28 },
+    width: { type: [Number, String] as PropType<number|string>, default: 180 },
   },
   setup: (props, context) => ({
     value: vModel('modelValue', props, context),
@@ -41,7 +42,6 @@ export default defineComponent({
   border: thin solid #cfcfcf
   box-sizing: border-box
   display: inline-flex
-  height: 28px
   margin: 0
 
   &:focus-within
@@ -59,7 +59,6 @@ export default defineComponent({
   &__input
     background: transparent
     border: none
-    font-size: 16px
     outline: none !important
     padding: 4px
 </style>

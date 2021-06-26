@@ -6,12 +6,24 @@ ul.footer-nav-menu
     :key="index"
     @click="onChange(item.value)"
   )
-    | {{ item.label }}
+    span {{ item.label }}
+    form.footer-nav-menu__form(
+      @submit.prevent.stop="onChange(item.value)"
+      @click.stop
+      @change.stop
+    )
+      text-input(
+        v-if="item.input"
+        v-model="item.value"
+        height="20"
+        width="40"
+      )
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import vModel from '@/renderer/utils/v-model'
+import TextInput from '@/renderer/components/Form/TextInput.vue'
 
 type MenuItem = {
   label: string;
@@ -20,6 +32,7 @@ type MenuItem = {
 
 export default defineComponent({
   name: 'FooterNavMenu',
+  components: { TextInput },
   props: {
     modelValue: { type: String as PropType<string>, required: true },
     items: { type: Array as PropType<MenuItem[]>, required: true },
@@ -55,7 +68,12 @@ export default defineComponent({
   z-index: 201
 
   &__item
+    display: flex
+    justify-content: space-between
     padding: 1px 8px
+
+  &__form
+    display: inline
 
 ::-webkit-scrollbar
   width: 5px

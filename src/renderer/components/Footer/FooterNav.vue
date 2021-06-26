@@ -2,31 +2,49 @@
 footer.footer-nav
   template(v-if="tab")
     // 選択したセルの合計
-    footer-nav-label(v-if="tab.calculation.selected.summary")
-      | {{ $t('footer.summary') + tab.calculation.selected.summary }}
+    footer-nav-label(
+      v-show="tab.calculation.selected.summary"
+      :label="$t('footer.summary') + tab.calculation.selected.summary"
+    )
+
+    footer-nav-label(
+      :value="menu.delimiter"
+      :label="$t('footer.delimiter', { delimiter: tab.file.meta.delimiter })"
+      @click="showMenu('delimiter')"
+    )
+      footer-nav-menu(
+        v-model="tab.file.meta.delimiter"
+        :items="items.delimiter"
+        @change="confirmReload('delimiter')"
+      )
 
     // 改行コード
-    footer-nav-label(v-model="menu.linefeed")
-      | {{ tab.file.meta.linefeed }}
+    footer-nav-label(
+      :value="menu.linefeed"
+      :label="tab.file.meta.linefeed"
+      @click="showMenu('linefeed')"
+    )
       footer-nav-menu(
-        v-if="menu.linefeed"
         v-model="tab.file.meta.linefeed"
         :items="items.linefeed"
+        @change="modelValue.dirty = true"
       )
 
     // 文字コード
-    footer-nav-label(v-model="menu.encoding")
-      | {{ tab.file.meta.encoding }}
+    footer-nav-label(
+      :value="menu.encoding"
+      :label="tab.file.meta.encoding"
+      @click="showMenu('encoding')"
+    )
       footer-nav-menu(
-        v-if="menu.encoding"
         v-model="tab.file.meta.encoding"
         :items="items.encoding"
-        @change="changeEncoding"
+        @change="confirmReload"
       )
 
     // BOMありなし
     chip-label(
-      v-if="withBOM"
+      v-show="withBOM"
       v-model="tab.file.meta.bom"
       :title="$t(tab.file.meta.bom ? 'footer.bom_enable' : 'footer.bom_disable')"
       small

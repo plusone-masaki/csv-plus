@@ -63,6 +63,7 @@ declare interface FileMeta {
   linefeed: Linefeed
   encoding: SupportedEncoding
   bom: boolean
+  colWidth?: number
 }
 
 declare interface FileData {

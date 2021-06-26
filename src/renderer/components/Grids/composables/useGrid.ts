@@ -25,6 +25,7 @@ export default (props: Props, context: SetupContext) => {
     colHeaders: props.options.hasHeader
       ? props.file.data[0].map((d: string) => d ? sanitize(d, sanitizeOption) : '') as string[]
       : true,
+    colWidths: props.file.meta.colWidth,
     columnSorting: true,
     contextMenu: true,
     copyPaste: true,
