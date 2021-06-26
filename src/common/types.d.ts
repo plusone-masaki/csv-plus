@@ -51,7 +51,7 @@ declare interface ShortcutEvent {
   callback: () => void
 }
 
-interface Table extends HandsOnTable {
+declare interface Table extends HandsOnTable {
   undo: () => void
   redo: () => void
 }

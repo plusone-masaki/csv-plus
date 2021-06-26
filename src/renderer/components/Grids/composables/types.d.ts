@@ -1,7 +1,9 @@
+import * as types from '@/common/types'
+
 export type Props = {
-  table: Table | null
-  file: FileData
+  table: types.Table | null
+  file: types.FileData
   keyword: string
-  options: Options
-  calculation: Calculation
+  options: types.Options
+  calculation: types.Calculation
 }
