@@ -92,6 +92,6 @@ ipcMain.handle(channels.FILE_DESTROY_CONFIRM, (e: IpcMainInvokeEvent, file: chan
   return selected === BUTTON_NO_SAVE
 })
 
-ipcMain.on(channels.TABS_SAVE, (e: IpcMainEvent, paths: string) => {
+ipcMain.on(channels.TABS_SAVE, (e: IpcMainEvent, paths: channels.TABS_SAVE) => {
   fs.writeFileSync(path.join(app.getPath('userData'), 'tab_history.json'), paths)
 })

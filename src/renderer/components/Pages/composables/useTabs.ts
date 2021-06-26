@@ -117,6 +117,14 @@ export default (): useTab => {
     persistentTabs(state.tabs)
   }
 
+  // アプリ起動時、全てのタブが開き終わったら並び順まで復元
+  ipcRenderer.on(channels.TABS_LOAD, (_, paths: channels.TABS_LOAD) => {
+    state.tabs = paths
+      .map(path => state.tabs.find((tab: Tab) => tab.file.path === path))
+      .filter((tab?: Tab) => !!tab)
+      .concat(state.tabs.filter(tab => paths.indexOf(tab.file.path) === -1)) as Tab[]
+  })
+
   // 新しいタブを1件作成しておく
   addTab()
 

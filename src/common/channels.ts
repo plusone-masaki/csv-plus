@@ -22,6 +22,9 @@ export type FILE_DESTROY_CONFIRM = { name: string; path: string; meta: string; d
 export const TABS_SAVE = 'TABS_SAVE'
 export const TABS_LOAD = 'TABS_LOAD'
 
+export type TABS_SAVE = string
+export type TABS_LOAD = string[]
+
 // Menus
 export const MENU_SELECT_ALL = 'MENU_SELECT_ALL'
 export const MENU_UNDO = 'MENU_UNDO'

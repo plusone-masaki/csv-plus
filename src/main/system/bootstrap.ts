@@ -1,3 +1,4 @@
+import fs from 'fs'
 import * as path from 'path'
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
@@ -6,7 +7,7 @@ import CSVFile from '@/main/model/CSVFile'
 import './auto-update'
 import './events'
 import * as browserWindow from '@/common/browserWindow'
-import fs from 'fs'
+import * as channels from '@/common/channels'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const csvFile = new CSVFile()
@@ -50,20 +51,27 @@ async function createWindow () {
   })
 
   // File load from arguments
-  window.webContents.on('did-finish-load', () => {
+  window.webContents.on('did-finish-load', async () => {
     csvFile.initialize().setWindow(window)
     let paths: string[] = []
+
+    // 前回開いていたタブの復元
     try {
       const tabHistory = fs.readFileSync(path.join(app.getPath('userData'), 'tab_history.json'))
-      console.log('tabHistory', tabHistory.toString())
       paths = paths.concat(JSON.parse(tabHistory.toString()) as string[])
     } catch (e) {}
 
+    // ファイルを開こうとしている場合読み込み
     const argv = process.argv
     if (argv.length >= 2 && argv[1]) filepath = argv[1]
     if (filepath && filepath !== 'dist') paths.push(filepath)
-    console.log('paths', paths)
-    paths.forEach(path => csvFile.open(path))
+
+    const loadingFiles: Promise<void>[] = []
+    paths.forEach(path => loadingFiles.push(csvFile.open(path)))
+
+    // 全てのタブが開き終わったら元の順番に並び替え
+    await Promise.all(loadingFiles)
+    window.webContents.send(channels.TABS_LOAD, paths)
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
