@@ -13,3 +13,12 @@ declare module 'handsontable/plugins' {
   import HandsOnTable from 'handsontable'
   export = HandsOnTable.plugins
 }
+
+declare type SanitizeOption = {
+  allowedTags?: boolean|{ [key: string]: string }[],
+  allowedAttributes?: boolean|{ [key: string]: string },
+}
+
+declare module 'sanitize-html' {
+  export = (string, options?: SanitizeOption) => string
+}

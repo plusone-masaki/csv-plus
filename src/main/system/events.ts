@@ -1,10 +1,10 @@
+import fs from 'fs'
 import { BrowserWindow, dialog, ipcMain, IpcMainEvent, IpcMainInvokeEvent, WebContents } from 'electron'
+import { FileMeta } from '@/common/types'
 import * as channels from '@/common/channels'
 import FileMenu from '@/main/menu/FileMenu'
 // import EditMenu from '@/main/menu/EditMenu'
 import CSVFile from '@/main/model/CSVFile'
-import { FileMeta } from '@/common/types'
-import fs from 'fs'
 
 const csvLoader = new CSVFile()
 
