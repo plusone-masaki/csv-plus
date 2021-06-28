@@ -1,7 +1,7 @@
 import fs from 'fs'
 import Stream, { Transform } from 'stream'
 import { EventEmitter } from 'events'
-import { app, BrowserWindow, dialog } from 'electron'
+import { BrowserWindow, dialog } from 'electron'
 import csvParse from 'csv-parse'
 import chardet from 'chardet'
 import iconv from 'iconv-lite'
@@ -11,8 +11,10 @@ import { FileMeta, Linefeed, SupportedEncoding } from '@/common/types'
 import * as channels from '@/common/channels'
 import * as files from '@/common/files'
 import { defaultLinefeed } from '@/common/plugins/helpers'
+import History from '@/main/model/History'
 
 const DEFAULT_ENCODING = 'UTF-8'
+
 const defaultFileMeta = (): FileMeta => ({
   delimiter: ',',
   quoteChar: '"',
@@ -66,7 +68,7 @@ export default class CSVFile {
     await this.parse(path)
 
     // 最近使ったファイルに追加
-    app.addRecentDocument(path)
+    History.addRecentDocument(path)
   }
 
   public save (path: string, data: string, options: FileMeta) {

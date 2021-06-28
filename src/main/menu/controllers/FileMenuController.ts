@@ -6,18 +6,20 @@ import {
 } from 'electron'
 import * as fs from 'fs'
 import * as channels from '@/common/channels'
-import CSVFile from '@/main/model/CSVFile'
 import { FILE_FILTERS } from '@/common/files'
+import CSVFile from '@/main/model/CSVFile'
+import History from '@/main/model/History'
 
-const csvLoader = new CSVFile()
+const csvFile = new CSVFile()
 
-export default class FileMenu {
-  public static newFile (menu: MenuItem, window: BrowserWindow) {
+export default class FileMenuController {
+  public static newFile (menu: MenuItem, window?: BrowserWindow) {
+    if (!window) return
     window.webContents.send(channels.FILE_NEW)
   }
 
   public static open (window: BrowserWindow): void
-  public static open (menu: MenuItem, window: BrowserWindow): void
+  public static open (menu: MenuItem, window?: BrowserWindow): void
 
   /**
    * [ファイルを開く]
@@ -39,7 +41,16 @@ export default class FileMenu {
     })
     if (!files) return
 
-    files.forEach((path: string) => csvLoader.initialize().setWindow(window as BrowserWindow).open(path))
+    files.forEach((path: string) => csvFile.initialize().setWindow(window as BrowserWindow).open(path))
+  }
+
+  public static openRecent (menu: MenuItem, window?: BrowserWindow) {
+    if (!window) return
+    return csvFile.initialize().setWindow(window as BrowserWindow).open(menu.label)
+  }
+
+  public static clearRecent () {
+    History.clearRecentDocuments()
   }
 
   /**
@@ -48,7 +59,8 @@ export default class FileMenu {
    * @param {MenuItem} menu
    * @param {BrowserWindow} window
    */
-  public static save (menu: MenuItem, window: BrowserWindow) {
+  public static save (menu: MenuItem, window?: BrowserWindow) {
+    if (!window) return
     window.webContents.send(channels.FILE_SAVE)
   }
 
@@ -58,7 +70,8 @@ export default class FileMenu {
    * @param {MenuItem} menu
    * @param {BrowserWindow} window
    */
-  public static saveAs (menu: MenuItem, window: BrowserWindow) {
+  public static saveAs (menu: MenuItem, window?: BrowserWindow) {
+    if (!window) return
     window.webContents.send(channels.FILE_SAVE_AS)
   }
 
@@ -68,7 +81,8 @@ export default class FileMenu {
    * @param {MenuItem} menu
    * @param {BrowserWindow} window
    */
-  public static print (menu: MenuItem, window: BrowserWindow) {
+  public static print (menu: MenuItem, window?: BrowserWindow) {
+    if (!window) return
     window.webContents.send(channels.MENU_PRINT)
   }
 
@@ -99,7 +113,7 @@ export default class FileMenu {
       await settings.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string + 'settings')
       if (!process.env.IS_TEST) settings.webContents.openDevTools()
     } else {
-      settings.loadURL('app://./settings.html')
+      await settings.loadURL('app://./settings.html')
     }
   }
 
@@ -113,10 +127,10 @@ export default class FileMenu {
   public static executeSave (channelName: string, file: channels.FILE_SAVE, window: BrowserWindow): boolean {
     switch (channelName) {
       case channels.FILE_SAVE:
-        if (!FileMenu._fileExists(file.path)) file.path = FileMenu._selectPath(window)
+        if (!FileMenuController._fileExists(file.path)) file.path = FileMenuController._selectPath(window)
         break
       case channels.FILE_SAVE_AS:
-        file.path = FileMenu._selectPath(window, FileMenu._fileExists(file.path) ? file.path : undefined)
+        file.path = FileMenuController._selectPath(window, FileMenuController._fileExists(file.path) ? file.path : undefined)
         break
     }
 
@@ -124,7 +138,7 @@ export default class FileMenu {
 
     try {
       const fileMeta = JSON.parse(file.meta)
-      csvLoader.save(file.path, file.data, fileMeta)
+      csvFile.save(file.path, file.data, fileMeta)
       window.webContents.send(channels.FILE_SAVE_COMPLETE, file.path)
       return true
     } catch (e) {
