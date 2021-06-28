@@ -1,3 +1,4 @@
+import * as pathModule from 'path'
 import { ipcRenderer, IpcRendererEvent } from 'electron'
 import { nextTick } from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
@@ -21,7 +22,7 @@ export default ({ state, activeTab, addTab, closeTab }: useTab) => {
 
   // ファイルを開く
   const open = () => ipcRenderer.send(channels.FILE_OPEN)
-  ipcRenderer.on(channels.FILE_LOADED, (e: IpcRendererEvent, file: channels.FILE_LOADED) => {
+  ipcRenderer.on(channels.FILE_LOADED, async (e: IpcRendererEvent, file: channels.FILE_LOADED) => {
     if (!file) return
 
     // データ未操作の場合、初期表示のタブは削除
@@ -30,7 +31,7 @@ export default ({ state, activeTab, addTab, closeTab }: useTab) => {
       activeTab.value?.id === 0 &&
       !activeTab.value?.dirty
     ) {
-      closeTab(activeTab.value)
+      await closeTab(activeTab.value)
     }
 
     const exists = state.tabs.find((tab: Tab) => tab.file.path === file.path)
@@ -75,12 +76,12 @@ export default ({ state, activeTab, addTab, closeTab }: useTab) => {
     // 既に同じファイルを開いていた場合は閉じる
     if (path !== activeTab.value.file.path) {
       const sameFileIndex = state.tabs.findIndex(({ file }: Tab) => file.path === path)
-      sameFileIndex === -1 || state.tabs.splice(sameFileIndex, 1)
+      if (sameFileIndex !== -1) state.tabs.splice(sameFileIndex, 1)
       await nextTick()
     }
 
     activeTab.value.dirty = false
-    activeTab.value.file.label = path.split('/').pop() || ''
+    activeTab.value.file.label = path.split(pathModule.sep).pop() || ''
     activeTab.value.file.path = path
   })
 
