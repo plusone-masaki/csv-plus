@@ -67,9 +67,8 @@ export default class CSVFile {
   }
 
   public save (path: string, data: string, options: FileMeta) {
-    const buf = iconv.encode(data, options.encoding, { addBOM: options.bom })
-    data = buf.toString().replace(/\n/g, linefeedChar(options.linefeed))
-    fs.writeFile(path, data, error => {
+    const buf = iconv.encode(data.replace(/\n/g, linefeedChar(options.linefeed)), options.encoding, { addBOM: options.bom })
+    fs.writeFile(path, buf, error => {
       if (error) throw error
     })
   }

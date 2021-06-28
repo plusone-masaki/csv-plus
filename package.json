@@ -1,6 +1,6 @@
 {
   "name": "csv-plus",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "CSV tab editor",
   "author": "Masaki Enomoto <m_enomoto@plus-one.tech>",
   "license": "MIT",
