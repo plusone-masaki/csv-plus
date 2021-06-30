@@ -7,20 +7,20 @@ yarn install
 
 ### Compiles and hot-reloads for development
 ```
-yarn serve
+yarn run electron:serve
 ```
 
 ### Compiles and minifies for production
 ```
-yarn build
+yarn run electron:build
 ```
 
-### Run your unit tests
+### Run your unit tests (not yet)
 ```
 yarn test:unit
 ```
 
-### Run your end-to-end tests
+### Run your end-to-end tests (not yet)
 ```
 yarn test:e2e
 ```
