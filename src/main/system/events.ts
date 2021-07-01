@@ -10,8 +10,7 @@ import {
   WebContents,
 } from 'electron'
 import * as channels from '@/common/channels'
-import FileMenu from '@/main/menu/FileMenu'
-// import EditMenu from '@/main/menu/EditMenu'
+import FileMenuController from '@/main/menu/controllers/FileMenuController'
 import CSVFile from '@/main/model/CSVFile'
 import { FileMeta } from '@/common/types'
 
@@ -24,7 +23,7 @@ const getWindow = (contents: WebContents): BrowserWindow => {
 }
 
 ipcMain.on(channels.FILE_OPEN, (e: IpcMainEvent) => {
-  FileMenu.open(getWindow(e.sender))
+  FileMenuController.open(getWindow(e.sender))
 })
 
 ipcMain.on(channels.FILE_DROPPED, (e: IpcMainEvent, paths: Array<string>) => {
@@ -59,11 +58,11 @@ ipcMain.on(channels.FILE_RELOAD, (e: IpcMainEvent, path: string, meta: string) =
 })
 
 ipcMain.on(channels.FILE_SAVE, (e: IpcMainEvent, file: channels.FILE_SAVE) => {
-  FileMenu.executeSave(channels.FILE_SAVE, file, getWindow(e.sender))
+  FileMenuController.executeSave(channels.FILE_SAVE, file, getWindow(e.sender))
 })
 
 ipcMain.on(channels.FILE_SAVE_AS, (e: IpcMainEvent, file: channels.FILE_SAVE_AS) => {
-  FileMenu.executeSave(channels.FILE_SAVE_AS, file, getWindow(e.sender))
+  FileMenuController.executeSave(channels.FILE_SAVE_AS, file, getWindow(e.sender))
 })
 
 /**
@@ -91,7 +90,7 @@ ipcMain.handle(channels.FILE_DESTROY_CONFIRM, (e: IpcMainInvokeEvent, file: chan
   })
 
   // 保存するの場合 - 保存処理を行って true を返す
-  if (selected === BUTTON_SAVE) return FileMenu.executeSave(channels.FILE_SAVE, file, getWindow(e.sender))
+  if (selected === BUTTON_SAVE) return FileMenuController.executeSave(channels.FILE_SAVE, file, getWindow(e.sender))
   // 保存しないの場合 - 保存処理を行わず true を返す
   // キャンセルの場合 - false を返す
   return selected === BUTTON_NO_SAVE

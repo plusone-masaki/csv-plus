@@ -3,11 +3,12 @@ import * as path from 'path'
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 // import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
-import CSVFile from '@/main/model/CSVFile'
-import './auto-update'
-import './events'
 import * as browserWindow from '@/common/browserWindow'
 import * as channels from '@/common/channels'
+import CSVFile from '@/main/model/CSVFile'
+import History from '@/main/model/History'
+import './auto-update'
+import './events'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const csvFile = new CSVFile()
@@ -141,11 +142,13 @@ if (isDevelopment) {
   if (process.platform === 'win32') {
     process.on('message', (data) => {
       if (data === 'graceful-exit') {
+        History.persistentRecentDocuments()
         app.quit()
       }
     })
   } else {
     process.on('SIGTERM', () => {
+      History.persistentRecentDocuments()
       app.quit()
     })
   }
