@@ -25,7 +25,7 @@ const isFirstInstance = app.requestSingleInstanceLock()
 if (!isFirstInstance) {
   app.quit()
 } else {
-  app.on('second-instance', (event, argv, workingDir) =>  {
+  app.on('second-instance', (event, argv) => {
     if (argv.length >= 2 && argv[1]) filepath = argv[1]
     if (filepath && filepath !== 'dist') csvFile.open(filepath)
     if (window) {
@@ -71,7 +71,7 @@ async function createWindow () {
 
     // 全てのタブが開き終わったら元の順番に並び替え
     await Promise.all(loadingFiles)
-    window.webContents.send(channels.TABS_LOAD, paths)
+    window.webContents.send(channels.TABS_LOADED, paths)
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -83,6 +83,12 @@ async function createWindow () {
     // Load the index.html when not in development
     await window.loadURL('app://./index.html')
   }
+
+  // ウィンドウが閉じる前に保存確認の処理
+  window.on('close', e => {
+    e.preventDefault()
+    window.webContents.send(channels.APP_WILL_CLOSE)
+  })
 }
 
 app.on('will-finish-launching', () => {

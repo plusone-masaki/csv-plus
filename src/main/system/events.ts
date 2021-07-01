@@ -69,6 +69,8 @@ ipcMain.on(channels.FILE_SAVE_AS, (e: IpcMainEvent, file: channels.FILE_SAVE_AS)
 /**
  * 変更されたファイルを閉じようとした場合、
  * 保存を促すダイアログを表示する
+ *
+ * @return boolean
  */
 ipcMain.handle(channels.FILE_DESTROY_CONFIRM, (e: IpcMainInvokeEvent, file: channels.FILE_DESTROY_CONFIRM): boolean => {
   const BUTTON_NO_SAVE = 0
@@ -88,10 +90,15 @@ ipcMain.handle(channels.FILE_DESTROY_CONFIRM, (e: IpcMainInvokeEvent, file: chan
     cancelId: BUTTON_CANCEL,
   })
 
+  // 保存するの場合 - 保存処理を行って true を返す
   if (selected === BUTTON_SAVE) return FileMenu.executeSave(channels.FILE_SAVE, file, getWindow(e.sender))
+  // 保存しないの場合 - 保存処理を行わず true を返す
+  // キャンセルの場合 - false を返す
   return selected === BUTTON_NO_SAVE
 })
 
 ipcMain.on(channels.TABS_SAVE, (e: IpcMainEvent, paths: channels.TABS_SAVE) => {
   fs.writeFileSync(path.join(app.getPath('userData'), 'tab_history.json'), paths)
 })
+
+ipcMain.on(channels.APP_CLOSE, () => app.exit())

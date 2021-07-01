@@ -128,11 +128,40 @@ export default (): useTab => {
   }
 
   // アプリ起動時、全てのタブが開き終わったら並び順まで復元
-  ipcRenderer.on(channels.TABS_LOAD, (_, paths: channels.TABS_LOAD) => {
+  ipcRenderer.on(channels.TABS_LOADED, (_, paths: channels.TABS_LOAD) => {
     state.tabs = paths
       .map(path => state.tabs.find((tab: Tab) => tab.file.path === path))
       .filter((tab?: Tab) => !!tab)
       .concat(state.tabs.filter(tab => paths.indexOf(tab.file.path) === -1)) as Tab[]
+  })
+
+  /**
+   * アプリ終了前処理
+   */
+  ipcRenderer.on(channels.APP_WILL_CLOSE, async () => {
+    // ファイルが未保存の場合は確認ダイアログを表示
+    const allConfirmed: Promise<boolean>[] = []
+
+    state.tabs.forEach(tab => {
+      allConfirmed.push(new Promise(resolve => {
+        if (tab.dirty) {
+          const item = {
+            name: tab.file.label,
+            path: tab.file.path,
+            meta: JSON.stringify(tab.file.meta),
+            data: csvStringify(tab.file.data),
+          }
+          ipcRenderer.invoke(channels.FILE_DESTROY_CONFIRM, item)
+            .then(res => resolve(res))
+            .catch(() => resolve(true))
+        } else {
+          resolve(true)
+        }
+      }))
+    })
+
+    const confirmed = await Promise.all(allConfirmed)
+    if (confirmed.every(c => c)) ipcRenderer.send(channels.APP_CLOSE)
   })
 
   // 新しいタブを1件作成しておく

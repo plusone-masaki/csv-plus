@@ -1,5 +1,9 @@
 import { FileData } from './types'
 
+// App
+export const APP_WILL_CLOSE = 'APP_WILL_CLOSE'
+export const APP_CLOSE = 'APP_CLOSE'
+
 // Files
 export const FILE_NEW = 'FILE_NEW'
 export const FILE_OPEN = 'FILE_OPEN'
@@ -20,7 +24,7 @@ export type FILE_DESTROY_CONFIRM = { name: string; path: string; meta: string; d
 
 // Tabs
 export const TABS_SAVE = 'TABS_SAVE'
-export const TABS_LOAD = 'TABS_LOAD'
+export const TABS_LOADED = 'TABS_LOADED'
 
 export type TABS_SAVE = string
 export type TABS_LOAD = string[]
