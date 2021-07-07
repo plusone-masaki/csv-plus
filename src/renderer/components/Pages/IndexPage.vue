@@ -10,7 +10,7 @@ div.layout
 
   navigation-tabs(
     v-model="state.tabs"
-    v-model:active="state.active"
+    v-model:active="state.activeId"
     @add="addTab"
     @close="closeTab"
   )
@@ -19,7 +19,6 @@ div.layout
     v-if="activeTab"
     :tab="activeTab"
     :key="activeTab && activeTab.id"
-    @load="activeTab.table = $event"
     @edit="onEdit"
   )
 </template>

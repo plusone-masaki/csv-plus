@@ -3,11 +3,13 @@ form.search-box(
   :style="style"
   @submit.prevent="onSubmit"
 )
-  text-input.search-box__input(
-    v-model="keyword"
-    :placeholder="$t('search-box.search')"
-    ref="searchInput"
-  )
+  div.search-box__container
+    text-input.search-box__input(
+      v-model="bindKeyword"
+      :placeholder="$t('search-box.search')"
+      icon="search"
+      ref="searchInput"
+    )
 </template>
 
 <script lang="ts">
@@ -20,7 +22,9 @@ export default defineComponent({
   name: 'SearchBox',
   components: { TextInput },
   props: {
-    modelValue: { type: String as PropType<string>, default: '' },
+    keyword: { type: String as PropType<string>, default: '' },
+    matchCase: { type: Boolean as PropType<boolean>, default: false },
+    regexp: { type: Boolean as PropType<boolean>, default: false },
     fixed: { type: Boolean as PropType<boolean>, default: false },
     absolute: { type: Boolean as PropType<boolean>, default: false },
     top: { type: Boolean as PropType<boolean>, default: false },
@@ -30,14 +34,14 @@ export default defineComponent({
   },
   setup: (props, context) => {
     const searchInput = ref<typeof TextInput|null>(null)
-    const keyword = vModel('modelValue', props, context)
+    const bindKeyword = vModel('keyword', props, context)
     const style = useStyles(props)
-    const onSubmit = () => context.emit('search', keyword)
+    const onSubmit = () => context.emit('search', bindKeyword)
     onMounted(() => searchInput.value?.$el.focus())
 
     return {
       searchInput,
-      keyword,
+      bindKeyword,
       style,
       onSubmit,
     }
@@ -52,6 +56,8 @@ export default defineComponent({
   padding: 2px 8px
   pointer-events: visible
 
+  &__container
+    padding: 2px
   &__input
     font-size: 16px
 

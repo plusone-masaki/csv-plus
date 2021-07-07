@@ -10,7 +10,12 @@ import { useTab } from './types'
 
 const defaultOptions = (): Options => ({
   hasHeader: false,
-  search: false,
+  search: {
+    enable: false,
+    matchCase: false,
+    regexp: false,
+    keyword: '',
+  },
   printMode: false,
 })
 
@@ -37,14 +42,14 @@ export default (): useTab => {
   const count = ref(0)
   const state = reactive({
     count,
-    active: -1,
+    activeId: -1,
     tabs: [] as Tab[],
   })
 
   const activeTab = computed<Tab|undefined>({
-    get: () => state.tabs.find((tab: Tab) => tab.id === state.active),
+    get: () => state.tabs.find((tab: Tab) => tab.id === state.activeId),
     set: tabData => {
-      const index = state.tabs.findIndex(tab => tab.id === state.active)
+      const index = state.tabs.findIndex(tab => tab.id === state.activeId)
       if (index !== -1) state.tabs[index] = tabData as Tab
     },
   })
@@ -82,7 +87,7 @@ export default (): useTab => {
     }
 
     state.tabs.push(tab)
-    state.active = tab.id
+    state.activeId = tab.id
   }
   ipcRenderer.on(channels.FILE_NEW, () => addTab())
 
@@ -102,9 +107,9 @@ export default (): useTab => {
     state.tabs.splice(index, 1)
 
     if (state.tabs.length && state.tabs.every(tab => tab.id !== activeTab.value?.id)) {
-      state.active = state.tabs[index]?.id || state.tabs[index - 1]?.id || state.tabs[0].id
+      state.activeId = state.tabs[index]?.id || state.tabs[index - 1]?.id || state.tabs[0].id
     } else if (!state.tabs.length) {
-      state.active = -1
+      state.activeId = -1
     }
   }
 

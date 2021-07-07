@@ -1,4 +1,4 @@
-import HandsOnTable from 'handsontable'
+import HandsOnTable, { plugins } from 'handsontable'
 
 declare global {
   const __static: string
@@ -73,9 +73,31 @@ declare interface FileData {
   meta: FileMeta
 }
 
+declare interface Search extends plugins.Base {
+  callback: () => void;
+  queryMethod: (query: string, value: string) => boolean;
+  searchResultClass: string;
+
+  query(queryStr: string, callback?: () => void, queryMethod?: (query: string, value: string) => boolean): any[];
+  getCallback(): () => void;
+  setCallback(newCallback: () => void): void;
+  getQueryMethod(): (query: string, value: string) => boolean;
+  setQueryMethod(newQueryMethod: (query: string, value: string) => boolean): void;
+  getSearchResultClass(): string;
+  setSearchResultClass(newElementClass: string): void;
+}
+
+declare interface SearchOption {
+  enable: boolean
+  instance?: Search
+  matchCase: boolean
+  regexp: boolean
+  keyword: string
+}
+
 declare interface Options {
   hasHeader: boolean
-  search: boolean
+  search: SearchOption
   printMode: boolean
 }
 

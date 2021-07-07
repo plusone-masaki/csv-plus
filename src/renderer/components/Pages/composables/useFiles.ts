@@ -36,7 +36,7 @@ export default ({ state, activeTab, addTab, closeTab }: useTab) => {
 
     const exists = state.tabs.find((tab: Tab) => tab.file.path === file.path)
     if (exists) {
-      state.active = exists.id
+      state.activeId = exists.id
       exists.file = file
     } else {
       addTab(file)

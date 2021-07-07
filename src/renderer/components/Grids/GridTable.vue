@@ -5,18 +5,14 @@ div.grid-table
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { Table, Calculation, FileData, Options } from '@/common/types'
+import { Tab } from '@/common/types'
 import useGrid from '@/renderer/components/Grids/composables/useGrid'
 import registerWatchers from '@/renderer/components/Grids/composables/registerWatchers'
 
 export default defineComponent({
   name: 'GridTable',
   props: {
-    table: { type: Object as PropType<Table|null>, default: null },
-    file: { type: Object as PropType<FileData>, required: true },
-    options: { type: Object as PropType<Options>, required: true },
-    calculation: { type: Object as PropType<Calculation>, required: true },
-    keyword: { type: String as PropType<string>, required: true },
+    tab: { type: Object as PropType<Tab>, required: true },
   },
   setup (props, context) {
     const refs = useGrid(props, context)

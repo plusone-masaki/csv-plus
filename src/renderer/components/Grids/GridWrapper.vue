@@ -3,19 +3,19 @@ section.content(:id="`grid-wrapper-${tab.id}`")
   div.content__overlay
     transition(name="slide-y-transition")
       search-box(
-        v-if="tab && tab.options.search"
-        v-model="keyword"
+        v-if="tab && tab.options.search.enable"
+        v-model:keyword="tab.options.search.keyword"
+        v-bind="tab.options.search"
         :absolute="true"
         :top="true"
         :right="true"
+        @submit="onSearch"
       )
 
   grid-table(
     v-if="tab"
-    v-bind="tab"
-    :keyword="keyword"
+    :tab="tab"
     @edit="onEdit"
-    @load="onLoad"
   )
 
 footer-nav(v-if="tab" v-model="tab")
@@ -25,15 +25,13 @@ footer-nav(v-if="tab" v-model="tab")
 import {
   defineComponent,
   PropType,
-  Ref,
-  ref,
   watch,
 } from 'vue'
-import HandsOnTable from 'handsontable'
 import { Tab } from '@/common/types'
 import GridTable from '@/renderer/components/Grids/GridTable.vue'
 import SearchBox from '@/renderer/components/Form/SearchBox.vue'
 import FooterNav from '@/renderer/components/Footer/FooterNav.vue'
+import useSearch from '@/renderer/components/Grids/composables/useSearch'
 
 export default defineComponent({
   name: 'GridWrapper',
@@ -46,15 +44,16 @@ export default defineComponent({
   props: {
     tab: { type: Object as PropType<Tab|undefined>, default: undefined },
   },
-  setup: (props, context) => {
+  setup: (props: { tab?: Tab }, context) => {
     watch(
-      () => props.tab?.options.search,
+      () => props.tab?.options.search.enable,
       show => show && props.tab?.table?.deselectCell(),
     )
 
     return {
-      keyword: ref(''),
-      onLoad: (table: Ref<HandsOnTable>) => context.emit('load', table),
+      onSearch: () => {
+        if (props.tab) useSearch(props.tab.table, props.tab.options.search)
+      },
       onEdit: () => context.emit('edit'),
     }
   },
