@@ -1,4 +1,5 @@
 import {
+  nextTick,
   onUnmounted,
   Ref,
   SetupContext,
@@ -22,7 +23,7 @@ export default (props: { tab: Tab }, context: SetupContext, refs: Refs) => {
   })
 
   watch(() => refs.settings.value, settings => {
-    if (props.tab.table) props.tab.table.updateSettings(settings, false)
+    if (props.tab.table && !props.tab.table.isDestroyed) props.tab.table.updateSettings(settings, false)
   })
 
   // Search
@@ -44,6 +45,13 @@ export default (props: { tab: Tab }, context: SetupContext, refs: Refs) => {
         shortcut.addShortcutEvent('copy', () => props.tab.table!.getSelected() && document.execCommand('copy'))
         shortcut.addShortcutEvent('cut', () => props.tab.table!.getSelected() && document.execCommand('cut'))
         shortcut.addShortcutEvent('paste', () => props.tab.table!.getSelected() && document.execCommand('paste'))
+      }
+
+      window.onresize = async () => {
+        if (props.tab.table) {
+          await nextTick()
+          props.tab.table.render()
+        }
       }
     }
   })

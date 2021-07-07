@@ -11,8 +11,10 @@ import { FileMeta, Linefeed, SupportedEncoding } from '@/common/types'
 import * as channels from '@/common/channels'
 import * as files from '@/common/files'
 import { defaultLinefeed } from '@/common/plugins/helpers'
+import History from '@/main/model/History'
 
 const DEFAULT_ENCODING = 'UTF-8'
+
 const defaultFileMeta = (): FileMeta => ({
   delimiter: '',
   quoteChar: '"',
@@ -64,6 +66,9 @@ export default class CSVFile {
   public async open (path: string) {
     if (!await CSVFile._isFile(path)) throw Error('File not found.')
     await this.parse(path)
+
+    // 最近使ったファイルに追加
+    History.addRecentDocument(path)
   }
 
   public save (path: string, data: string, options: FileMeta) {
@@ -102,7 +107,8 @@ export default class CSVFile {
     return new Stream.Transform({
       transform (chunk: Buffer, _: BufferEncoding, next: Stream.TransformCallback) {
         if (!meta.encoding) {
-          meta.bom = hasBom(chunk)
+          meta.bom = !!chunk.length && hasBom(chunk)
+
           const candidates = chardet.analyse(chunk)
           if (candidates.some(match => match.name === DEFAULT_ENCODING)) {
             meta.encoding = DEFAULT_ENCODING
@@ -171,46 +177,48 @@ export default class CSVFile {
   }
 
   private async parse (path: string) {
-    try {
-      this._meta.delimiter = this._meta.delimiter || CSVFile._guessDelimiter(path)
-      const options: csvParse.Options = {
-        bom: true,
-        delimiter: this._meta.delimiter,
-        relax: true,
-        relaxColumnCount: true,
+    return new Promise(resolve => {
+      try {
+        const options: csvParse.Options = {
+          bom: true,
+          delimiter: this._meta.delimiter = CSVFile._guessDelimiter(path),
+          relax: true,
+          relaxColumnCount: true,
+        }
+
+        fs.createReadStream(path)
+          .pipe(this._decode())
+          .pipe(this._detectLinefeed())
+          .pipe(csvParse(options, async (error: Error | undefined, data: string[][]) => {
+            if (error) {
+              console.error(error)
+              dialog.showErrorBox('ファイルを開けませんでした', 'ファイル形式が間違っていないかご確認下さい')
+              resolve()
+            }
+
+            // 基準を越えるサイズの場合に列幅の自動計算をキャンセル
+            if (CSVFile._hasOverflow(data)) this._meta.colWidth = 120
+
+            // メタデータの補完
+            if (!this._meta.encoding) this._meta.encoding = DEFAULT_ENCODING
+
+            const payload: channels.FILE_LOADED = {
+              label: path.split(process.platform === 'win32' ? '\\' : '/').pop() || '',
+              path,
+              data,
+              meta: this._meta,
+            }
+
+            await this._ready
+            if (this._window) {
+              this._window.webContents.send(channels.FILE_LOADED, payload)
+            }
+            resolve()
+          }))
+      } catch (e) {
+        console.error(e)
+        throw e
       }
-
-      fs.createReadStream(path)
-        .pipe(this._decode())
-        .pipe(this._detectLinefeed())
-        .pipe(csvParse(options, async (error: Error | undefined, data: string[][]) => {
-          if (error) {
-            console.error(error)
-            dialog.showErrorBox('ファイルを開けませんでした', 'ファイル形式が間違っていないかご確認下さい')
-            return
-          }
-
-          // 基準を越えるサイズの場合に列幅の自動計算をキャンセル
-          if (CSVFile._hasOverflow(data)) this._meta.colWidth = 120
-
-          // メタデータの補完
-          if (!this._meta.encoding) this._meta.encoding = DEFAULT_ENCODING
-
-          const payload: channels.FILE_LOADED = {
-            label: path.split(process.platform === 'win32' ? '\\' : '/').pop() || '',
-            path,
-            data,
-            meta: this._meta,
-          }
-
-          await this._ready
-          if (this._window) {
-            this._window.webContents.send(channels.FILE_LOADED, payload)
-          }
-        }))
-    } catch (e) {
-      console.error(e)
-      throw e
-    }
+    })
   }
 }

@@ -9,6 +9,7 @@ import HandsOnTable from 'handsontable'
 import 'handsontable/languages/ja-JP'
 import sanitize from 'sanitize-html'
 import { Search, Tab, Table } from '@/common/types'
+import gridHooks from '@/renderer/components/Grids/composables/gridHooks'
 
 const sanitizeOption: SanitizeOption = {
   allowedTags: [],
@@ -43,22 +44,7 @@ export default (props: { tab: Tab }, context: SetupContext) => {
     search: true,
     viewportColumnRenderingOffset: props.tab.options.printMode ? props.tab.file.data.length : 'auto',
     viewportRowRenderingOffset: props.tab.options.printMode ? props.tab.file.data.length : 'auto',
-    afterChange: (_: unknown, src) => {
-      if (!['loadData', 'undo'].includes(src)) context.emit('edit')
-    },
-    afterSelection: (startRow: number, startCol: number, endRow: number, endCol: number) => {
-      if (!props.tab.table) return
-
-      const rowLength = endRow - startRow
-      const colLength = endCol - startCol
-
-      const values = props.tab.table.getData(startRow, startCol, endRow, endCol).flat() as string[]
-      props.tab.calculation.selected = {
-        rowLength,
-        colLength,
-        summary: (rowLength || colLength) && values.reduce((a, b) => a + Number(b), 0),
-      }
-    },
+    ...gridHooks(props, context),
   }))
 
   onMounted(() => {

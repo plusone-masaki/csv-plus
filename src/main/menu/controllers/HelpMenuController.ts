@@ -9,7 +9,7 @@ app.setAboutPanelOptions({
   iconPath: app.isPackaged ? path.join(process.resourcesPath, 'public/icon.png') : path.join(__static, 'icon.png'),
 })
 
-export default class HelpMenu {
+export default class HelpMenuController {
   /**
    * [このアプリについて]
    */
