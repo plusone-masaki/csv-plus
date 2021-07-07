@@ -8,7 +8,8 @@ import {
 import HandsOnTable from 'handsontable'
 import 'handsontable/languages/ja-JP'
 import sanitize from 'sanitize-html'
-import { Search, Tab, Table } from '@/common/types'
+import { Tab, TableInstance } from '@/common/types'
+import Search from '@/renderer/models/Search'
 import gridHooks from '@/renderer/components/Grids/composables/gridHooks'
 
 const sanitizeOption: SanitizeOption = {
@@ -49,14 +50,14 @@ export default (props: { tab: Tab }, context: SetupContext) => {
 
   onMounted(() => {
     if (wrapper.value) {
-      const handsOnTable = new HandsOnTable(wrapper.value, settings.value) as Table
-      props.tab.table = handsOnTable
-      props.tab.options.search.instance = handsOnTable.getPlugin('search') as any as Search
+      const handsOnTable = new HandsOnTable(wrapper.value, settings.value) as TableInstance
+      props.tab.table.instance = handsOnTable
+      props.tab.table.search = Search(handsOnTable)
     }
   })
 
   onBeforeUnmount(() => {
-    if (props.tab.table) props.tab.table.destroy()
+    if (props.tab.table.instance) props.tab.table.instance.destroy()
   })
 
   return {

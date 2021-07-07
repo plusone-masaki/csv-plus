@@ -12,7 +12,7 @@ import {
 import { FileMeta } from '@/common/types'
 import * as channels from '@/common/channels'
 import FileMenuController from '@/main/menu/controllers/FileMenuController'
-import CSVFile from '@/main/model/CSVFile'
+import CSVFile from '@/main/models/CSVFile'
 
 const csvLoader = new CSVFile()
 

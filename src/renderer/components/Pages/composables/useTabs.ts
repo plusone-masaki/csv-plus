@@ -90,7 +90,7 @@ export default (): useTab => {
 
     const tab: Tab = {
       id: count.value++,
-      table: null,
+      table: {},
       file,
       dirty: false,
       options: defaultOptions(),

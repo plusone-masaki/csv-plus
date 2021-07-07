@@ -7,8 +7,8 @@ import {
 import * as fs from 'fs'
 import * as channels from '@/common/channels'
 import { FILE_FILTERS } from '@/common/files'
-import CSVFile from '@/main/model/CSVFile'
-import History from '@/main/model/History'
+import CSVFile from '@/main/models/CSVFile'
+import History from '@/main/models/History'
 
 const csvFile = new CSVFile()
 

@@ -11,7 +11,7 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
     const rowLength = endRow - startRow
     const colLength = endCol - startCol
 
-    const values = props.tab.table.getData(startRow, startCol, endRow, endCol).flat() as string[]
+    const values = props.tab.table.instance!.getData(startRow, startCol, endRow, endCol).flat() as string[]
     props.tab.calculation.selected = {
       rowLength,
       colLength,

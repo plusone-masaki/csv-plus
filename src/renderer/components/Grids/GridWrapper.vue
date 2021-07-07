@@ -31,7 +31,6 @@ import { Tab } from '@/common/types'
 import GridTable from '@/renderer/components/Grids/GridTable.vue'
 import SearchBox from '@/renderer/components/Form/SearchBox.vue'
 import FooterNav from '@/renderer/components/Footer/FooterNav.vue'
-import useSearch from '@/renderer/components/Grids/composables/useSearch'
 
 export default defineComponent({
   name: 'GridWrapper',
@@ -47,12 +46,12 @@ export default defineComponent({
   setup: (props: { tab?: Tab }, context) => {
     watch(
       () => props.tab?.options.search.enable,
-      show => show && props.tab?.table?.deselectCell(),
+      show => show && props.tab?.table.instance?.deselectCell(),
     )
 
     return {
       onSearch: () => {
-        if (props.tab) useSearch(props.tab.table, props.tab.options.search)
+        if (props.tab) props.tab.table.search!(props.tab.options.search)
       },
       onEdit: () => context.emit('edit'),
     }

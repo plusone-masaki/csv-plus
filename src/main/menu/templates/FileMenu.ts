@@ -1,6 +1,6 @@
 import { Menu, MenuItem, MenuItemConstructorOptions } from 'electron'
 import FileMenuController from '@/main/menu/controllers/FileMenuController'
-import History from '@/main/model/History'
+import History from '@/main/models/History'
 
 const isMac = process.platform === 'darwin'
 

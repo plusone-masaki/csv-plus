@@ -1,4 +1,4 @@
-import HandsOnTable, { plugins } from 'handsontable'
+import HandsOnTable from 'handsontable'
 
 declare global {
   const __static: string
@@ -51,11 +51,6 @@ declare interface ShortcutEvent {
   callback: () => void
 }
 
-declare interface Table extends HandsOnTable {
-  undo: () => void
-  redo: () => void
-}
-
 declare interface FileMeta {
   delimiter: string
   quoteChar: string
@@ -73,26 +68,21 @@ declare interface FileData {
   meta: FileMeta
 }
 
-declare interface Search extends plugins.Base {
-  callback: () => void;
-  queryMethod: (query: string, value: string) => boolean;
-  searchResultClass: string;
-
-  query(queryStr: string, callback?: () => void, queryMethod?: (query: string, value: string) => boolean): any[];
-  getCallback(): () => void;
-  setCallback(newCallback: () => void): void;
-  getQueryMethod(): (query: string, value: string) => boolean;
-  setQueryMethod(newQueryMethod: (query: string, value: string) => boolean): void;
-  getSearchResultClass(): string;
-  setSearchResultClass(newElementClass: string): void;
+declare interface TableInstance extends HandsOnTable {
+  undo: () => void
+  redo: () => void
 }
 
 declare interface SearchOption {
   enable: boolean
-  instance?: Search
   matchCase: boolean
   regexp: boolean
   keyword: string
+}
+
+declare interface Table {
+  instance?: TableInstance
+  search?: (option: SearchOption) => void
 }
 
 declare interface Options {
@@ -111,7 +101,7 @@ declare interface Calculation {
 
 declare interface Tab {
   id: number
-  table: Table | null
+  table: Table
   dirty: boolean
   file: FileData
   options: Options

@@ -44,9 +44,10 @@ export default defineComponent({
   display: inline-flex
   margin: 0
   padding: 2px
+  transition: 0.06s
 
   &:focus-within
-    border-color: dodgerblue
+    border-color: var(--focus-color)
 
   &__icon
     align-items: center
@@ -54,8 +55,8 @@ export default defineComponent({
     display: inline-flex
 
   &:focus-within &__icon
-    color: darken(dodgerblue, 15%) !important
-    fill: darken(dodgerblue, 15%) !important
+    color: var(--focus-color) !important
+    fill: var(--focus-color) !important
 
   &__input
     background: transparent
