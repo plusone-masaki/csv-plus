@@ -32,6 +32,12 @@ export default defineComponent({
         'folder-open': Icon.mdiFolderOpenOutline,
         save: Icon.mdiContentSave,
         printer: Icon.mdiPrinter,
+        'letter-case': Icon.mdiFormatLetterCase,
+        regex: Icon.mdiRegex,
+        up: Icon.mdiChevronUp,
+        down: Icon.mdiChevronDown,
+        check: Icon.mdiCheckBold,
+        'check-all': Icon.mdiTextBoxCheckOutline,
       })),
     }
   },

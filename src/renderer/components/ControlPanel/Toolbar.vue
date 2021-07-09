@@ -19,35 +19,10 @@ export default defineComponent({
   &__content
     align-items: center
     display: flex
-    padding: 2px 0
     white-space: nowrap
 
-  &__icon
-    align-items: center
-    box-sizing: border-box
-    display: inline-flex
+  &__icon.icon-btn
     height: 28px
-    justify-content: center
-    letter-spacing: normal
-    line-height: 1
     padding: 4px
-    position: relative
-    text-indent: 0
-    user-select: none
-    vertical-align: middle
     width: 28px
-
-    &::before
-      content: ""
-      height: 100%
-      left: 0
-      position: absolute
-      top: 0
-      width: 100%
-
-    &.active::before
-      background: rgba(0, 0, 0, 0.12) !important
-
-    &:hover::before
-      background: rgba(0, 0, 0, 0.08)
 </style>

@@ -1,35 +1,35 @@
 <template lang="pug">
 div.control-panel
   toolbar
-    toolbar-switch(
+    icon-switch.toolbar__icon(
       :title="$t('control_panel.add')"
       icon="file"
       @click="add"
     )
-    toolbar-switch(
+    icon-switch.toolbar__icon(
       :title="$t('control_panel.open')"
       icon="folder-open"
       @click="open"
     )
-    toolbar-switch(
+    icon-switch.toolbar__icon(
       :title="$t('control_panel.save')"
       icon="save"
       @click="save"
     )
-    toolbar-switch(
+    icon-switch.toolbar__icon(
       :title="$t('control_panel.print')"
       icon="printer"
       @click="print"
     )
     toolbar-separator
-    toolbar-switch(
+    icon-switch.toolbar__icon(
       v-model="options.search.enable"
       :title="$t('control_panel.search')"
       icon="search"
     )
   toolbar
     // Has header
-    toolbar-switch(
+    icon-switch.toolbar__icon(
       v-model="options.hasHeader"
       :title="$t('control_panel.set_header')"
       icon="table-header"
@@ -42,12 +42,11 @@ import {
   PropType,
   WritableComputedRef,
 } from 'vue'
-import HandsOnTable from 'handsontable'
-import { Options } from '@/common/types'
+import { Options, Table } from '@/common/types'
 import vModel from '@/renderer/utils/v-model'
+import IconSwitch from '@/renderer/components/Common/IconSwitch.vue'
 import Toolbar from '@/renderer/components/ControlPanel/Toolbar.vue'
-import ToolbarSwitch from '@/renderer/components/ControlPanel/ToolbarSwitch.vue'
-import ToolbarRadio from '@/renderer/components/ControlPanel/ToolbarRadio.vue'
+import IconRadio from '@/renderer/components/Common/IconRadio.vue'
 import ToolbarSeparator from '@/renderer/components/ControlPanel/ToolbarSeparator.vue'
 import useEvents from './composables/useEvents'
 import registerListeners from './composables/registerListeners'
@@ -56,13 +55,13 @@ export default defineComponent({
   name: 'ControlPanel',
   components: {
     Toolbar,
-    ToolbarSwitch,
-    ToolbarRadio,
+    IconSwitch,
+    IconRadio,
     ToolbarSeparator,
   },
   props: {
     modelValue: { type: Object as PropType<Options>, required: true },
-    table: { type: Object as PropType<HandsOnTable|null>, default: null },
+    table: { type: Object as PropType<Table>, default: undefined },
   },
   setup (props, context) {
     const options = vModel('modelValue', props, context) as WritableComputedRef<Options>

@@ -8,7 +8,8 @@ import {
 import HandsOnTable from 'handsontable'
 import 'handsontable/languages/ja-JP'
 import sanitize from 'sanitize-html'
-import { Tab, TableInstance } from '@/common/types'
+import { Tab } from '@/common/types'
+import { TableInstance } from '@/common/handsontable'
 import Search from '@/renderer/models/Search'
 import gridHooks from '@/renderer/components/Grids/composables/gridHooks'
 
@@ -20,10 +21,10 @@ const sanitizeOption: SanitizeOption = {
 export default (props: { tab: Tab }, context: SetupContext) => {
   const wrapper = ref<HTMLDivElement>()
   const settings = computed((): HandsOnTable.GridSettings => ({
-    data: props.tab.options.hasHeader ? props.tab.file.data.slice(1) : props.tab.file.data,
+    data: props.tab.table.options.hasHeader ? props.tab.file.data.slice(1) : props.tab.file.data,
     autoColumnSize: { syncLimit: 10 },
     autoRowSize: false,
-    colHeaders: props.tab.options.hasHeader
+    colHeaders: props.tab.table.options.hasHeader
       ? props.tab.file.data[0].map((d: string) => d ? sanitize(d, sanitizeOption) : '') as string[]
       : true,
     colWidths: props.tab.file.meta.colWidth,
@@ -36,15 +37,15 @@ export default (props: { tab: Tab }, context: SetupContext) => {
     language: 'ja-JP',
     manualColumnResize: true,
     manualRowResize: true,
-    minSpareCols: Number(!props.tab.options.printMode),
-    minSpareRows: Number(!props.tab.options.printMode),
+    minSpareCols: Number(!props.tab.table.options.printMode),
+    minSpareRows: Number(!props.tab.table.options.printMode),
     outsideClickDeselects: false,
-    renderAllRows: props.tab.options.printMode,
+    renderAllRows: props.tab.table.options.printMode,
     rowHeaders: true,
     rowHeaderWidth: Math.max(50, (props.tab.file.data.length.toString().length * 16)),
     search: true,
-    viewportColumnRenderingOffset: props.tab.options.printMode ? props.tab.file.data.length : 'auto',
-    viewportRowRenderingOffset: props.tab.options.printMode ? props.tab.file.data.length : 'auto',
+    viewportColumnRenderingOffset: props.tab.table.options.printMode ? props.tab.file.data.length : 'auto',
+    viewportRowRenderingOffset: props.tab.table.options.printMode ? props.tab.file.data.length : 'auto',
     ...gridHooks(props, context),
   }))
 
@@ -52,7 +53,8 @@ export default (props: { tab: Tab }, context: SetupContext) => {
     if (wrapper.value) {
       const handsOnTable = new HandsOnTable(wrapper.value, settings.value) as TableInstance
       props.tab.table.instance = handsOnTable
-      props.tab.table.search = Search(handsOnTable)
+      props.tab.table.search = Search(handsOnTable, props.tab)
+      props.tab.table.borders = handsOnTable.getPlugin('customBorders')
     }
   })
 

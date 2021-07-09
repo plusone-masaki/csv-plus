@@ -1,4 +1,5 @@
 import HandsOnTable from 'handsontable'
+import { CustomBordersPlugin } from '@/common/handsontable'
 
 declare global {
   const __static: string
@@ -38,6 +39,12 @@ declare type SupportedEncoding =
   'KOI8-R' |
   ''
 
+type REPLACE_NONE = 0
+type REPLACE_SINGLE = 1
+type REPLACE_ALL = 2
+
+declare type ReplaceFlag = REPLACE_NONE|REPLACE_SINGLE|REPLACE_ALL
+
 declare interface KeyBind {
   key: string
   shiftKey?: boolean
@@ -68,27 +75,32 @@ declare interface FileData {
   meta: FileMeta
 }
 
-declare interface TableInstance extends HandsOnTable {
-  undo: () => void
-  redo: () => void
+interface SearchResults {
+  length: number
+  current: number
 }
 
 declare interface SearchOption {
   enable: boolean
+  enableReplace: boolean
   matchCase: boolean
   regexp: boolean
   keyword: string
-}
-
-declare interface Table {
-  instance?: TableInstance
-  search?: (option: SearchOption) => void
+  replace: string
+  results?: SearchResults
 }
 
 declare interface Options {
   hasHeader: boolean
-  search: SearchOption
   printMode: boolean
+  search: SearchOption
+}
+
+declare interface Table {
+  instance?: TableInstance
+  search?: (reverse?: boolean, preserve?: boolean, replace?: ReplaceFlag) => void
+  borders?: CustomBordersPlugin
+  options: Options
 }
 
 declare interface Calculation {
@@ -104,6 +116,5 @@ declare interface Tab {
   table: Table
   dirty: boolean
   file: FileData
-  options: Options
   calculation: Calculation
 }

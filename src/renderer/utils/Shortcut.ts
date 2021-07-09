@@ -59,7 +59,9 @@ shortcut.addKeybinding('cut', { key: 'X', ctrlKey: process.platform !== 'darwin'
 shortcut.addKeybinding('paste', { key: 'V', ctrlKey: process.platform !== 'darwin', metaKey: process.platform === 'darwin' })
 shortcut.addKeybinding('undo', { key: 'Z', ctrlKey: process.platform !== 'darwin', metaKey: process.platform === 'darwin' })
 shortcut.addKeybinding('redo', { key: 'Z', ctrlKey: process.platform !== 'darwin', metaKey: process.platform === 'darwin', shiftKey: true })
-shortcut.addKeybinding('search', { key: 'F', ctrlKey: process.platform !== 'darwin', metaKey: process.platform === 'darwin' })
+shortcut.addKeybinding('search', { key: 'F3' })
+shortcut.addKeybinding('search_reverse', { key: 'F3', shiftKey: true })
+shortcut.addKeybinding('search_open', { key: 'F', ctrlKey: process.platform !== 'darwin', metaKey: process.platform === 'darwin' })
 shortcut.addKeybinding('search_close', { key: 'ESCAPE' })
 
 export default shortcut

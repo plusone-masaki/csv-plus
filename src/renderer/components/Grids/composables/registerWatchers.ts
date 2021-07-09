@@ -26,8 +26,10 @@ export default (props: { tab: Tab }, context: SetupContext, refs: Refs) => {
   })
 
   // Search
-  watch(() => props.tab.options.search.keyword, () => props.tab.table.search!(props.tab.options.search))
-  watch(() => props.tab.options.search.enable, () => props.tab.table.search!(props.tab.options.search))
+  watch(() => props.tab.table.options.search.keyword, () => props.tab.table.search!())
+  watch(() => props.tab.table.options.search.enable, () => props.tab.table.search!(false, true))
+  shortcut.addShortcutEvent('search', () => props.tab.table.search!())
+  shortcut.addShortcutEvent('search_reverse', () => props.tab.table.search!(true))
 
   watch(() => props.tab.table.instance, () => {
     if (props.tab.table.instance) {

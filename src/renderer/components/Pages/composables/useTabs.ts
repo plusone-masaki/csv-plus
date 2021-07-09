@@ -13,9 +13,12 @@ const defaultOptions = (): Options => ({
   hasHeader: false,
   search: {
     enable: false,
+    enableReplace: false,
     matchCase: false,
     regexp: false,
     keyword: '',
+    replace: '',
+    results: undefined,
   },
   printMode: false,
 })
@@ -58,10 +61,10 @@ export default (): useTab => {
 
   const options = computed<Options>({
     get: () => {
-      return activeTab.value?.options || defaultOptions()
+      return activeTab.value?.table.options || defaultOptions()
     },
     set: options => {
-      if (activeTab.value) activeTab.value.options = options
+      if (activeTab.value) activeTab.value.table.options = options
     },
   })
 
@@ -90,10 +93,11 @@ export default (): useTab => {
 
     const tab: Tab = {
       id: count.value++,
-      table: {},
+      table: {
+        options: defaultOptions(),
+      },
       file,
       dirty: false,
-      options: defaultOptions(),
       calculation: defaultCalculation(),
     }
 

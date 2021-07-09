@@ -12,6 +12,7 @@ label.text-input(:style="{ height: `${height}px` }")
     :style="{ width: `${width}px` }"
     type="text"
   )
+  slot(name="append")
 </template>
 
 <script lang="ts">
