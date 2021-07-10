@@ -20,7 +20,7 @@
     "replace_all": "すべて置換",
     "match_case": "大文字と小文字を区別する",
     "regexp": "正規表現",
-    "results": "{current}/{length} 件",
+    "results": "{current}/{length}件",
     "no_results": "0 件",
     "close": "閉じる"
   },
