@@ -51,7 +51,7 @@ declare interface ShortcutEvent {
   callback: () => void
 }
 
-interface Table extends HandsOnTable {
+declare interface Table extends HandsOnTable {
   undo: () => void
   redo: () => void
 }
@@ -63,6 +63,7 @@ declare interface FileMeta {
   linefeed: Linefeed
   encoding: SupportedEncoding
   bom: boolean
+  colWidth?: number
 }
 
 declare interface FileData {

@@ -1,11 +1,12 @@
 import { ipcRenderer } from 'electron'
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
 import HandsOnTable from 'handsontable'
 import { FileData, Tab, Options, FileMeta, Calculation } from '@/common/types'
 import * as channels from '@/common/channels'
 import { vueI18n } from '@/common/plugins/i18n'
 import { defaultLinefeed } from '@/common/plugins/helpers'
+import { persistentTabs } from '@/renderer/utils/persistentStates'
 import { useTab } from './types'
 
 const defaultOptions = (): Options => ({
@@ -18,9 +19,9 @@ const defaultMeta = (): FileMeta => ({
   delimiter: ',',
   quoteChar: '"',
   escapeChar: '"',
+  linefeed: defaultLinefeed(),
   encoding: 'UTF-8',
   bom: false,
-  linefeed: defaultLinefeed(),
 })
 
 const defaultCalculation = (): Calculation => ({
@@ -41,6 +42,7 @@ export default (): useTab => {
     tabs: [] as Tab[],
   })
 
+  // computed
   const activeTab = computed<Tab|undefined>({
     get: () => state.tabs.find((tab: Tab) => tab.id === state.active),
     set: tabData => {
@@ -58,12 +60,21 @@ export default (): useTab => {
     },
   })
 
+  // watch
+  watch(() => state.tabs, () => persistentTabs(state.tabs))
+
+  // methods
   const onEdit = () => {
     if (activeTab.value) activeTab.value.dirty = true
   }
 
-  const addTab = (file?: FileData) => {
-    file = file || {
+  /**
+   * タブを追加
+   *
+   * @param {FileData|undefined} fileData
+   */
+  const addTab = (fileData?: FileData) => {
+    const file = fileData || {
       label: t('tabs.new_tab'),
       path: `newTab${count.value}`,
       data: HandsOnTable.helper.createEmptySpreadsheetData(100, 26),
@@ -83,9 +94,15 @@ export default (): useTab => {
 
     state.tabs.push(tab)
     state.active = tab.id
+    if (fileData) persistentTabs(state.tabs)
   }
   ipcRenderer.on(channels.FILE_NEW, () => addTab())
 
+  /**
+   * タブを閉じる
+   *
+   * @param {Tab} tab
+   */
   const closeTab = async (tab: Tab) => {
     // ファイルが未保存の場合は確認ダイアログを表示
     if (tab.dirty) {
@@ -106,7 +123,46 @@ export default (): useTab => {
     } else if (!state.tabs.length) {
       state.active = -1
     }
+
+    persistentTabs(state.tabs)
   }
+
+  // アプリ起動時、全てのタブが開き終わったら並び順まで復元
+  ipcRenderer.on(channels.TABS_LOADED, (_, paths: channels.TABS_LOAD) => {
+    state.tabs = paths
+      .map(path => state.tabs.find((tab: Tab) => tab.file.path === path))
+      .filter((tab?: Tab) => !!tab)
+      .concat(state.tabs.filter(tab => paths.indexOf(tab.file.path) === -1)) as Tab[]
+  })
+
+  /**
+   * アプリ終了前処理
+   */
+  ipcRenderer.on(channels.APP_WILL_CLOSE, async () => {
+    // ファイルが未保存の場合は確認ダイアログを表示
+    const allConfirmed: Promise<boolean>[] = []
+
+    state.tabs.forEach(tab => {
+      allConfirmed.push(new Promise(resolve => {
+        if (tab.dirty) {
+          const item = {
+            name: tab.file.label,
+            path: tab.file.path,
+            meta: JSON.stringify(tab.file.meta),
+            data: csvStringify(tab.file.data),
+          }
+          ipcRenderer.invoke(channels.FILE_DESTROY_CONFIRM, item)
+            .then(res => resolve(res))
+            .catch(() => resolve(true))
+        } else {
+          resolve(true)
+        }
+      }))
+    })
+
+    const confirmed = await Promise.all(allConfirmed)
+    if (confirmed.every(c => c)) ipcRenderer.send(channels.APP_CLOSE)
+  })
 
   // 新しいタブを1件作成しておく
   addTab()

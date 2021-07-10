@@ -5,6 +5,7 @@ import csvStringify from 'csv-stringify/lib/sync'
 import * as channels from '@/common/channels'
 import { Tab } from '@/common/types'
 import { useTab } from './types'
+import { persistentTabs } from '@/renderer/utils/persistentStates'
 
 export default ({ state, activeTab, addTab, closeTab }: useTab) => {
   // 末尾の空要素を削除する
@@ -83,6 +84,8 @@ export default ({ state, activeTab, addTab, closeTab }: useTab) => {
     activeTab.value.dirty = false
     activeTab.value.file.label = path.split(pathModule.sep).pop() || ''
     activeTab.value.file.path = path
+
+    persistentTabs(state.tabs)
   })
 
   return {

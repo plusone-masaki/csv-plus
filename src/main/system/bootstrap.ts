@@ -1,14 +1,17 @@
+import fs from 'fs'
 import * as path from 'path'
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 // import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import * as browserWindow from '@/common/browserWindow'
+import * as channels from '@/common/channels'
 import CSVFile from '@/main/model/CSVFile'
+import History from '@/main/model/History'
 import './auto-update'
 import './events'
-import * as browserWindow from '@/common/browserWindow'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
-const csvLoader = new CSVFile()
+const csvFile = new CSVFile()
 let window: BrowserWindow
 let filepath: string
 
@@ -18,6 +21,20 @@ app.setName('CSV+')
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
 ])
+
+const isFirstInstance = app.requestSingleInstanceLock()
+if (!isFirstInstance) {
+  app.quit()
+} else {
+  app.on('second-instance', (event, argv) => {
+    if (argv.length >= 2 && argv[1]) filepath = argv[1]
+    if (filepath && filepath !== 'dist') csvFile.open(filepath)
+    if (window) {
+      if (window.isMinimized()) window.restore()
+      window.focus()
+    }
+  })
+}
 
 async function createWindow () {
   // Create the browser window.
@@ -35,13 +52,27 @@ async function createWindow () {
   })
 
   // File load from arguments
-  window.webContents.on('did-finish-load', () => {
-    csvLoader.initialize().setWindow(window)
+  window.webContents.on('did-finish-load', async () => {
+    csvFile.initialize().setWindow(window)
+    let paths: string[] = []
+
+    // 前回開いていたタブの復元
+    try {
+      const tabHistory = fs.readFileSync(path.join(app.getPath('userData'), 'tab_history.json'))
+      paths = paths.concat(JSON.parse(tabHistory.toString()) as string[])
+    } catch (e) {}
+
+    // ファイルを開こうとしている場合読み込み
     const argv = process.argv
-    if (argv.length >= 2 && argv[1]) {
-      filepath = argv[1]
-    }
-    if (filepath && filepath !== 'dist') csvLoader.open(filepath)
+    if (argv.length >= 2 && argv[1]) filepath = argv[1]
+    if (filepath && filepath !== 'dist') paths.push(filepath)
+
+    const loadingFiles: Promise<void>[] = []
+    paths.forEach(path => loadingFiles.push(csvFile.open(path)))
+
+    // 全てのタブが開き終わったら元の順番に並び替え
+    await Promise.all(loadingFiles)
+    window.webContents.send(channels.TABS_LOADED, paths)
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -53,6 +84,12 @@ async function createWindow () {
     // Load the index.html when not in development
     await window.loadURL('app://./index.html')
   }
+
+  // ウィンドウが閉じる前に保存確認の処理
+  window.on('close', e => {
+    e.preventDefault()
+    window.webContents.send(channels.APP_WILL_CLOSE)
+  })
 }
 
 app.on('will-finish-launching', () => {
@@ -105,11 +142,13 @@ if (isDevelopment) {
   if (process.platform === 'win32') {
     process.on('message', (data) => {
       if (data === 'graceful-exit') {
+        History.persistentRecentDocuments()
         app.quit()
       }
     })
   } else {
     process.on('SIGTERM', () => {
+      History.persistentRecentDocuments()
       app.quit()
     })
   }
