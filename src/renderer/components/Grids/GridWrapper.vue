@@ -3,19 +3,20 @@ section.content(:id="`grid-wrapper-${tab.id}`")
   div.content__overlay
     transition(name="slide-y-transition")
       search-box(
-        v-if="tab && tab.options.search"
-        v-model="keyword"
+        v-if="tab && tab.table.options.search.enable"
+        v-model="tab.table.options.search"
         :absolute="true"
         :top="true"
         :right="true"
+        @search="onSearch"
+        @replace="onReplace"
+        @blur="clearBorder"
       )
 
   grid-table(
     v-if="tab"
-    v-bind="tab"
-    :keyword="keyword"
+    :tab="tab"
     @edit="onEdit"
-    @load="onLoad"
   )
 
 footer-nav(v-if="tab" v-model="tab")
@@ -25,12 +26,10 @@ footer-nav(v-if="tab" v-model="tab")
 import {
   defineComponent,
   PropType,
-  Ref,
-  ref,
   watch,
 } from 'vue'
-import HandsOnTable from 'handsontable'
 import { Tab } from '@/common/types'
+import { REPLACE_ALL, REPLACE_SINGLE } from '@/renderer/models/Search'
 import GridTable from '@/renderer/components/Grids/GridTable.vue'
 import SearchBox from '@/renderer/components/Form/SearchBox.vue'
 import FooterNav from '@/renderer/components/Footer/FooterNav.vue'
@@ -46,15 +45,16 @@ export default defineComponent({
   props: {
     tab: { type: Object as PropType<Tab|undefined>, default: undefined },
   },
-  setup: (props, context) => {
+  setup: (props: { tab?: Tab }, context) => {
     watch(
-      () => props.tab?.options.search,
-      show => show && props.tab?.table?.deselectCell(),
+      () => props.tab?.table.options.search.enable,
+      show => show && props.tab?.table.instance?.deselectCell(),
     )
 
     return {
-      keyword: ref(''),
-      onLoad: (table: Ref<HandsOnTable>) => context.emit('load', table),
+      clearBorder: () => props.tab?.table.borders?.clearBorders(),
+      onSearch: (e?: KeyboardEvent) => props.tab?.table.search && props.tab.table.search(e?.shiftKey),
+      onReplace: (all: boolean) => props.tab?.table.search && props.tab.table.search(false, true, all ? REPLACE_ALL : REPLACE_SINGLE),
       onEdit: () => context.emit('edit'),
     }
   },

@@ -11,7 +11,7 @@ import { FileMeta, Linefeed, SupportedEncoding } from '@/common/types'
 import * as channels from '@/common/channels'
 import * as files from '@/common/files'
 import { defaultLinefeed } from '@/common/plugins/helpers'
-import History from '@/main/model/History'
+import History from '@/main/models/History'
 
 const DEFAULT_ENCODING = 'UTF-8'
 

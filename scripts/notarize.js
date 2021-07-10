@@ -1,8 +1,8 @@
-const { notarize } = require("electron-notarize")
+import { notarize } from 'electron-notarize'
 
-exports.default = async function notarizing(context) {
+exports.default = async function notarizing (context) {
   const { electronPlatformName, appOutDir } = context
-  if (electronPlatformName !== "darwin") return
+  if (electronPlatformName !== 'darwin') return
 
   const appName = context.packager.appInfo.productFilename
 

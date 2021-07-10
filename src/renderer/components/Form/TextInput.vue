@@ -3,7 +3,7 @@ label.text-input(:style="{ height: `${height}px` }")
   span.text-input__icon(v-if="icon")
     svg-icon(
       :icon="icon"
-      color="rgba(0, 0, 0, 1)"
+      :size="height - 8"
     )
   input.text-input__input(
     v-model="value"
@@ -12,6 +12,7 @@ label.text-input(:style="{ height: `${height}px` }")
     :style="{ width: `${width}px` }"
     type="text"
   )
+  slot(name="append")
 </template>
 
 <script lang="ts">
@@ -43,22 +44,23 @@ export default defineComponent({
   box-sizing: border-box
   display: inline-flex
   margin: 0
+  padding: 2px
+  transition: 0.06s
 
   &:focus-within
-    border-color: dodgerblue
+    border-color: var(--focus-color)
 
   &__icon
     align-items: center
-    background: rgba(207, 207, 207, 1)
+    background: transparent
     display: inline-flex
-    padding: 4px
 
   &:focus-within &__icon
-    background: dodgerblue
+    color: var(--focus-color) !important
+    fill: var(--focus-color) !important
 
   &__input
     background: transparent
     border: none
     outline: none !important
-    padding: 4px
 </style>

@@ -1,66 +1,105 @@
 import {
-  nextTick,
   onUnmounted,
   Ref,
   SetupContext,
   watch,
 } from 'vue'
 import HandsOnTable from 'handsontable'
-import { Props } from './types'
 import { ipcRenderer } from 'electron'
+import { Tab } from '@/common/types'
 import * as channels from '@/common/channels'
 import shortcut from '@/renderer/utils/Shortcut'
 
 type Refs = {
-  search: Ref<HandsOnTable.plugins.Search|null>;
   wrapper: Ref<HTMLDivElement|undefined>;
   settings: Ref<HandsOnTable.DefaultSettings>;
 }
 
-export default (props: Props, context: SetupContext, refs: Refs) => {
-  watch(() => props.file.path, () => {
-    if (props.table) props.table.loadData(props.file.data)
+type Direction = 'up'|'down'|'left'|'right'
+
+export default (props: { tab: Tab }, context: SetupContext, refs: Refs) => {
+  const getEdgeCell = (direction: Direction, currentCell?: HandsOnTable.wot.CellRange) => {
+    currentCell = currentCell || props.tab.table.instance?.getSelectedRange()?.shift()
+    if (!currentCell) return 0
+
+    const data = props.tab.table.options.hasHeader ? props.tab.file.data.slice(1) : props.tab.file.data
+    switch (direction) {
+      case 'up': {
+        const target = !data[Math.max(currentCell.from.row - 1, 0)][currentCell.from.col]
+        for (let row = Math.max(currentCell.from.row - 2, 0); row >= 0; row--) {
+          if (!!data[row][currentCell.from.col] === target) return target ? row : row + 1
+        }
+        return 0
+      }
+      case 'down': {
+        const target = !data[Math.min(currentCell.from.row + 1, data.length)][currentCell.from.col]
+        for (let row = Math.min(currentCell.from.row + 2, data.length); row < data.length; row++) {
+          if (!!data[row][currentCell.from.col] === target) return target ? row : row - 1
+        }
+        return data.length
+      }
+      case 'left': {
+        const target = !data[currentCell.from.row][Math.max(currentCell.from.col - 1, 0)]
+        for (let col = Math.max(currentCell.from.col - 2, 0); col >= 0; col--) {
+          if (!!data[currentCell.from.row][col] === target) return target ? col : col + 1
+        }
+        return 0
+      }
+      case 'right': {
+        const target = !data[currentCell.from.row][Math.min(currentCell.from.col + 1, data[currentCell.from.row].length)]
+        for (let col = Math.min(currentCell.from.col + 2, data[currentCell.from.row].length); col < data[currentCell.from.row].length; col++) {
+          if (!!data[currentCell.from.row][col] === target) return target ? col : col - 1
+        }
+        return data[currentCell.from.row].length
+      }
+    }
+  }
+
+  const jumpCell = (direction: Direction) => {
+    const cell = props.tab.table.instance?.getSelectedRange()?.shift()
+    if (!props.tab.table.instance || !cell) return
+
+    switch (direction) {
+      case 'up':
+      case 'down': return props.tab.table.instance.selectCell(getEdgeCell(direction, cell), cell.from.col, getEdgeCell(direction, cell), cell.from.col, true)
+      case 'left':
+      case 'right': return props.tab.table.instance.selectCell(cell.from.row, getEdgeCell(direction, cell), cell.from.row, getEdgeCell(direction, cell), true)
+    }
+  }
+
+  watch(() => props.tab.file.path, () => {
+    props.tab.table.instance!.loadData(props.tab.file.data)
   })
 
   watch(() => refs.settings.value, settings => {
-    if (props.table && !props.table.isDestroyed) props.table.updateSettings(settings, false)
+    if (props.tab.table.instance && !props.tab.table.instance.isDestroyed) props.tab.table.instance.updateSettings(settings, false)
   })
 
   // Search
-  watch(() => props.keyword, keyword => {
-    if (props.table && refs.search.value) {
-      refs.search.value.query(keyword, refs.search.value.getCallback(), refs.search.value.getQueryMethod())
-      props.table.render()
-    }
-  })
+  watch(() => props.tab.table.options.search.keyword, () => props.tab.table.search!())
+  watch(() => props.tab.table.options.search.enable, () => props.tab.table.search!(false, true))
 
-  watch(() => props.options.search, show => {
-    if (props.table && refs.search.value) {
-      refs.search.value.query(show ? props.keyword : '', refs.search.value.getCallback(), refs.search.value.getQueryMethod())
-      props.table.render()
-    }
-  })
-
-  watch(() => props.table, () => {
-    if (props.table) {
+  watch(() => props.tab.table.instance, () => {
+    if (props.tab.table.instance) {
       // IPC events
-      ipcRenderer.on(channels.MENU_SELECT_ALL, props.table.selectAll)
-      ipcRenderer.on(channels.MENU_UNDO, props.table.undo)
-      ipcRenderer.on(channels.MENU_REDO, props.table.redo)
+      ipcRenderer.on(channels.MENU_SELECT_ALL, props.tab.table.instance.selectAll)
+      ipcRenderer.on(channels.MENU_UNDO, props.tab.table.instance.undo)
+      ipcRenderer.on(channels.MENU_REDO, props.tab.table.instance.redo)
 
       // Key bindings
-      shortcut.addShortcutEvent('select_all', props.table.selectAll)
-      shortcut.addShortcutEvent('undo', props.table.undo!)
-      shortcut.addShortcutEvent('redo', props.table.redo!)
+      shortcut.addShortcutEvent('select_all', props.tab.table.instance.selectAll)
+      shortcut.addShortcutEvent('undo', props.tab.table.instance.undo!)
+      shortcut.addShortcutEvent('redo', props.tab.table.instance.redo!)
+      shortcut.addShortcutEvent('search', () => props.tab.table.search!())
+      shortcut.addShortcutEvent('search_reverse', () => props.tab.table.search!(true))
+      shortcut.addShortcutEvent('jump_up', () => jumpCell('up'))
+      shortcut.addShortcutEvent('jump_down', () => jumpCell('down'))
+      shortcut.addShortcutEvent('jump_left', () => jumpCell('left'))
+      shortcut.addShortcutEvent('jump_right', () => jumpCell('right'))
       if (process.platform === 'darwin') {
-        shortcut.addShortcutEvent('copy', () => props.table!.getSelected() && document.execCommand('copy'))
-        shortcut.addShortcutEvent('cut', () => props.table!.getSelected() && document.execCommand('cut'))
-        shortcut.addShortcutEvent('paste', () => props.table!.getSelected() && document.execCommand('paste'))
-      }
-
-      window.onresize = async () => {
-        await nextTick()
-        props.table!.render()
+        shortcut.addShortcutEvent('copy', () => props.tab.table.instance!.getSelected() && document.execCommand('copy'))
+        shortcut.addShortcutEvent('cut', () => props.tab.table.instance!.getSelected() && document.execCommand('cut'))
+        shortcut.addShortcutEvent('paste', () => props.tab.table.instance!.getSelected() && document.execCommand('paste'))
       }
     }
   })

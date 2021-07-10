@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, nextTick, reactive, ref, watch } from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
 import HandsOnTable from 'handsontable'
 import { FileData, Tab, Options, FileMeta, Calculation } from '@/common/types'
@@ -11,7 +11,15 @@ import { useTab } from './types'
 
 const defaultOptions = (): Options => ({
   hasHeader: false,
-  search: false,
+  search: {
+    enable: false,
+    enableReplace: false,
+    matchCase: false,
+    regexp: false,
+    keyword: '',
+    replace: '',
+    results: undefined,
+  },
   printMode: false,
 })
 
@@ -38,25 +46,26 @@ export default (): useTab => {
   const count = ref(0)
   const state = reactive({
     count,
-    active: -1,
+    activeId: -1,
     tabs: [] as Tab[],
   })
 
   // computed
   const activeTab = computed<Tab|undefined>({
-    get: () => state.tabs.find((tab: Tab) => tab.id === state.active),
+    get: () => state.tabs.find((tab: Tab) => tab.id === state.activeId),
     set: tabData => {
-      const index = state.tabs.findIndex(tab => tab.id === state.active)
-      if (index !== -1) state.tabs[index] = tabData as Tab
+      if (!tabData) return delete window.onresize
+      const index = state.tabs.findIndex(tab => tab.id === state.activeId)
+      state.tabs[index] = tabData
     },
   })
 
   const options = computed<Options>({
     get: () => {
-      return activeTab.value?.options || defaultOptions()
+      return activeTab.value?.table.options || defaultOptions()
     },
     set: options => {
-      if (activeTab.value) activeTab.value.options = options
+      if (activeTab.value) activeTab.value.table.options = options
     },
   })
 
@@ -85,15 +94,16 @@ export default (): useTab => {
 
     const tab: Tab = {
       id: count.value++,
-      table: null,
+      table: {
+        options: defaultOptions(),
+      },
       file,
       dirty: false,
-      options: defaultOptions(),
       calculation: defaultCalculation(),
     }
 
     state.tabs.push(tab)
-    state.active = tab.id
+    state.activeId = tab.id
     if (fileData) persistentTabs(state.tabs)
   }
   ipcRenderer.on(channels.FILE_NEW, () => addTab())
@@ -119,13 +129,23 @@ export default (): useTab => {
     state.tabs.splice(index, 1)
 
     if (state.tabs.length && state.tabs.every(tab => tab.id !== activeTab.value?.id)) {
-      state.active = state.tabs[index]?.id || state.tabs[index - 1]?.id || state.tabs[0].id
+      state.activeId = state.tabs[index]?.id || state.tabs[index - 1]?.id || state.tabs[0].id
     } else if (!state.tabs.length) {
-      state.active = -1
+      state.activeId = -1
     }
 
     persistentTabs(state.tabs)
   }
+
+  watch(() => state.activeId, () => {
+    // 画面リサイズ時に再描画するリスナを登録
+    window.onresize = async () => {
+      await nextTick()
+      if (activeTab.value?.table.instance && !activeTab.value?.table.instance!.isDestroyed) {
+        activeTab.value?.table.instance!.render()
+      }
+    }
+  })
 
   // アプリ起動時、全てのタブが開き終わったら並び順まで復元
   ipcRenderer.on(channels.TABS_LOADED, (_, paths: channels.TABS_LOAD) => {

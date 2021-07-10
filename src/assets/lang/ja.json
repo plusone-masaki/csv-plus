@@ -15,7 +15,14 @@
     "search": "検索"
   },
   "search-box": {
-    "search": "検索"
+    "search": "検索",
+    "replace": "置換",
+    "replace_all": "すべて置換",
+    "match_case": "大文字と小文字を区別する",
+    "regexp": "正規表現",
+    "results": "{current}/{length}件",
+    "no_results": "0 件",
+    "close": "閉じる"
   },
   "tabs": {
     "new_tab": "新しいタブ"
