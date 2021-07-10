@@ -19,7 +19,7 @@ const generatePosition = (props: StyleProp) => {
 const generateLayout = (props: StyleProp) => ({
   top: props.top ? 0 : 'auto',
   bottom: props.bottom ? 0 : 'auto',
-  right: props.right ? 0 : 'auto',
+  right: props.right ? '16px' : 'auto',
   left: props.left ? 0 : 'auto',
 })
 

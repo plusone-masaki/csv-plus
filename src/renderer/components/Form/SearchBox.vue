@@ -30,18 +30,19 @@ div.search-box(:style="style")
       span.search-box__results(v-else)
         | {{ $t('search-box.no_results') }}
 
-    icon-switch.close-btn(
-      :title="$t('search-box.close')"
-      icon="close"
-      size="12"
-      @click="model.enable = false"
-    )
-    icon-switch.replacer-btn(
-      v-model="model.enableReplace"
-      :title="$t('search-box.replace')"
-      :icon="model.enableReplace ? 'up' : 'down'"
-      size="12"
-    )
+    div.search-box__actions
+      icon-switch.close-btn(
+        :title="$t('search-box.close')"
+        icon="close"
+        size="12"
+        @click="model.enable = false"
+      )
+      icon-switch.replacer-btn(
+        v-model="model.enableReplace"
+        :title="$t('search-box.replace')"
+        :icon="model.enableReplace ? 'up' : 'down'"
+        size="12"
+      )
 
   // 置換ボックス
   div.search-box__container(v-show="model.enableReplace")
@@ -144,12 +145,15 @@ export default defineComponent({
     font-size: 16px
 
   &__information
-    min-width: 100px
+    min-width: 120px
     text-align: left
 
   &__results
     font-size: 14px
     padding-left: 8px
+
+  &__actions
+    width: 16px
 
 .close-btn
   position: absolute
