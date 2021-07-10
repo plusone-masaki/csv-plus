@@ -1,5 +1,6 @@
+import HandsOnTable from 'handsontable'
 import { ipcRenderer } from 'electron'
-import { WritableComputedRef } from 'vue'
+import { nextTick, WritableComputedRef } from 'vue'
 import { Options } from '@/common/types'
 import * as channels from '@/common/channels'
 import shortcut from '@/renderer/utils/Shortcut'

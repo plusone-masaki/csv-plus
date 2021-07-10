@@ -9,6 +9,7 @@ import HandsOnTable from 'handsontable'
 import 'handsontable/languages/ja-JP'
 import sanitize from 'sanitize-html'
 import { Props } from './types'
+import gridHooks from '@/renderer/components/Grids/composables/gridHooks'
 
 const sanitizeOption: SanitizeOption = {
   allowedTags: [],
@@ -44,22 +45,7 @@ export default (props: Props, context: SetupContext) => {
     search: true,
     viewportColumnRenderingOffset: props.options.printMode ? props.file.data.length : 'auto',
     viewportRowRenderingOffset: props.options.printMode ? props.file.data.length : 'auto',
-    afterChange: (_: unknown, src) => {
-      if (!['loadData'].includes(src)) context.emit('edit')
-    },
-    afterSelection: (startRow: number, startCol: number, endRow: number, endCol: number) => {
-      if (!props.table) return
-
-      const rowLength = endRow - startRow
-      const colLength = endCol - startCol
-
-      const values = props.table.getData(startRow, startCol, endRow, endCol).flat() as string[]
-      props.calculation.selected = {
-        rowLength,
-        colLength,
-        summary: (rowLength || colLength) && values.reduce((a, b) => a + Number(b), 0),
-      }
-    },
+    ...gridHooks(props, context),
   }))
 
   onMounted(() => {
