@@ -7,8 +7,14 @@ import {
 } from 'vue'
 import HandsOnTable from 'handsontable'
 import 'handsontable/languages/ja-JP'
+import sanitize from 'sanitize-html'
 import { Props } from './types'
 import gridHooks from '@/renderer/components/Grids/composables/gridHooks'
+
+const sanitizeOption: SanitizeOption = {
+  allowedTags: [],
+  allowedAttributes: {},
+}
 
 export default (props: Props, context: SetupContext) => {
   const wrapper = ref<HTMLDivElement>()
@@ -17,7 +23,10 @@ export default (props: Props, context: SetupContext) => {
     data: props.options.hasHeader ? props.file.data.slice(1) : props.file.data,
     autoColumnSize: { syncLimit: 10 },
     autoRowSize: false,
-    colHeaders: props.options.hasHeader ? props.file.data[0] as string[] : true,
+    colHeaders: props.options.hasHeader
+      ? props.file.data[0].map((d: string) => d ? sanitize(d, sanitizeOption) : '') as string[]
+      : true,
+    colWidths: props.file.meta.colWidth,
     columnSorting: true,
     contextMenu: true,
     copyPaste: true,

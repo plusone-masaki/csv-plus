@@ -22,6 +22,7 @@
   },
   "footer": {
     "summary": "合計:",
+    "delimiter": "区切り文字:[{delimiter}]",
     "bom": "BOM",
     "bom_enable": "BOM付き",
     "bom_disable": "BOM無し"

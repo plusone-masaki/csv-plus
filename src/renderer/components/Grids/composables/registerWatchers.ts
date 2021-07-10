@@ -53,14 +53,14 @@ export default (props: Props, context: SetupContext, refs: Refs) => {
       shortcut.addShortcutEvent('undo', props.table.undo!)
       shortcut.addShortcutEvent('redo', props.table.redo!)
       if (process.platform === 'darwin') {
-        shortcut.addShortcutEvent('copy', () => props.table.getSelected() && document.execCommand('copy'))
-        shortcut.addShortcutEvent('cut', () => props.table.getSelected() && document.execCommand('cut'))
-        shortcut.addShortcutEvent('paste', () => props.table.getSelected() && document.execCommand('paste'))
+        shortcut.addShortcutEvent('copy', () => props.table!.getSelected() && document.execCommand('copy'))
+        shortcut.addShortcutEvent('cut', () => props.table!.getSelected() && document.execCommand('cut'))
+        shortcut.addShortcutEvent('paste', () => props.table!.getSelected() && document.execCommand('paste'))
       }
 
       window.onresize = async () => {
         await nextTick()
-        props.table.render()
+        props.table!.render()
       }
     }
   })

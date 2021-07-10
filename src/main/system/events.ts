@@ -9,10 +9,10 @@ import {
   IpcMainInvokeEvent,
   WebContents,
 } from 'electron'
+import { FileMeta } from '@/common/types'
 import * as channels from '@/common/channels'
 import FileMenuController from '@/main/menu/controllers/FileMenuController'
 import CSVFile from '@/main/model/CSVFile'
-import { FileMeta } from '@/common/types'
 
 const csvLoader = new CSVFile()
 
