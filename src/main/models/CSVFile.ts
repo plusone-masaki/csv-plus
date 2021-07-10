@@ -179,9 +179,10 @@ export default class CSVFile {
   private async parse (path: string) {
     return new Promise(resolve => {
       try {
+        this._meta.delimiter = this._meta.delimiter || CSVFile._guessDelimiter(path)
         const options: csvParse.Options = {
           bom: true,
-          delimiter: this._meta.delimiter = CSVFile._guessDelimiter(path),
+          delimiter: this._meta.delimiter,
           relax: true,
           relaxColumnCount: true,
         }
