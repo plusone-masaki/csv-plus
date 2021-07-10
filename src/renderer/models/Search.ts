@@ -12,13 +12,13 @@ type SearchResult = {
 }
 
 class Search {
-  readonly table: TableInstance
-  readonly searchPlugin: SearchPlugin
-  readonly customBordersPlugin: CustomBordersPlugin
-  readonly option: SearchOption
-  readonly hasHeader: boolean
+  private readonly table: TableInstance
+  private readonly searchPlugin: SearchPlugin
+  private readonly customBordersPlugin: CustomBordersPlugin
+  private readonly option: SearchOption
+  private readonly hasHeader: boolean
+  private readonly _data: string[][] = []
 
-  private _data: string[][] = []
   private _keyword = ''
   private _matchCase = false
   private _regexp = false
@@ -160,7 +160,6 @@ class Search {
         return
     }
 
-    console.log('cells', cells)
     const query = this.option.regexp ? new RegExp(this._keyword, this.option.matchCase ? '' : 'i') : this._keyword
     cells.forEach(cell => {
       const row = this.hasHeader ? cell.row + 1 : cell.row
