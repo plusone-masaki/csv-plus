@@ -8,7 +8,9 @@ import {
 import HandsOnTable from 'handsontable'
 import 'handsontable/languages/ja-JP'
 import sanitize from 'sanitize-html'
-import { Props } from './types'
+import { Tab } from '@/common/types'
+import { TableInstance } from '@/common/handsontable'
+import Search from '@/renderer/models/Search'
 import gridHooks from '@/renderer/components/Grids/composables/gridHooks'
 
 const sanitizeOption: SanitizeOption = {
@@ -16,17 +18,16 @@ const sanitizeOption: SanitizeOption = {
   allowedAttributes: {},
 }
 
-export default (props: Props, context: SetupContext) => {
+export default (props: { tab: Tab }, context: SetupContext) => {
   const wrapper = ref<HTMLDivElement>()
-  const search = ref<HandsOnTable.plugins.Search|null>(null)
   const settings = computed((): HandsOnTable.GridSettings => ({
-    data: props.options.hasHeader ? props.file.data.slice(1) : props.file.data,
+    data: props.tab.table.options.hasHeader ? props.tab.file.data.slice(1) : props.tab.file.data,
     autoColumnSize: { syncLimit: 10 },
     autoRowSize: false,
-    colHeaders: props.options.hasHeader
-      ? props.file.data[0].map((d: string) => d ? sanitize(d, sanitizeOption) : '') as string[]
+    colHeaders: props.tab.table.options.hasHeader
+      ? props.tab.file.data[0].map((d: string) => d ? sanitize(d, sanitizeOption) : '') as string[]
       : true,
-    colWidths: props.file.meta.colWidth,
+    colWidths: props.tab.file.meta.colWidth,
     columnSorting: true,
     contextMenu: true,
     copyPaste: true,
@@ -36,33 +37,33 @@ export default (props: Props, context: SetupContext) => {
     language: 'ja-JP',
     manualColumnResize: true,
     manualRowResize: true,
-    minSpareCols: Number(!props.options.printMode),
-    minSpareRows: Number(!props.options.printMode),
+    minSpareCols: Number(!props.tab.table.options.printMode),
+    minSpareRows: Number(!props.tab.table.options.printMode),
     outsideClickDeselects: false,
-    renderAllRows: props.options.printMode,
+    renderAllRows: props.tab.table.options.printMode,
     rowHeaders: true,
-    rowHeaderWidth: Math.max(50, (props.file.data.length.toString().length * 16)),
+    rowHeaderWidth: Math.max(50, (props.tab.file.data.length.toString().length * 16)),
     search: true,
-    viewportColumnRenderingOffset: props.options.printMode ? props.file.data.length : 'auto',
-    viewportRowRenderingOffset: props.options.printMode ? props.file.data.length : 'auto',
+    viewportColumnRenderingOffset: props.tab.table.options.printMode ? props.tab.file.data.length : 'auto',
+    viewportRowRenderingOffset: props.tab.table.options.printMode ? props.tab.file.data.length : 'auto',
     ...gridHooks(props, context),
   }))
 
   onMounted(() => {
     if (wrapper.value) {
-      const handsOnTable = new HandsOnTable(wrapper.value, settings.value)
-      search.value = handsOnTable.getPlugin('search')
-      context.emit('load', handsOnTable)
+      const handsOnTable = new HandsOnTable(wrapper.value, settings.value) as TableInstance
+      props.tab.table.instance = handsOnTable
+      props.tab.table.search = Search(handsOnTable, props.tab)
+      props.tab.table.borders = handsOnTable.getPlugin('customBorders')
     }
   })
 
   onBeforeUnmount(() => {
-    if (props.table) props.table.destroy()
+    if (props.tab.table.instance) props.tab.table.instance.destroy()
   })
 
   return {
     wrapper,
-    search,
     settings,
   }
 }

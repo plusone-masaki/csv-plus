@@ -13,11 +13,11 @@ export default ({ state, activeTab, addTab, closeTab }: useTab) => {
     if (!activeTab.value?.table) return data
 
     const rows = data.slice()
-    const emptyRows = activeTab.value.table.countEmptyRows(true)
+    const emptyRows = activeTab.value.table.instance!.countEmptyRows(true)
     rows.splice(data.length - emptyRows, emptyRows)
 
     if (!rows.length) return []
-    const emptyCols = activeTab.value.table.countEmptyCols(true)
+    const emptyCols = activeTab.value.table.instance!.countEmptyCols(true)
     return rows.map(row => row.slice(0, row.length - emptyCols))
   }
 
@@ -37,7 +37,7 @@ export default ({ state, activeTab, addTab, closeTab }: useTab) => {
 
     const exists = state.tabs.find((tab: Tab) => tab.file.path === file.path)
     if (exists) {
-      state.active = exists.id
+      state.activeId = exists.id
       exists.file = file
     } else {
       addTab(file)

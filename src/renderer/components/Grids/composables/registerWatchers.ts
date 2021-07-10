@@ -6,61 +6,53 @@ import {
   watch,
 } from 'vue'
 import HandsOnTable from 'handsontable'
-import { Props } from './types'
 import { ipcRenderer } from 'electron'
+import { Tab } from '@/common/types'
 import * as channels from '@/common/channels'
 import shortcut from '@/renderer/utils/Shortcut'
 
 type Refs = {
-  search: Ref<HandsOnTable.plugins.Search|null>;
   wrapper: Ref<HTMLDivElement|undefined>;
   settings: Ref<HandsOnTable.DefaultSettings>;
 }
 
-export default (props: Props, context: SetupContext, refs: Refs) => {
-  watch(() => props.file.path, () => {
-    if (props.table) props.table.loadData(props.file.data)
+export default (props: { tab: Tab }, context: SetupContext, refs: Refs) => {
+  watch(() => props.tab.file.path, () => {
+    props.tab.table.instance!.loadData(props.tab.file.data)
   })
 
   watch(() => refs.settings.value, settings => {
-    if (props.table && !props.table.isDestroyed) props.table.updateSettings(settings, false)
+    if (props.tab.table.instance && !props.tab.table.instance.isDestroyed) props.tab.table.instance.updateSettings(settings, false)
   })
 
   // Search
-  watch(() => props.keyword, keyword => {
-    if (props.table && refs.search.value) {
-      refs.search.value.query(keyword, refs.search.value.getCallback(), refs.search.value.getQueryMethod())
-      props.table.render()
-    }
-  })
+  watch(() => props.tab.table.options.search.keyword, () => props.tab.table.search!())
+  watch(() => props.tab.table.options.search.enable, () => props.tab.table.search!(false, true))
+  shortcut.addShortcutEvent('search', () => props.tab.table.search!())
+  shortcut.addShortcutEvent('search_reverse', () => props.tab.table.search!(true))
 
-  watch(() => props.options.search, show => {
-    if (props.table && refs.search.value) {
-      refs.search.value.query(show ? props.keyword : '', refs.search.value.getCallback(), refs.search.value.getQueryMethod())
-      props.table.render()
-    }
-  })
-
-  watch(() => props.table, () => {
-    if (props.table) {
+  watch(() => props.tab.table.instance, () => {
+    if (props.tab.table.instance) {
       // IPC events
-      ipcRenderer.on(channels.MENU_SELECT_ALL, props.table.selectAll)
-      ipcRenderer.on(channels.MENU_UNDO, props.table.undo)
-      ipcRenderer.on(channels.MENU_REDO, props.table.redo)
+      ipcRenderer.on(channels.MENU_SELECT_ALL, props.tab.table.instance.selectAll)
+      ipcRenderer.on(channels.MENU_UNDO, props.tab.table.instance.undo)
+      ipcRenderer.on(channels.MENU_REDO, props.tab.table.instance.redo)
 
       // Key bindings
-      shortcut.addShortcutEvent('select_all', props.table.selectAll)
-      shortcut.addShortcutEvent('undo', props.table.undo!)
-      shortcut.addShortcutEvent('redo', props.table.redo!)
+      shortcut.addShortcutEvent('select_all', props.tab.table.instance.selectAll)
+      shortcut.addShortcutEvent('undo', props.tab.table.instance.undo!)
+      shortcut.addShortcutEvent('redo', props.tab.table.instance.redo!)
       if (process.platform === 'darwin') {
-        shortcut.addShortcutEvent('copy', () => props.table!.getSelected() && document.execCommand('copy'))
-        shortcut.addShortcutEvent('cut', () => props.table!.getSelected() && document.execCommand('cut'))
-        shortcut.addShortcutEvent('paste', () => props.table!.getSelected() && document.execCommand('paste'))
+        shortcut.addShortcutEvent('copy', () => props.tab.table.instance!.getSelected() && document.execCommand('copy'))
+        shortcut.addShortcutEvent('cut', () => props.tab.table.instance!.getSelected() && document.execCommand('cut'))
+        shortcut.addShortcutEvent('paste', () => props.tab.table.instance!.getSelected() && document.execCommand('paste'))
       }
 
       window.onresize = async () => {
-        await nextTick()
-        props.table!.render()
+        if (props.tab.table.instance) {
+          await nextTick()
+          props.tab.table.instance.render()
+        }
       }
     }
   })

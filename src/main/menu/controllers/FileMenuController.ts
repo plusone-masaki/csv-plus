@@ -7,8 +7,8 @@ import {
 import * as fs from 'fs'
 import * as channels from '@/common/channels'
 import { FILE_FILTERS } from '@/common/files'
-import CSVFile from '@/main/model/CSVFile'
-import History from '@/main/model/History'
+import CSVFile from '@/main/models/CSVFile'
+import History from '@/main/models/History'
 
 const csvFile = new CSVFile()
 
@@ -30,9 +30,9 @@ export default class FileMenuController {
   public static open (menu: MenuItem|BrowserWindow, window?: BrowserWindow) {
     window = window || menu as BrowserWindow
 
-    const defaultPath = process.platform === 'win32' ?
-      app.getPath('recent') || app.getPath('documents') :
-      app.getPath('documents')
+    const defaultPath = process.platform === 'win32'
+      ? app.getPath('recent') || app.getPath('documents')
+      : app.getPath('documents')
 
     const files = dialog.showOpenDialogSync(window, {
       defaultPath,
@@ -155,9 +155,9 @@ export default class FileMenuController {
    * @return {string}
    */
   private static _selectPath (window: BrowserWindow, path?: string): string {
-    const defaultPath = process.platform === 'win32' ?
-      path || app.getPath('recent') || app.getPath('documents') :
-      path || app.getPath('documents')
+    const defaultPath = process.platform === 'win32'
+      ? path || app.getPath('recent') || app.getPath('documents')
+      : path || app.getPath('documents')
 
     return dialog.showSaveDialogSync(window, {
       title: '名前を付けて保存',

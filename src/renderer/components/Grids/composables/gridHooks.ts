@@ -1,21 +1,22 @@
 import { SetupContext } from 'vue'
-import { Props } from './types'
+import { Tab } from '@/common/types'
 
-export default (props: Props, context: SetupContext) => ({
+export default (props: { tab: Tab }, context: SetupContext) => ({
   afterChange: (_: unknown, src: string) => {
-    if (!['loadData'].includes(src)) context.emit('edit')
+    if (!['loadData', 'undo'].includes(src)) context.emit('edit')
   },
   afterSelection: (startRow: number, startCol: number, endRow: number, endCol: number) => {
-    if (!props.table) return
+    if (!props.tab.table.instance) return
 
     const rowLength = endRow - startRow
     const colLength = endCol - startCol
 
-    const values = props.table.getData(startRow, startCol, endRow, endCol).flat() as string[]
-    props.calculation.selected = {
+    const values = props.tab.table.instance.getData(startRow, startCol, endRow, endCol).flat() as string[]
+    props.tab.calculation.selected = {
       rowLength,
       colLength,
       summary: (rowLength || colLength) && values.reduce((a, b) => a + Number(b), 0),
     }
   },
+  beforeSetRangeEnd: () => props.tab.table.borders?.clearBorders(),
 })
