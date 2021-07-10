@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, nextTick, reactive, ref, watch } from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
 import HandsOnTable from 'handsontable'
 import { FileData, Tab, Options, FileMeta, Calculation } from '@/common/types'
@@ -54,8 +54,9 @@ export default (): useTab => {
   const activeTab = computed<Tab|undefined>({
     get: () => state.tabs.find((tab: Tab) => tab.id === state.activeId),
     set: tabData => {
+      if (!tabData) return delete window.onresize
       const index = state.tabs.findIndex(tab => tab.id === state.activeId)
-      if (index !== -1) state.tabs[index] = tabData as Tab
+      state.tabs[index] = tabData
     },
   })
 
@@ -135,6 +136,16 @@ export default (): useTab => {
 
     persistentTabs(state.tabs)
   }
+
+  watch(() => state.activeId, () => {
+    // 画面リサイズ時に再描画するリスナを登録
+    window.onresize = async () => {
+      await nextTick()
+      if (activeTab.value?.table.instance && !activeTab.value?.table.instance!.isDestroyed) {
+        activeTab.value?.table.instance!.render()
+      }
+    }
+  })
 
   // アプリ起動時、全てのタブが開き終わったら並び順まで復元
   ipcRenderer.on(channels.TABS_LOADED, (_, paths: channels.TABS_LOAD) => {

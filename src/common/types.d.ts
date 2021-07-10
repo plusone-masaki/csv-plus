@@ -1,5 +1,5 @@
 import HandsOnTable from 'handsontable'
-import { CustomBordersPlugin } from '@/common/handsontable'
+import { TableInstance, CustomBordersPlugin } from '@/common/handsontable'
 
 declare global {
   const __static: string

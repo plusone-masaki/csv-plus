@@ -1,5 +1,4 @@
 import {
-  nextTick,
   onUnmounted,
   Ref,
   SetupContext,
@@ -46,13 +45,6 @@ export default (props: { tab: Tab }, context: SetupContext, refs: Refs) => {
         shortcut.addShortcutEvent('copy', () => props.tab.table.instance!.getSelected() && document.execCommand('copy'))
         shortcut.addShortcutEvent('cut', () => props.tab.table.instance!.getSelected() && document.execCommand('cut'))
         shortcut.addShortcutEvent('paste', () => props.tab.table.instance!.getSelected() && document.execCommand('paste'))
-      }
-
-      window.onresize = async () => {
-        if (props.tab.table.instance) {
-          await nextTick()
-          props.tab.table.instance.render()
-        }
       }
     }
   })
