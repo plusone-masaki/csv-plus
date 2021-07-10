@@ -1,4 +1,5 @@
-import { notarize } from 'electron-notarize'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { notarize } = require('electron-notarize')
 
 exports.default = async function notarizing (context) {
   const { electronPlatformName, appOutDir } = context
