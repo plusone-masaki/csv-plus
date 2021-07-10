@@ -54,23 +54,23 @@ div.search-box(:style="style")
     div.replace__buttons
       chip-label.replace__buttons--button(
         :title="$t('search-box.replace')"
-        color="rgb(75, 137, 255)"
-        @click="onReplace(false)"
+        :color="model.results ? '#666666' : '#999999'"
+        @click="model.results && onReplace(false)"
       )
         svg-icon.replace__buttons--icon(
           color="#FFFFFF"
-          icon="check"
-          size="14"
+          icon="replace"
+          size="12"
         )
       chip-label.replace__buttons--button(
         :title="$t('search-box.replace_all')"
-        color="rgb(75, 137, 255)"
-        @click="onReplace(true)"
+        :color="model.results ? '#666666' : '#999999'"
+        @click="model.results && onReplace(true)"
       )
         svg-icon.replace__buttons--icon(
           color="#FFFFFF"
-          icon="check-all"
-          size="14"
+          icon="replace-all"
+          size="12"
         )
 </template>
 
@@ -114,8 +114,8 @@ export default defineComponent({
     const onSubmit = (e: KeyboardEvent) => context.emit('search', e)
     const onReplace = (all = false) => context.emit('replace', all)
     onMounted(() => searchInput.value?.$el.focus())
-    watch(() => props.modelValue.matchCase, () => context.emit('search'))
-    watch(() => props.modelValue.regexp, () => context.emit('search'))
+    watch(() => model.value.matchCase, () => context.emit('search'))
+    watch(() => model.value.regexp, () => context.emit('search'))
 
     return {
       searchInput,

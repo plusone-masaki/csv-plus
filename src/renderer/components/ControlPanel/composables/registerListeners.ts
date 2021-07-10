@@ -27,6 +27,10 @@ export default (options: WritableComputedRef<Options>, events: Events) => {
   /**
    * Key bindings
    */
-  shortcut.addShortcutEvent('search_open', () => { options.value.search.enable = !options.value.search.enable })
+  shortcut.addShortcutEvent('search_open', () => {
+    options.value.search.enable = !options.value.search.enable
+    options.value.search.enableReplace = false
+  })
   shortcut.addShortcutEvent('search_close', () => { options.value.search.enable = false })
+  shortcut.addShortcutEvent('replace_open', () => { options.value.search.enableReplace = options.value.search.enable = true })
 }

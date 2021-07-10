@@ -63,5 +63,6 @@ shortcut.addKeybinding('search', { key: 'F3' })
 shortcut.addKeybinding('search_reverse', { key: 'F3', shiftKey: true })
 shortcut.addKeybinding('search_open', { key: 'F', ctrlKey: process.platform !== 'darwin', metaKey: process.platform === 'darwin' })
 shortcut.addKeybinding('search_close', { key: 'ESCAPE' })
+shortcut.addKeybinding('replace_open', { key: 'H', ctrlKey: process.platform !== 'darwin', metaKey: process.platform === 'darwin' })
 
 export default shortcut

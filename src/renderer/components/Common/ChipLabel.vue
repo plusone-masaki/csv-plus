@@ -1,8 +1,8 @@
 <template lang="pug">
 div.chip-label
   span.chip-label__content(
-    :class="{ large, small, '--active': value }"
-    :style="{ backgroundColor: color }"
+    :class="{ large, small, '--active': value, '--outlined': outlined }"
+    :style="{ backgroundColor: color, borderColor: color }"
     :title="title"
   )
     slot
@@ -18,6 +18,7 @@ export default defineComponent({
     color: { type: String as PropType<string>, default: undefined },
     small: { type: Boolean as PropType<boolean>, default: false },
     large: { type: Boolean as PropType<boolean>, default: false },
+    outlined: { type: Boolean as PropType<boolean>, default: false },
     modelValue: { type: Boolean as PropType<boolean>, default: false },
     title: { type: String as PropType<string|undefined>, default: undefined },
   },
@@ -43,7 +44,7 @@ export default defineComponent({
     display: flex
     font-size: 14px
     height: 18px
-    padding: 2px 8px
+    padding: 3px 8px
 
     &.large
       border-radius: 8px
@@ -55,4 +56,8 @@ export default defineComponent({
       font-size: 9px
       height: 14px
       padding: 0 6px
+
+    &.--outlined
+      background: transparent !important
+      border: solid 1px
 </style>
