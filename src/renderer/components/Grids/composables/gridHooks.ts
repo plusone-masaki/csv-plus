@@ -1,5 +1,6 @@
 import { SetupContext } from 'vue'
 import { Tab } from '@/common/types'
+import shortcut from '@/renderer/utils/Shortcut'
 
 export default (props: { tab: Tab }, context: SetupContext) => ({
   afterChange: (_: unknown, src: string) => {
@@ -19,4 +20,11 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
     }
   },
   beforeSetRangeEnd: () => props.tab.table.borders?.clearBorders(),
+  beforeKeyDown: (event: Event) => {
+    // キーバインドが登録済みの場合、HandsOnTableのキーバインディングを無効化
+    if (shortcut.existsKeyBinding(event as KeyboardEvent)) {
+      (event as any).isImmediatePropagationEnabled = false;
+      (event as any).isImmediatePropagationStopped = () => true
+    }
+  },
 })
