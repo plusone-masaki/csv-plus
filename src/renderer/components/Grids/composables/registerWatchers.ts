@@ -32,11 +32,12 @@ export default (props: { tab: Tab }, context: SetupContext, refs: Refs) => {
         return 0
       }
       case 'down': {
-        const target = !data[Math.min(currentCell.from.row + 1, data.length)][currentCell.from.col]
-        for (let row = Math.min(currentCell.from.row + 2, data.length); row < data.length; row++) {
+        const length = data.length
+        const target = !data[Math.min(currentCell.from.row + 1, length)][currentCell.from.col]
+        for (let row = Math.min(currentCell.from.row + 2, length); row < length; row++) {
           if (!!data[row][currentCell.from.col] === target) return target ? row : row - 1
         }
-        return data.length
+        return length - 1
       }
       case 'left': {
         const target = !data[currentCell.from.row][Math.max(currentCell.from.col - 1, 0)]
@@ -46,11 +47,12 @@ export default (props: { tab: Tab }, context: SetupContext, refs: Refs) => {
         return 0
       }
       case 'right': {
-        const target = !data[currentCell.from.row][Math.min(currentCell.from.col + 1, data[currentCell.from.row].length)]
-        for (let col = Math.min(currentCell.from.col + 2, data[currentCell.from.row].length); col < data[currentCell.from.row].length; col++) {
+        const length = data[currentCell.from.row].length
+        const target = !data[currentCell.from.row][Math.min(currentCell.from.col + 1, length)]
+        for (let col = Math.min(currentCell.from.col + 2, length); col < length; col++) {
           if (!!data[currentCell.from.row][col] === target) return target ? col : col - 1
         }
-        return data[currentCell.from.row].length
+        return length - 1
       }
     }
   }
