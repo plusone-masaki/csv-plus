@@ -25,31 +25,35 @@ export default (props: { tab: Tab }, context: SetupContext, refs: Refs) => {
     const data = props.tab.table.options.hasHeader ? props.tab.file.data.slice(1) : props.tab.file.data
     switch (direction) {
       case 'up': {
-        const target = !data[Math.max(currentCell.from.row - 1, 0)][currentCell.from.col]
-        for (let row = Math.max(currentCell.from.row - 2, 0); row >= 0; row--) {
+        const currentRow = Math.min(currentCell.from.row, currentCell.to.row)
+        const target = !data[Math.max(currentRow - 1, 0)][currentCell.from.col]
+        for (let row = Math.max(currentRow - 2, 0); row >= 0; row--) {
           if (!!data[row][currentCell.from.col] === target) return target ? row : row + 1
         }
         return 0
       }
       case 'down': {
         const length = data.length
-        const target = !data[Math.min(currentCell.from.row + 1, length)][currentCell.from.col]
-        for (let row = Math.min(currentCell.from.row + 2, length); row < length; row++) {
+        const currentRow = Math.max(currentCell.from.row, currentCell.to.row)
+        const target = !data[Math.min(currentRow + 1, length)][currentCell.from.col]
+        for (let row = Math.min(currentRow + 2, length); row < length; row++) {
           if (!!data[row][currentCell.from.col] === target) return target ? row : row - 1
         }
         return length - 1
       }
       case 'left': {
-        const target = !data[currentCell.from.row][Math.max(currentCell.from.col - 1, 0)]
-        for (let col = Math.max(currentCell.from.col - 2, 0); col >= 0; col--) {
+        const currentCol = Math.min(currentCell.from.col, currentCell.to.col)
+        const target = !data[Math.max(currentCell.from.row, 0)][currentCol - 1]
+        for (let col = Math.max(currentCol - 2, 0); col >= 0; col--) {
           if (!!data[currentCell.from.row][col] === target) return target ? col : col + 1
         }
         return 0
       }
       case 'right': {
-        const length = data[currentCell.from.row].length
-        const target = !data[currentCell.from.row][Math.min(currentCell.from.col + 1, length)]
-        for (let col = Math.min(currentCell.from.col + 2, length); col < length; col++) {
+        const length = data[currentCell.from.col].length
+        const currentCol = Math.max(currentCell.from.col, currentCell.to.col)
+        const target = !data[currentCell.from.row][Math.min(currentCol + 1, length)]
+        for (let col = Math.min(currentCol + 2, length); col < length; col++) {
           if (!!data[currentCell.from.row][col] === target) return target ? col : col - 1
         }
         return length - 1
@@ -57,15 +61,15 @@ export default (props: { tab: Tab }, context: SetupContext, refs: Refs) => {
     }
   }
 
-  const jumpCell = (direction: Direction) => {
+  const jumpCell = (direction: Direction, fill = false) => {
     const cell = props.tab.table.instance?.getSelectedRange()?.shift()
     if (!props.tab.table.instance || !cell) return
 
     switch (direction) {
       case 'up':
-      case 'down': return props.tab.table.instance.selectCell(getEdgeCell(direction, cell), cell.from.col, getEdgeCell(direction, cell), cell.from.col, true)
+      case 'down': return props.tab.table.instance.selectCell(fill ? cell.from.row : getEdgeCell(direction, cell), cell.from.col, getEdgeCell(direction, cell), cell.from.col, true)
       case 'left':
-      case 'right': return props.tab.table.instance.selectCell(cell.from.row, getEdgeCell(direction, cell), cell.from.row, getEdgeCell(direction, cell), true)
+      case 'right': return props.tab.table.instance.selectCell(cell.from.row, fill ? cell.from.col : getEdgeCell(direction, cell), cell.from.row, getEdgeCell(direction, cell), true)
     }
   }
 
@@ -98,6 +102,10 @@ export default (props: { tab: Tab }, context: SetupContext, refs: Refs) => {
       shortcut.addShortcutEvent('jump_down', () => jumpCell('down'))
       shortcut.addShortcutEvent('jump_left', () => jumpCell('left'))
       shortcut.addShortcutEvent('jump_right', () => jumpCell('right'))
+      shortcut.addShortcutEvent('fill_up', () => jumpCell('up', true))
+      shortcut.addShortcutEvent('fill_down', () => jumpCell('down', true))
+      shortcut.addShortcutEvent('fill_left', () => jumpCell('left', true))
+      shortcut.addShortcutEvent('fill_right', () => jumpCell('right', true))
       if (process.platform === 'darwin') {
         shortcut.addShortcutEvent('copy', () => props.tab.table.instance!.getSelected() && document.execCommand('copy'))
         shortcut.addShortcutEvent('cut', () => props.tab.table.instance!.getSelected() && document.execCommand('cut'))
