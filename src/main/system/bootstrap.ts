@@ -26,8 +26,8 @@ const isFirstInstance = app.requestSingleInstanceLock()
 if (!isFirstInstance) {
   app.quit()
 } else {
-  app.on('second-instance', (event, argv) => {
-    if (argv.length >= 2 && argv[1]) filepath = argv[1]
+  app.on('second-instance', (event, argv: string[]) => {
+    if (argv.length >= 2 && argv[argv.length - 1].indexOf('--')) filepath = argv[argv.length - 1]
     if (filepath && filepath !== 'dist') csvFile.open(filepath)
     if (window) {
       if (window.isMinimized()) window.restore()
