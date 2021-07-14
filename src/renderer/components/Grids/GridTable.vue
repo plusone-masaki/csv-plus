@@ -7,7 +7,6 @@ div.grid-table
 import { defineComponent, PropType } from 'vue'
 import { Tab } from '@/common/types'
 import useGrid from '@/renderer/components/Grids/composables/useGrid'
-import registerWatchers from '@/renderer/components/Grids/composables/registerWatchers'
 
 export default defineComponent({
   name: 'GridTable',
@@ -16,7 +15,6 @@ export default defineComponent({
   },
   setup (props, context) {
     const refs = useGrid(props, context)
-    registerWatchers(props, context, refs)
 
     return {
       ...refs,

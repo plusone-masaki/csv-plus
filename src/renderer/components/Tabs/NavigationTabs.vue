@@ -23,10 +23,9 @@ div.tabs
 import { PropType, defineComponent, WritableComputedRef } from 'vue'
 import VueDraggable from 'vuedraggable'
 import { Tab } from '@/common/types'
-import vModel from '@/renderer/utils/v-model'
+import vModel from '@/renderer/helpers/v-model'
 import NavigationTab from './NavigationTab.vue'
 import NavigationAddTab from './NavigationAddTab.vue'
-import registerListeners from './composables/registerListeners'
 
 export default defineComponent({
   name: 'NavigationTabs',
@@ -46,8 +45,6 @@ export default defineComponent({
       onAdd: () => context.emit('add'),
       onClose: (tab: Tab) => context.emit('close', tab),
     }
-
-    registerListeners(models, methods)
 
     return {
       ...models,

@@ -1,7 +1,7 @@
 module.exports = {
   pages: {
-    index: 'src/renderer/pages/index.ts',
-    settings: 'src/renderer/pages/settings.ts',
+    index: 'src/renderer/index.ts',
+    settings: 'src/renderer/settings.ts',
   },
   pluginOptions: {
     electronBuilder: {

@@ -4,10 +4,10 @@ import csvStringify from 'csv-stringify/lib/sync'
 import HandsOnTable from 'handsontable'
 import { FileData, Tab, Options, FileMeta, Calculation } from '@/common/types'
 import * as channels from '@/common/channels'
-import { vueI18n } from '@/common/plugins/i18n'
+import { useI18n } from 'vue-i18n'
 import { defaultLinefeed } from '@/common/plugins/helpers'
-import { persistentTabs } from '@/renderer/utils/persistentStates'
-import { useTab } from './types'
+import { persistentTabs } from '@/renderer/helpers/persistentStates'
+import { UseTab } from './types'
 
 const defaultOptions = (): Options => ({
   hasHeader: false,
@@ -40,8 +40,8 @@ const defaultCalculation = (): Calculation => ({
   },
 })
 
-export default (): useTab => {
-  const { t } = vueI18n
+export default (): UseTab => {
+  const { t } = useI18n()
 
   const count = ref(0)
   const state = reactive({
@@ -95,6 +95,7 @@ export default (): useTab => {
     const tab: Tab = {
       id: count.value++,
       table: {
+        search: () => { /* empty */ },
         options: defaultOptions(),
       },
       file,
@@ -125,7 +126,7 @@ export default (): useTab => {
       if (!await ipcRenderer.invoke(channels.FILE_DESTROY_CONFIRM, item)) return
     }
 
-    const index = state.tabs.findIndex(t => t.id === tab.id)
+    const index = state.tabs.findIndex(tb => tb.id === tab.id)
     state.tabs.splice(index, 1)
 
     if (state.tabs.length && state.tabs.every(tab => tab.id !== activeTab.value?.id)) {
@@ -148,11 +149,16 @@ export default (): useTab => {
   })
 
   // アプリ起動時、全てのタブが開き終わったら並び順まで復元
-  ipcRenderer.on(channels.TABS_LOADED, (_, paths: channels.TABS_LOAD) => {
+  ipcRenderer.on(channels.TABS_LOADED, (_, paths: channels.TABS_LOADED, filepath?: string) => {
     state.tabs = paths
       .map(path => state.tabs.find((tab: Tab) => tab.file.path === path))
       .filter((tab?: Tab) => !!tab)
       .concat(state.tabs.filter(tab => paths.indexOf(tab.file.path) === -1)) as Tab[]
+
+    if (filepath) {
+      const tab = state.tabs.find(tab => tab.file.path === filepath)
+      if (tab) state.activeId = tab.id
+    }
   })
 
   /**

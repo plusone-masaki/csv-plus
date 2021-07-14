@@ -85,7 +85,7 @@ import {
 } from 'vue'
 import { SearchOption } from '@/common/types'
 import useStyles from './composables/useStyles'
-import vModel from '@/renderer/utils/v-model'
+import vModel from '@/renderer/helpers/v-model'
 import ChipLabel from '@/renderer/components/Common/ChipLabel.vue'
 import SvgIcon from '@/renderer/components/Common/SvgIcon.vue'
 import IconSwitch from '@/renderer/components/Common/IconSwitch.vue'

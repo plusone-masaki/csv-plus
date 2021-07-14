@@ -22,7 +22,7 @@ ul.footer-nav-menu
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import vModel from '@/renderer/utils/v-model'
+import vModel from '@/renderer/helpers/v-model'
 import TextInput from '@/renderer/components/Form/TextInput.vue'
 
 type MenuItem = {

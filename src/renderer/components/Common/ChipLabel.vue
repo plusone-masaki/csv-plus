@@ -10,7 +10,7 @@ div.chip-label
 
 <script lang="ts">
 import { defineComponent, PropType, SetupContext } from 'vue'
-import vModel from '@/renderer/utils/v-model'
+import vModel from '@/renderer/helpers/v-model'
 
 export default defineComponent({
   name: 'ChipLabel',

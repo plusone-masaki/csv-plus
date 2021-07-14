@@ -43,13 +43,12 @@ import {
   WritableComputedRef,
 } from 'vue'
 import { Options, Table } from '@/common/types'
-import vModel from '@/renderer/utils/v-model'
+import vModel from '@/renderer/helpers/v-model'
 import IconSwitch from '@/renderer/components/Common/IconSwitch.vue'
-import Toolbar from '@/renderer/components/ControlPanel/Toolbar.vue'
 import IconRadio from '@/renderer/components/Common/IconRadio.vue'
+import Toolbar from '@/renderer/components/ControlPanel/Toolbar.vue'
 import ToolbarSeparator from '@/renderer/components/ControlPanel/ToolbarSeparator.vue'
 import useEvents from './composables/useEvents'
-import registerListeners from './composables/registerListeners'
 
 export default defineComponent({
   name: 'ControlPanel',
@@ -65,9 +64,7 @@ export default defineComponent({
   },
   setup (props, context) {
     const options = vModel('modelValue', props, context) as WritableComputedRef<Options>
-    const events = useEvents(props, context, options)
-
-    registerListeners(options, events)
+    const events = useEvents(props, context)
 
     return {
       options,

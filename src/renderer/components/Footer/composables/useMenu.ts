@@ -10,7 +10,7 @@ import {
 } from 'vue'
 import * as channels from '@/common/channels'
 import { Tab } from '@/common/types'
-import vModel from '@/renderer/utils/v-model'
+import vModel from '@/renderer/helpers/v-model'
 
 interface Props {
   [key: string]: unknown;
@@ -37,7 +37,7 @@ export default (props: Props, context: SetupContext) => {
   const items = reactive({
     delimiter: [
       { label: 'カンマ区切り[,]', value: ',' },
-      { label: 'タブ区切り　[  ]', value: '\t' },
+      { label: 'タブ区切り　[\t]', value: '\t' },
       { label: 'その他', value: anyDelimiter.value, input: true },
     ],
 

@@ -4,6 +4,7 @@ import {
   onBeforeUnmount,
   ref,
   SetupContext,
+  watch,
 } from 'vue'
 import HandsOnTable from 'handsontable'
 import 'handsontable/languages/ja-JP'
@@ -48,6 +49,14 @@ export default (props: { tab: Tab }, context: SetupContext) => {
     viewportRowRenderingOffset: props.tab.table.options.printMode ? props.tab.file.data.length : 'auto',
     ...gridHooks(props, context),
   }))
+
+  watch(() => settings.value, settings => {
+    if (props.tab.table.instance && !props.tab.table.instance.isDestroyed) props.tab.table.instance.updateSettings(settings, false)
+  })
+
+  watch(() => props.tab.file.path, () => {
+    props.tab.table.instance!.loadData(props.tab.file.data)
+  })
 
   onMounted(() => {
     if (wrapper.value) {

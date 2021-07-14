@@ -1,7 +1,7 @@
 import { ref, WritableComputedRef } from 'vue'
 import { FileData, Options, Tab } from '@/common/types'
 
-export type useTab = {
+export type UseTab = {
   state: {
     count: ref<number>
     activeId: number
