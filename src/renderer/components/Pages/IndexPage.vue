@@ -6,6 +6,7 @@ div.layout
     @add="addTab"
     @open="open"
     @save="save"
+    @print="print"
   )
 
   navigation-tabs(
@@ -27,6 +28,8 @@ div.layout
 import { defineComponent } from 'vue'
 import useTabs from './composables/useTabs'
 import useFiles from './composables/useFiles'
+import registerListeners from '@/renderer/components/Pages/composables/registerListeners'
+import registerShortcuts from '@/renderer/components/Pages/composables/registerShortcuts'
 import ControlPanel from '@/renderer/components/ControlPanel/ControlPanel.vue'
 import NavigationTabs from '@/renderer/components/Tabs/NavigationTabs.vue'
 import GridWrapper from '@/renderer/components/Grids/GridWrapper.vue'
@@ -41,6 +44,8 @@ export default defineComponent({
   setup () {
     const tabs = useTabs()
     const files = useFiles(tabs)
+    registerListeners(tabs)
+    registerShortcuts(tabs)
 
     return {
       ...tabs,

@@ -7,7 +7,7 @@ import * as channels from '@/common/channels'
 import { vueI18n } from '@/common/plugins/i18n'
 import { defaultLinefeed } from '@/common/plugins/helpers'
 import { persistentTabs } from '@/renderer/utils/persistentStates'
-import { useTab } from './types'
+import { UseTab } from './types'
 
 const defaultOptions = (): Options => ({
   hasHeader: false,
@@ -40,7 +40,7 @@ const defaultCalculation = (): Calculation => ({
   },
 })
 
-export default (): useTab => {
+export default (): UseTab => {
   const { t } = vueI18n
 
   const count = ref(0)
@@ -95,6 +95,7 @@ export default (): useTab => {
     const tab: Tab = {
       id: count.value++,
       table: {
+        search: () => { /* empty */ },
         options: defaultOptions(),
       },
       file,

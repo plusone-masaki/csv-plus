@@ -98,7 +98,7 @@ declare interface Options {
 
 declare interface Table {
   instance?: TableInstance
-  search?: (reverse?: boolean, preserve?: boolean, replace?: ReplaceFlag) => void
+  search: (reverse?: boolean, preserve?: boolean, replace?: ReplaceFlag) => void
   borders?: CustomBordersPlugin
   options: Options
 }

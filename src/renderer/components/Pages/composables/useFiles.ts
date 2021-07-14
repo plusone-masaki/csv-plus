@@ -4,10 +4,10 @@ import { nextTick } from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
 import * as channels from '@/common/channels'
 import { Tab } from '@/common/types'
-import { useTab } from './types'
+import { UseTab } from './types'
 import { persistentTabs } from '@/renderer/utils/persistentStates'
 
-export default ({ state, activeTab, addTab, closeTab }: useTab) => {
+export default ({ state, activeTab, addTab, closeTab }: UseTab) => {
   // 末尾の空要素を削除する
   const _trimEmptyCells = (data: string[][]): string[][] => {
     if (!activeTab.value?.table) return data
@@ -88,9 +88,18 @@ export default ({ state, activeTab, addTab, closeTab }: useTab) => {
     persistentTabs(state.tabs)
   })
 
+  const print = () => {
+    if (activeTab.value?.table?.instance) {
+      activeTab.value.table.instance.addHookOnce('afterRender', () => window.print())
+      activeTab.value.table.options.printMode = true
+    }
+  }
+  ipcRenderer.on(channels.MENU_PRINT, print)
+
   return {
     activeTab,
     open,
     save,
+    print,
   }
 }
