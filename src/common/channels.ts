@@ -27,7 +27,7 @@ export const TABS_SAVE = 'TABS_SAVE'
 export const TABS_LOADED = 'TABS_LOADED'
 
 export type TABS_SAVE = string
-export type TABS_LOAD = string[]
+export type TABS_LOADED = string[]
 
 // Menus
 export const MENU_SELECT_ALL = 'MENU_SELECT_ALL'

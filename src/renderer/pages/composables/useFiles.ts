@@ -88,6 +88,7 @@ export default ({ state, activeTab, addTab, closeTab }: UseTab) => {
     persistentTabs(state.tabs)
   })
 
+  // 印刷
   const print = () => {
     if (activeTab.value?.table?.instance) {
       activeTab.value.table.instance.addHookOnce('afterRender', () => window.print())

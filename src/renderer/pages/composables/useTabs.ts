@@ -149,11 +149,16 @@ export default (): UseTab => {
   })
 
   // アプリ起動時、全てのタブが開き終わったら並び順まで復元
-  ipcRenderer.on(channels.TABS_LOADED, (_, paths: channels.TABS_LOAD) => {
+  ipcRenderer.on(channels.TABS_LOADED, (_, paths: channels.TABS_LOADED, filepath?: string) => {
     state.tabs = paths
       .map(path => state.tabs.find((tab: Tab) => tab.file.path === path))
       .filter((tab?: Tab) => !!tab)
       .concat(state.tabs.filter(tab => paths.indexOf(tab.file.path) === -1)) as Tab[]
+
+    if (filepath) {
+      const tab = state.tabs.find(tab => tab.file.path === filepath)
+      if (tab) state.activeId = tab.id
+    }
   })
 
   /**

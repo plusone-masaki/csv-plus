@@ -65,14 +65,14 @@ async function createWindow () {
     // ファイルを開こうとしている場合読み込み
     const argv = process.argv
     if (argv.length >= 2 && argv[1]) filepath = argv[1]
-    if (filepath && filepath !== 'dist') paths.push(filepath)
+    if (filepath && filepath !== 'dist' && !paths.includes(filepath)) paths.push(filepath)
 
     const loadingFiles: Promise<void>[] = []
     paths.forEach(path => loadingFiles.push(csvFile.open(path)))
 
     // 全てのタブが開き終わったら元の順番に並び替え
     await Promise.all(loadingFiles)
-    window.webContents.send(channels.TABS_LOADED, paths)
+    window.webContents.send(channels.TABS_LOADED, paths, filepath)
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
