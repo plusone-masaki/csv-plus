@@ -37,7 +37,7 @@ export default (props: Props, context: SetupContext) => {
   const items = reactive({
     delimiter: [
       { label: 'カンマ区切り[,]', value: ',' },
-      { label: 'タブ区切り　[  ]', value: '\t' },
+      { label: 'タブ区切り　[\t]', value: '\t' },
       { label: 'その他', value: anyDelimiter.value, input: true },
     ],
 
