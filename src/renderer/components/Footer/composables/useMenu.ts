@@ -10,7 +10,7 @@ import {
 } from 'vue'
 import * as channels from '@/common/channels'
 import { Tab } from '@/common/types'
-import vModel from '@/renderer/utils/v-model'
+import vModel from '@/renderer/helpers/v-model'
 
 interface Props {
   [key: string]: unknown;

@@ -1,6 +1,6 @@
 import { SetupContext } from 'vue'
 import { Tab } from '@/common/types'
-import shortcut from '@/renderer/utils/Shortcut'
+import shortcut from '@/renderer/models/Shortcut'
 
 export default (props: { tab: Tab }, context: SetupContext) => ({
   afterChange: (_: unknown, src: string) => {

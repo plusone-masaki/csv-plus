@@ -9,7 +9,3 @@ export default defineComponent({
   name: 'Settings',
 })
 </script>
-
-<style scoped>
-
-</style>

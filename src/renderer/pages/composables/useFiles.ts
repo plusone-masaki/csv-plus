@@ -5,7 +5,7 @@ import csvStringify from 'csv-stringify/lib/sync'
 import * as channels from '@/common/channels'
 import { Tab } from '@/common/types'
 import { UseTab } from './types'
-import { persistentTabs } from '@/renderer/utils/persistentStates'
+import { persistentTabs } from '@/renderer/helpers/persistentStates'
 
 export default ({ state, activeTab, addTab, closeTab }: UseTab) => {
   // 末尾の空要素を削除する

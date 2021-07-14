@@ -4,9 +4,9 @@ import csvStringify from 'csv-stringify/lib/sync'
 import HandsOnTable from 'handsontable'
 import { FileData, Tab, Options, FileMeta, Calculation } from '@/common/types'
 import * as channels from '@/common/channels'
-import { vueI18n } from '@/common/plugins/i18n'
+import { useI18n } from 'vue-i18n'
 import { defaultLinefeed } from '@/common/plugins/helpers'
-import { persistentTabs } from '@/renderer/utils/persistentStates'
+import { persistentTabs } from '@/renderer/helpers/persistentStates'
 import { UseTab } from './types'
 
 const defaultOptions = (): Options => ({
@@ -41,7 +41,7 @@ const defaultCalculation = (): Calculation => ({
 })
 
 export default (): UseTab => {
-  const { t } = vueI18n
+  const { t } = useI18n()
 
   const count = ref(0)
   const state = reactive({
@@ -126,7 +126,7 @@ export default (): UseTab => {
       if (!await ipcRenderer.invoke(channels.FILE_DESTROY_CONFIRM, item)) return
     }
 
-    const index = state.tabs.findIndex(t => t.id === tab.id)
+    const index = state.tabs.findIndex(tb => tb.id === tab.id)
     state.tabs.splice(index, 1)
 
     if (state.tabs.length && state.tabs.every(tab => tab.id !== activeTab.value?.id)) {

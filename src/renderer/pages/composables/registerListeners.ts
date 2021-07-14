@@ -5,7 +5,7 @@ import {
 } from 'vue'
 import { ipcRenderer } from 'electron'
 import * as channels from '@/common/channels'
-import { UseTab } from '@/renderer/components/Pages/composables/types'
+import { UseTab } from '@/renderer/pages/composables/types'
 
 export default (useTab: UseTab) => {
   // Search

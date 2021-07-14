@@ -4,8 +4,8 @@ import {
 import HandsOnTable from 'handsontable'
 import { Tab } from '@/common/types'
 import * as shortcuts from '@/common/shortcuts'
-import { UseTab } from '@/renderer/components/Pages/composables/types'
-import shortcut from '@/renderer/utils/Shortcut'
+import { UseTab } from '@/renderer/pages/composables/types'
+import shortcut from '@/renderer/models/Shortcut'
 
 type Direction = 'up'|'down'|'left'|'right'
 
@@ -22,6 +22,14 @@ const moveTab = (state: { tabs: Tab[], activeId: number }, moveTo: number) => {
   state.activeId = state.tabs[index].id
 }
 
+/**
+ * 端のセルまたは次の空白セルの行・列を取得
+ *
+ * @param {Tab} tab
+ * @param {Direction} direction
+ * @param {HandsOnTable.wot.CellRange} currentCell
+ * @return {number}
+ */
 const getEdgeCell = (tab: Tab, direction: Direction, currentCell?: HandsOnTable.wot.CellRange) => {
   currentCell = currentCell || tab.table.instance?.getSelectedRange()?.shift()
   if (!currentCell) return 0
@@ -65,6 +73,13 @@ const getEdgeCell = (tab: Tab, direction: Direction, currentCell?: HandsOnTable.
   }
 }
 
+/**
+ * 端または次の空白セルの手前を選択
+ *
+ * @param {Tab} tab
+ * @param {Direction} direction
+ * @param {boolean} fill
+ */
 const jumpCell = (tab: Tab|undefined, direction: Direction, fill = false) => {
   if (!tab) return
 

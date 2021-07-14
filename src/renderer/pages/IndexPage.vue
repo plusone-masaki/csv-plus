@@ -26,13 +26,13 @@ div.layout
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import useTabs from './composables/useTabs'
-import useFiles from './composables/useFiles'
-import registerListeners from '@/renderer/components/Pages/composables/registerListeners'
-import registerShortcuts from '@/renderer/components/Pages/composables/registerShortcuts'
 import ControlPanel from '@/renderer/components/ControlPanel/ControlPanel.vue'
 import NavigationTabs from '@/renderer/components/Tabs/NavigationTabs.vue'
 import GridWrapper from '@/renderer/components/Grids/GridWrapper.vue'
+import useTabs from './composables/useTabs'
+import useFiles from './composables/useFiles'
+import registerListeners from './composables/registerListeners'
+import registerShortcuts from './composables/registerShortcuts'
 
 export default defineComponent({
   name: 'IndexPage',

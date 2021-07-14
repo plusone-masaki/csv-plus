@@ -17,7 +17,7 @@ label.icon-radio(
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import vModel from '@/renderer/utils/v-model'
+import vModel from '@/renderer/helpers/v-model'
 import SvgIcon from '@/renderer/components/Common/SvgIcon.vue'
 
 export default defineComponent({
