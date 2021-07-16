@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+const archive = require('./scripts/archive')
+
 module.exports = {
   pages: {
     index: 'src/renderer/index.ts',
@@ -72,6 +75,7 @@ module.exports = {
             name: 'Tab separated values',
           },
         ],
+        afterAllArtifactBuild: archive,
         publish: {
           provider: 'github',
         },
