@@ -3,12 +3,13 @@ import * as path from 'path'
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 // import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import '@/main/plugins/i18n'
 import * as browserWindow from '@/common/browserWindow'
 import * as channels from '@/common/channels'
 import CSVFile from '@/main/models/CSVFile'
 import History from '@/main/models/History'
-import './auto-update'
-import './events'
+import browserEvents from '@/main/system/browserEvents'
+import './ipcEvents'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const csvFile = new CSVFile()
@@ -51,6 +52,8 @@ async function createWindow () {
     icon: app.isPackaged ? path.join(process.resourcesPath, 'public/icon.png') : path.join(__static, 'icon.png'),
   })
 
+  browserEvents(window)
+
   // File load from arguments
   window.webContents.on('did-finish-load', async () => {
     csvFile.initialize().setWindow(window)
@@ -78,18 +81,12 @@ async function createWindow () {
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await window.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string)
-    if (!process.env.IS_TEST) window.webContents.openDevTools()
+    // if (!process.env.IS_TEST) window.webContents.openDevTools()
   } else {
     createProtocol('app')
     // Load the index.html when not in development
     await window.loadURL('app://./index.html')
   }
-
-  // ウィンドウが閉じる前に保存確認の処理
-  window.on('close', e => {
-    e.preventDefault()
-    window.webContents.send(channels.APP_WILL_CLOSE)
-  })
 }
 
 app.on('will-finish-launching', () => {

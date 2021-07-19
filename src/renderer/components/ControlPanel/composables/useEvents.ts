@@ -1,5 +1,5 @@
 import { SetupContext } from 'vue'
-import { Options, Table } from '@/common/types'
+import { Options, Table } from '@/@types/types'
 
 export default (
   props: Readonly<{ modelValue: Options; table: Table|undefined }>,

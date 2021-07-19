@@ -1,8 +1,16 @@
+import { TFunction } from 'i18next'
 import HandsOnTable from 'handsontable'
-import { TableInstance, CustomBordersPlugin } from '@/common/handsontable'
+import { TableInstance, CustomBordersPlugin } from '@/@types/handsontable'
 
 declare global {
+  const __: TFunction
   const __static: string
+
+  namespace NodeJS {
+    declare interface Global {
+      __: TFunction
+    }
+  }
 }
 
 declare type Linefeed = 'CRLF' | 'LF'
@@ -117,4 +125,8 @@ declare interface Tab {
   dirty: boolean
   file: FileData
   calculation: Calculation
+}
+
+declare interface ConfigData {
+  updateNotification: boolean
 }

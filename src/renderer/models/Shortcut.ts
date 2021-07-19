@@ -1,4 +1,4 @@
-import { KeyBind, ShortcutEvent } from '@/common/types'
+import { KeyBind, ShortcutEvent } from '@/@types/types'
 import * as shortcuts from '@/common/shortcuts'
 
 const NAME = 0

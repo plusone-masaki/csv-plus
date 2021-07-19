@@ -1,4 +1,4 @@
-import { FileData } from './types'
+import { FileData } from '@/@types/types'
 
 // App
 export const APP_WILL_CLOSE = 'APP_WILL_CLOSE'

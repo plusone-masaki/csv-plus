@@ -1,5 +1,5 @@
-import { Tab, SearchOption, ReplaceFlag } from '@/common/types'
-import { TableInstance, CustomBordersPlugin, SearchPlugin } from '@/common/handsontable'
+import { Tab, SearchOption, ReplaceFlag } from '@/@types/types'
+import { TableInstance, CustomBordersPlugin, SearchPlugin } from '@/@types/handsontable'
 
 export const REPLACE_NONE = 0
 export const REPLACE_SINGLE = 1

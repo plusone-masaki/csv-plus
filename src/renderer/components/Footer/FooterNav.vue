@@ -55,7 +55,7 @@ footer.footer-nav
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { Tab } from '@/common/types'
+import { Tab } from '@/@types/types'
 import ChipLabel from '@/renderer/components/Common/ChipLabel.vue'
 import FooterNavLabel from '@/renderer/components/Footer/FooterNavLabel.vue'
 import FooterNavMenu from '@/renderer/components/Footer/FooterNavMenu.vue'

@@ -42,7 +42,7 @@ import {
   PropType,
   WritableComputedRef,
 } from 'vue'
-import { Options, Table } from '@/common/types'
+import { Options, Table } from '@/@types/types'
 import vModel from '@/renderer/helpers/v-model'
 import IconSwitch from '@/renderer/components/Common/IconSwitch.vue'
 import IconRadio from '@/renderer/components/Common/IconRadio.vue'

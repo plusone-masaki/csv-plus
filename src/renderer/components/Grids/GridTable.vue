@@ -5,7 +5,7 @@ div.grid-table
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { Tab } from '@/common/types'
+import { Tab } from '@/@types/types'
 import useGrid from '@/renderer/components/Grids/composables/useGrid'
 
 export default defineComponent({

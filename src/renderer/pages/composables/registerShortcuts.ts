@@ -2,7 +2,7 @@ import {
   watch,
 } from 'vue'
 import HandsOnTable from 'handsontable'
-import { Tab } from '@/common/types'
+import { Tab } from '@/@types/types'
 import * as shortcuts from '@/common/shortcuts'
 import { UseTab } from '@/renderer/pages/composables/types'
 import shortcut from '@/renderer/models/Shortcut'

@@ -83,7 +83,7 @@ import {
   ref, watch,
   WritableComputedRef,
 } from 'vue'
-import { SearchOption } from '@/common/types'
+import { SearchOption } from '@/@types/types'
 import useStyles from './composables/useStyles'
 import vModel from '@/renderer/helpers/v-model'
 import ChipLabel from '@/renderer/components/Common/ChipLabel.vue'
