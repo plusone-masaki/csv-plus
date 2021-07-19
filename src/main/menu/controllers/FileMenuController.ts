@@ -44,11 +44,20 @@ export default class FileMenuController {
     files.forEach((path: string) => csvFile.initialize().setWindow(window as BrowserWindow).open(path))
   }
 
+  /**
+   * 「最近開いたファイル」
+   *
+   * @param menu
+   * @param window
+   */
   public static openRecent (menu: MenuItem, window?: BrowserWindow) {
     if (!window) return
     return csvFile.initialize().setWindow(window as BrowserWindow).open(menu.label)
   }
 
+  /**
+   * 「最近開いたファイル > 履歴の消去」
+   */
   public static clearRecent () {
     History.clearRecentDocuments()
   }

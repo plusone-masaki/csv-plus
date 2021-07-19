@@ -1,5 +1,5 @@
 import { ref, WritableComputedRef } from 'vue'
-import { FileData, Options, Tab } from '@/common/types'
+import { FileData, Options, Tab } from '@/@types/types'
 
 export type UseTab = {
   state: {

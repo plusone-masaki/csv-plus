@@ -9,7 +9,7 @@ import {
   WritableComputedRef,
 } from 'vue'
 import * as channels from '@/common/channels'
-import { Tab } from '@/common/types'
+import { Tab } from '@/@types/types'
 import vModel from '@/renderer/helpers/v-model'
 
 interface Props {

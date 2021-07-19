@@ -28,7 +28,7 @@ import {
   PropType,
   watch,
 } from 'vue'
-import { Tab } from '@/common/types'
+import { Tab } from '@/@types/types'
 import { REPLACE_ALL, REPLACE_SINGLE } from '@/renderer/models/Search'
 import GridTable from '@/renderer/components/Grids/GridTable.vue'
 import SearchBox from '@/renderer/components/Form/SearchBox.vue'

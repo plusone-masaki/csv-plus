@@ -1,4 +1,12 @@
 {
+  "system": {
+    "update_version": "v{{old}} → v{{new}}",
+    "update_available": "新しいアップデートがあります。ダウンロードページを見に行きますか？",
+    "download_page": "ダウンロードページ",
+    "release_note": "リリースノート",
+    "cancel": "キャンセル",
+    "dont_show_again": "今後は通知しない"
+  },
   "menu": {
     "file": "ファイル",
     "edit": "編集",

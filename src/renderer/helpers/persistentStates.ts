@@ -1,4 +1,4 @@
-import { Tab } from '@/common/types'
+import { Tab } from '@/@types/types'
 import { ipcRenderer } from 'electron'
 import * as channels from '@/common/channels'
 

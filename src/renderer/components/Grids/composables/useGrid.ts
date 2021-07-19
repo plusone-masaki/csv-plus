@@ -9,8 +9,8 @@ import {
 import HandsOnTable from 'handsontable'
 import 'handsontable/languages/ja-JP'
 import sanitize from 'sanitize-html'
-import { Tab } from '@/common/types'
-import { TableInstance } from '@/common/handsontable'
+import { Tab } from '@/@types/types'
+import { TableInstance } from '@/@types/handsontable'
 import Search from '@/renderer/models/Search'
 import gridHooks from '@/renderer/components/Grids/composables/gridHooks'
 

@@ -1,5 +1,5 @@
 import { SetupContext } from 'vue'
-import { Tab } from '@/common/types'
+import { Tab } from '@/@types/types'
 import shortcut from '@/renderer/models/Shortcut'
 
 export default (props: { tab: Tab }, context: SetupContext) => ({
