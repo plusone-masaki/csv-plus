@@ -29,7 +29,7 @@ import {
   watch,
 } from 'vue'
 import { Tab } from '@/@types/types'
-import { REPLACE_ALL, REPLACE_SINGLE } from '@/renderer/models/Search'
+import { REPLACE_ALL, REPLACE_SINGLE } from '@/renderer/plugins/Search'
 import GridTable from '@/renderer/components/Grids/GridTable.vue'
 import SearchBox from '@/renderer/components/Form/SearchBox.vue'
 import FooterNav from '@/renderer/components/Footer/FooterNav.vue'

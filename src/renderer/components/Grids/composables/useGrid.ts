@@ -11,7 +11,7 @@ import 'handsontable/languages/ja-JP'
 import sanitize from 'sanitize-html'
 import { Tab } from '@/@types/types'
 import { TableInstance } from '@/@types/handsontable'
-import Search from '@/renderer/models/Search'
+import Search from '@/renderer/plugins/Search'
 import gridHooks from '@/renderer/components/Grids/composables/gridHooks'
 
 const sanitizeOption: SanitizeOption = {

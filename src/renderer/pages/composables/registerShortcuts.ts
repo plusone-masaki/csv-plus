@@ -4,12 +4,12 @@ import {
 import HandsOnTable from 'handsontable'
 import { Tab } from '@/@types/types'
 import * as shortcuts from '@/common/shortcuts'
-import { UseTab } from '@/renderer/pages/composables/types'
-import shortcut from '@/renderer/models/Shortcut'
+import { UseTab, State } from '@/renderer/pages/composables/useTabs'
+import shortcut from '@/renderer/plugins/Shortcut'
 
 type Direction = 'up'|'down'|'left'|'right'
 
-const moveTab = (state: { tabs: Tab[], activeId: number }, moveTo: number) => {
+const moveTab = (state: State, moveTo: number) => {
   const currentIndex = state.tabs.findIndex(tab => tab.id === state.activeId)
   let index = currentIndex + moveTo
 
