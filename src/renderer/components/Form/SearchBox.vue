@@ -1,5 +1,5 @@
 <template lang="pug">
-div.search-box(:style="style")
+div.search-box(:style="style" @keydown.ctrl.a.stop)
   // 検索ボックス
   div.search-box__container
     text-input.search-box__input(

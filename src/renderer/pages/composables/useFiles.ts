@@ -4,7 +4,7 @@ import { nextTick } from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
 import * as channels from '@/common/channels'
 import { Tab } from '@/@types/types'
-import { UseTab } from './types'
+import { UseTab } from './useTabs'
 import { persistentTabs } from '@/renderer/helpers/persistentStates'
 
 export default ({ state, activeTab, addTab, closeTab }: UseTab) => {
