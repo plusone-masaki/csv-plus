@@ -57,18 +57,22 @@
 
 ## ■ 選択範囲のコピー
 
+| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| :-: | :-: |
+| `Ctrl` &nbsp; + &nbsp; `C` | `⌘` &nbsp; + &nbsp; ` C` |
+
 選択したセルをクリップボードにコピーします。
 
 ### 操作方法
 1. シート上でコピーしたい範囲を選択します。
 2. 右クリックをしてコンテキストメニューから「コピー」を選択します。
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
-| :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `C` | `⌘` &nbsp; + &nbsp; ` C` |
-
 
 ## ■ 選択範囲の切り取り
+
+| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| :-: | :-: |
+| `Ctrl` &nbsp; + &nbsp; `X` | `⌘` &nbsp; + &nbsp; ` X` |
 
 選択したセルを切り取り、クリップボードにコピーします。
 
@@ -76,12 +80,12 @@
 1. シート上で切り取りたい範囲を選択します。
 2. 右クリックをしてコンテキストメニューから「切り取り」を選択します。
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
-| :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `X` | `⌘` &nbsp; + &nbsp; ` X` |
-
 
 ## ■ 貼り付け
+
+| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| :-: | :-: |
+| `Ctrl` &nbsp; + &nbsp; `V` | `⌘` &nbsp; + &nbsp; ` V` |
 
 クリップボードに保存されているテキストまたは範囲を貼り付けます。
 
@@ -89,12 +93,12 @@
 1. シート上で貼り付けたい場所のセルを選択します。
 2. ショートカットキーを実行します。
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
-| :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `V` | `⌘` &nbsp; + &nbsp; ` V` |
-
 
 ## ■ 全選択　
+
+| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| :-: | :-: |
+| `Ctrl` &nbsp; + &nbsp; `A` | `⌘` &nbsp; + &nbsp; ` A` |
 
 シート上の全てのセルを選択します。
 
@@ -102,12 +106,12 @@
 1. 左上のメニューバーから「編集」を選択します。
 2. 「全て選択」を選択します。
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
-| :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `A` | `⌘` &nbsp; + &nbsp; ` A` |
-
 
 ## ■ 直前の操作を取り消す
+
+| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| :-: | :-: |
+| `Ctrl` &nbsp; + &nbsp; `Z` | `⌘` &nbsp; + &nbsp; ` Z` |
 
 直前に行った操作の処理を取り消し、元の状態に戻します。
 
@@ -119,12 +123,12 @@
 1. 左上のメニューバーから「編集」を選択します。
 2. 「元に戻す」を選択します。
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
-| :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `Z` | `⌘` &nbsp; + &nbsp; ` Z` |
-
 
 ## ■ 取り消した操作をやり直す
+
+| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| :-: | :-: |
+| `Ctrl` &nbsp; + &nbsp; `Shift` &nbsp; + &nbsp; `Z` | `⌘` &nbsp; + &nbsp; `Shift` &nbsp; + &nbsp; ` Z` |
 
 直前の操作を取り消す機能で一旦取り消した操作をやり直します。
 
@@ -134,14 +138,14 @@
 
 ### 操作方法2
 1. 左上のメニューバーから「編集」を選択します。
-2. 「やり直し」を選択します
-
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
-| :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `Shift` &nbsp; + &nbsp; `Z` | `⌘` &nbsp; + &nbsp; `Shift` &nbsp; + &nbsp; ` Z` |
+2. 「やり直し」を選択します。
 
 
 ## ■ 検索
+
+| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| :-: | :-: |
+| `Ctrl` &nbsp; + &nbsp; `F` | `⌘` &nbsp; + &nbsp; ` F` |
 
 シート内の検索をします。
 
@@ -153,23 +157,17 @@
 検索窓を非表示にする場合はもう一度実行する。
 または `ESC` 
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
-| :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `F` | `⌘` &nbsp; + &nbsp; ` F` |
-
 
 ## ■ タブを閉じる
-
-選択中のタブを閉じます。
-
-### 操作方法
-1. タブ上の 「×」 をクリックします。
 
 | &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
 | :-: | :-: |
 | `Ctrl` &nbsp; + &nbsp; `F4` | `Option` &nbsp; + &nbsp; ` W` |
 
+選択中のタブを閉じます。
 
+### 操作方法
+1. タブ上の 「×」 をクリックします。
 
 
 
