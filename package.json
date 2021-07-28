@@ -5,7 +5,7 @@
   "author": "Masaki Enomoto <m_enomoto@plus-one.tech>",
   "license": "MIT",
   "private": true,
-  "main": "src/main/index.ts",
+  "main": "background.js",
   "homepage": "https://plus-one.tech/csv-plus",
   "keywords": [
     "csv",
