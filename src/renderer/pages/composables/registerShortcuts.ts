@@ -2,14 +2,14 @@ import {
   watch,
 } from 'vue'
 import HandsOnTable from 'handsontable'
-import { Tab } from '@/common/types'
+import { Tab } from '@/@types/types'
 import * as shortcuts from '@/common/shortcuts'
-import { UseTab } from '@/renderer/pages/composables/types'
-import shortcut from '@/renderer/models/Shortcut'
+import { UseTab, State } from '@/renderer/pages/composables/useTabs'
+import shortcut from '@/renderer/plugins/Shortcut'
 
 type Direction = 'up'|'down'|'left'|'right'
 
-const moveTab = (state: { tabs: Tab[], activeId: number }, moveTo: number) => {
+const moveTab = (state: State, moveTo: number) => {
   const currentIndex = state.tabs.findIndex(tab => tab.id === state.activeId)
   let index = currentIndex + moveTo
 
@@ -95,6 +95,9 @@ const jumpCell = (tab: Tab|undefined, direction: Direction, fill = false) => {
 }
 
 export default (useTab: UseTab) => {
+  /**
+   * タブがフォーカスされる度にショートカットを上書き登録
+   */
   watch(() => useTab.activeTab.value?.table.instance, (table) => {
     const tab = useTab.activeTab.value
     if (tab && table) {
@@ -102,8 +105,8 @@ export default (useTab: UseTab) => {
       shortcut.addShortcutEvent(shortcuts.NEXT_TAB, () => moveTab(useTab.state, 1))
       shortcut.addShortcutEvent(shortcuts.PREV_TAB, () => moveTab(useTab.state, -1))
       shortcut.addShortcutEvent(shortcuts.SELECT_ALL, table.selectAll)
-      shortcut.addShortcutEvent(shortcuts.UNDO, table.undo!)
-      shortcut.addShortcutEvent(shortcuts.REDO, table.redo!)
+      shortcut.addShortcutEvent(shortcuts.UNDO, () => tab.table.undoRedo!.undo())
+      shortcut.addShortcutEvent(shortcuts.REDO, () => tab.table.undoRedo!.redo())
       shortcut.addShortcutEvent(shortcuts.SEARCH_OPEN, () => {
         tab.table.options.search.enable = !tab.table.options.search.enable
         tab.table.options.search.enableReplace = false

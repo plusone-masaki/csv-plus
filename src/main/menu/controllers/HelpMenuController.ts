@@ -1,5 +1,7 @@
-import { app } from 'electron'
+import { app, MenuItem } from 'electron'
 import * as path from 'path'
+import { menu } from '@/main/menu'
+import ConfigFile from '@/main/models/Config'
 
 app.setAboutPanelOptions({
   applicationName: app.getName(),
@@ -15,5 +17,22 @@ export default class HelpMenuController {
    */
   public static about () {
     app.showAboutPanel()
+  }
+
+  /**
+   * 「更新通知を受け取る」
+   */
+  public static updateNotification (menuItem: MenuItem): void {
+    const checkbox = menuItem.menu.getMenuItemById('update-notification')
+    ConfigFile.updateNotification = checkbox!.checked
+  }
+
+  /**
+   * 「更新通知を受け取る」をオフにする
+   */
+  public static disableUpdateNotification () {
+    const checkbox = menu.getMenuItemById('update-notification')
+    checkbox!.checked = false
+    ConfigFile.updateNotification = checkbox!.checked
   }
 }

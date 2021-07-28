@@ -1,8 +1,17 @@
+import { TFunction } from 'i18next'
 import HandsOnTable from 'handsontable'
-import { TableInstance, CustomBordersPlugin } from '@/common/handsontable'
+import { TableInstance, CustomBordersPlugin } from '@/@types/handsontable'
+import UndoRedo from '@/renderer/plugins/UndoRedo'
 
 declare global {
+  const __: TFunction
   const __static: string
+
+  namespace NodeJS {
+    declare interface Global {
+      __: TFunction
+    }
+  }
 }
 
 declare type Linefeed = 'CRLF' | 'LF'
@@ -99,6 +108,7 @@ declare interface Options {
 declare interface Table {
   instance?: TableInstance
   search: (reverse?: boolean, preserve?: boolean, replace?: ReplaceFlag) => void
+  undoRedo?: UndoRedo
   borders?: CustomBordersPlugin
   options: Options
 }
@@ -117,4 +127,8 @@ declare interface Tab {
   dirty: boolean
   file: FileData
   calculation: Calculation
+}
+
+declare interface ConfigData {
+  updateNotification: boolean
 }

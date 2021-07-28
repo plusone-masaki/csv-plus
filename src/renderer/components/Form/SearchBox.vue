@@ -1,5 +1,9 @@
 <template lang="pug">
-div.search-box(:style="style")
+div.search-box(
+  :style="style"
+  @keydown.ctrl.a.stop
+  @keydown.ctrl.z.stop
+)
   // 検索ボックス
   div.search-box__container
     text-input.search-box__input(
@@ -83,7 +87,7 @@ import {
   ref, watch,
   WritableComputedRef,
 } from 'vue'
-import { SearchOption } from '@/common/types'
+import { SearchOption } from '@/@types/types'
 import useStyles from './composables/useStyles'
 import vModel from '@/renderer/helpers/v-model'
 import ChipLabel from '@/renderer/components/Common/ChipLabel.vue'

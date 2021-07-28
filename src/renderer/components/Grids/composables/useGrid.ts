@@ -9,9 +9,10 @@ import {
 import HandsOnTable from 'handsontable'
 import 'handsontable/languages/ja-JP'
 import sanitize from 'sanitize-html'
-import { Tab } from '@/common/types'
-import { TableInstance } from '@/common/handsontable'
-import Search from '@/renderer/models/Search'
+import { Tab } from '@/@types/types'
+import { TableInstance } from '@/@types/handsontable'
+import Search from '@/renderer/plugins/Search'
+import UndoRedo from '@/renderer/plugins/UndoRedo'
 import gridHooks from '@/renderer/components/Grids/composables/gridHooks'
 
 const sanitizeOption: SanitizeOption = {
@@ -45,6 +46,7 @@ export default (props: { tab: Tab }, context: SetupContext) => {
     rowHeaders: true,
     rowHeaderWidth: Math.max(50, (props.tab.file.data.length.toString().length * 16)),
     search: true,
+    undo: false,
     viewportColumnRenderingOffset: props.tab.table.options.printMode ? props.tab.file.data.length : 'auto',
     viewportRowRenderingOffset: props.tab.table.options.printMode ? props.tab.file.data.length : 'auto',
     ...gridHooks(props, context),
@@ -63,6 +65,7 @@ export default (props: { tab: Tab }, context: SetupContext) => {
       const handsOnTable = new HandsOnTable(wrapper.value, settings.value) as TableInstance
       props.tab.table.instance = handsOnTable
       props.tab.table.search = Search(handsOnTable, props.tab)
+      props.tab.table.undoRedo = props.tab.table.undoRedo || new UndoRedo(props.tab)
       props.tab.table.borders = handsOnTable.getPlugin('customBorders')
     }
   })

@@ -1,38 +1,52 @@
 <template lang="pug">
 div.control-panel
+  // ファイル操作
   toolbar
     icon-switch.toolbar__icon(
-      :title="$t('control_panel.add')"
+      :title="$t('shortcut.add')"
       icon="file"
       @click="add"
     )
     icon-switch.toolbar__icon(
-      :title="$t('control_panel.open')"
+      :title="$t('shortcut.open')"
       icon="folder-open"
       @click="open"
     )
     icon-switch.toolbar__icon(
-      :title="$t('control_panel.save')"
+      :title="$t('shortcut.save')"
       icon="save"
       @click="save"
     )
     icon-switch.toolbar__icon(
-      :title="$t('control_panel.print')"
+      :title="$t('shortcut.print')"
       icon="printer"
       @click="print"
     )
-    toolbar-separator
-    icon-switch.toolbar__icon(
-      v-model="options.search.enable"
-      :title="$t('control_panel.search')"
-      icon="search"
-    )
+
+  // シート操作
   toolbar
     // Has header
     icon-switch.toolbar__icon(
       v-model="options.hasHeader"
-      :title="$t('control_panel.set_header')"
+      :title="$t('shortcut.set_header')"
       icon="table-header"
+    )
+
+    toolbar-separator
+    icon-switch.toolbar__icon(
+      :title="$t('shortcut.undo')"
+      icon="undo"
+      @click="shortcut(scMap.UNDO)"
+    )
+    icon-switch.toolbar__icon(
+      :title="$t('shortcut.redo')"
+      icon="redo"
+      @click="shortcut(scMap.REDO)"
+    )
+    icon-switch.toolbar__icon(
+      v-model="options.search.enable"
+      :title="$t('shortcut.search')"
+      icon="search"
     )
 </template>
 
@@ -42,8 +56,10 @@ import {
   PropType,
   WritableComputedRef,
 } from 'vue'
-import { Options, Table } from '@/common/types'
+import { Options, Table } from '@/@types/types'
+import * as scMap from '@/common/shortcuts'
 import vModel from '@/renderer/helpers/v-model'
+import Shortcut from '@/renderer/plugins/Shortcut'
 import IconSwitch from '@/renderer/components/Common/IconSwitch.vue'
 import IconRadio from '@/renderer/components/Common/IconRadio.vue'
 import Toolbar from '@/renderer/components/ControlPanel/Toolbar.vue'
@@ -65,9 +81,12 @@ export default defineComponent({
   setup (props, context) {
     const options = vModel('modelValue', props, context) as WritableComputedRef<Options>
     const events = useEvents(props, context)
+    const shortcut = Shortcut.execute
 
     return {
       options,
+      shortcut,
+      scMap,
       ...events,
     }
   },

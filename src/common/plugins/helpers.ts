@@ -1,5 +1,5 @@
 import os from 'os'
-import { Linefeed } from '@/common/types'
+import { Linefeed } from '@/@types/types'
 
 export const defaultLinefeed = (): Linefeed => {
   switch (os.EOL) {

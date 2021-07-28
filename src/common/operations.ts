@@ -1,0 +1,5 @@
+export const EDIT = 'EDIT'
+export const ROW_INSERT = 'ROW_INSERT'
+export const ROW_REMOVE = 'ROW_REMOVE'
+export const COL_INSERT = 'COL_INSERT'
+export const COL_REMOVE = 'COL_REMOVE'

@@ -10,5 +10,11 @@ export default new MenuItem({
       role: 'about',
       click: HelpMenuController.about,
     },
+    {
+      id: 'update-notification',
+      label: '更新通知を受け取る',
+      type: 'checkbox',
+      click: HelpMenuController.updateNotification,
+    },
   ],
 })

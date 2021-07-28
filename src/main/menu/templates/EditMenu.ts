@@ -6,18 +6,20 @@ export default new MenuItem({
   submenu: [
     {
       label: '元に戻す',
-      accelerator: 'Ctrl+Z',
+      accelerator: 'CmdOrCtrl+Z',
+      registerAccelerator: false,
       click: EditMenuController.undo,
     },
     {
       label: 'やり直し',
-      accelerator: 'Ctrl+Shift+Z',
+      accelerator: 'CmdOrCtrl+Shift+Z',
+      registerAccelerator: false,
       click: EditMenuController.redo,
     },
     { type: 'separator' },
     {
       label: '全て選択',
-      accelerator: 'Ctrl+A',
+      accelerator: 'CmdOrCtrl+A',
       click: EditMenuController.selectAll,
     },
   ],

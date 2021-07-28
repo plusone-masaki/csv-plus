@@ -1,13 +1,36 @@
 import { ipcRenderer } from 'electron'
-import { computed, nextTick, reactive, ref, watch } from 'vue'
+import {
+  computed,
+  reactive,
+  ref,
+  Ref,
+  watch,
+  WritableComputedRef,
+} from 'vue'
 import csvStringify from 'csv-stringify/lib/sync'
 import HandsOnTable from 'handsontable'
-import { FileData, Tab, Options, FileMeta, Calculation } from '@/common/types'
+import { FileData, Tab, Options, FileMeta, Calculation } from '@/@types/types'
 import * as channels from '@/common/channels'
 import { useI18n } from 'vue-i18n'
 import { defaultLinefeed } from '@/common/plugins/helpers'
 import { persistentTabs } from '@/renderer/helpers/persistentStates'
-import { UseTab } from './types'
+
+export interface State {
+  count: number
+  activeId: number
+  tabs: Tab[]
+}
+
+export type UseTab = {
+  state: State
+
+  options: Ref<Options>
+  activeTab: WritableComputedRef<Tab|undefined>
+
+  onEdit: () => void
+  addTab: (fileData?: FileData) => void
+  closeTab: (tab: Tab) => void
+}
 
 const defaultOptions = (): Options => ({
   hasHeader: false,
@@ -44,10 +67,10 @@ export default (): UseTab => {
   const { t } = useI18n()
 
   const count = ref(0)
-  const state = reactive({
+  const state: State = reactive({
     count,
     activeId: -1,
-    tabs: [] as Tab[],
+    tabs: [],
   })
 
   // computed
@@ -137,16 +160,6 @@ export default (): UseTab => {
 
     persistentTabs(state.tabs)
   }
-
-  watch(() => state.activeId, () => {
-    // 画面リサイズ時に再描画するリスナを登録
-    window.onresize = async () => {
-      await nextTick()
-      if (activeTab.value?.table.instance && !activeTab.value?.table.instance!.isDestroyed) {
-        activeTab.value?.table.instance!.render()
-      }
-    }
-  })
 
   // アプリ起動時、全てのタブが開き終わったら並び順まで復元
   ipcRenderer.on(channels.TABS_LOADED, (_, paths: channels.TABS_LOADED, filepath?: string) => {

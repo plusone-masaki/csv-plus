@@ -3,12 +3,13 @@ import * as path from 'path'
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 // import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import '@/main/plugins/i18n'
 import * as browserWindow from '@/common/browserWindow'
 import * as channels from '@/common/channels'
 import CSVFile from '@/main/models/CSVFile'
 import History from '@/main/models/History'
-import './auto-update'
-import './events'
+import browserEvents from '@/main/system/browserEvents'
+import './ipcEvents'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const csvFile = new CSVFile()
@@ -26,8 +27,8 @@ const isFirstInstance = app.requestSingleInstanceLock()
 if (!isFirstInstance) {
   app.quit()
 } else {
-  app.on('second-instance', (event, argv) => {
-    if (argv.length >= 2 && argv[1]) filepath = argv[1]
+  app.on('second-instance', (event, argv: string[]) => {
+    if (argv.length >= 2 && argv[argv.length - 1].indexOf('--')) filepath = argv[argv.length - 1]
     if (filepath && filepath !== 'dist') csvFile.open(filepath)
     if (window) {
       if (window.isMinimized()) window.restore()
@@ -50,6 +51,8 @@ async function createWindow () {
     },
     icon: app.isPackaged ? path.join(process.resourcesPath, 'public/icon.png') : path.join(__static, 'icon.png'),
   })
+
+  browserEvents(window)
 
   // File load from arguments
   window.webContents.on('did-finish-load', async () => {
@@ -84,12 +87,6 @@ async function createWindow () {
     // Load the index.html when not in development
     await window.loadURL('app://./index.html')
   }
-
-  // ウィンドウが閉じる前に保存確認の処理
-  window.on('close', e => {
-    e.preventDefault()
-    window.webContents.send(channels.APP_WILL_CLOSE)
-  })
 }
 
 app.on('will-finish-launching', () => {

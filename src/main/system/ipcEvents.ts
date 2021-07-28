@@ -9,7 +9,7 @@ import {
   IpcMainInvokeEvent,
   WebContents,
 } from 'electron'
-import { FileMeta } from '@/common/types'
+import { FileMeta } from '@/@types/types'
 import * as channels from '@/common/channels'
 import FileMenuController from '@/main/menu/controllers/FileMenuController'
 import CSVFile from '@/main/models/CSVFile'

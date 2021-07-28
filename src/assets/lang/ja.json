@@ -1,18 +1,18 @@
 {
+  "system": {
+    "update_version": "v{{old}} → v{{new}}",
+    "update_available": "新しいアップデートがあります。ダウンロードページを見に行きますか？",
+    "download_page": "ダウンロードページ",
+    "release_note": "リリースノート",
+    "cancel": "キャンセル",
+    "dont_show_again": "今後は通知しない"
+  },
   "menu": {
     "file": "ファイル",
     "edit": "編集",
     "view": "表示",
     "settings": "設定",
     "help": "ヘルプ"
-  },
-  "control_panel": {
-    "add": "新規作成",
-    "open": "ファイルを開く",
-    "save": "上書き保存",
-    "print": "印刷",
-    "set_header": "１行目をヘッダに設定します",
-    "search": "検索"
   },
   "search-box": {
     "search": "検索",
@@ -41,6 +41,8 @@
     "print": "印刷",
     "set_header": "１行目をヘッダに設定します",
     "search": "検索",
-    "search_close": "検索窓を閉じる"
+    "search_close": "検索窓を閉じる",
+    "undo": "元に戻す",
+    "redo": "やり直し"
   }
 }

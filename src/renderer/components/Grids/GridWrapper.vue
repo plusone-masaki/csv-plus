@@ -28,8 +28,8 @@ import {
   PropType,
   watch,
 } from 'vue'
-import { Tab } from '@/common/types'
-import { REPLACE_ALL, REPLACE_SINGLE } from '@/renderer/models/Search'
+import { Tab } from '@/@types/types'
+import { REPLACE_ALL, REPLACE_SINGLE } from '@/renderer/plugins/Search'
 import GridTable from '@/renderer/components/Grids/GridTable.vue'
 import SearchBox from '@/renderer/components/Form/SearchBox.vue'
 import FooterNav from '@/renderer/components/Footer/FooterNav.vue'
@@ -54,7 +54,7 @@ export default defineComponent({
     return {
       clearBorder: () => props.tab?.table.borders?.clearBorders(),
       onSearch: (e?: KeyboardEvent) => props.tab?.table.search && props.tab.table.search(e?.shiftKey),
-      onReplace: (all: boolean) => props.tab?.table.search && props.tab.table.search(false, true, all ? REPLACE_ALL : REPLACE_SINGLE),
+      onReplace: (all: boolean) => props.tab?.table.search && props.tab.table.search(false, all, all ? REPLACE_ALL : REPLACE_SINGLE),
       onEdit: () => context.emit('edit'),
     }
   },

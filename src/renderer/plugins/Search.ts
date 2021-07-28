@@ -1,5 +1,5 @@
-import { Tab, SearchOption, ReplaceFlag } from '@/common/types'
-import { TableInstance, CustomBordersPlugin, SearchPlugin } from '@/common/handsontable'
+import { Tab, SearchOption, ReplaceFlag } from '@/@types/types'
+import { TableInstance, CustomBordersPlugin, SearchPlugin } from '@/@types/handsontable'
 
 export const REPLACE_NONE = 0
 export const REPLACE_SINGLE = 1
@@ -17,7 +17,7 @@ class Search {
   private readonly customBordersPlugin: CustomBordersPlugin
   private readonly option: SearchOption
   private readonly hasHeader: boolean
-  private readonly _data: string[][] = []
+  private readonly data: string[][] = []
 
   private _keyword = ''
   private _matchCase = false
@@ -32,29 +32,28 @@ class Search {
     this.customBordersPlugin = table.getPlugin('customBorders') as any as customBordersPlugin
     this.option = tab.table.options.search
     this.hasHeader = tab.table.options.hasHeader
-    this._data = tab.file.data
+    this.data = tab.file.data
 
     this.query()
   }
 
-  private _isUndefined = (value?: unknown): boolean => typeof value === 'undefined'
-
   private _generateQueryMethod (option: SearchOption) {
-    return (query: string, value: string) => {
+    let query: string|RegExp = option.keyword
+    if (option.regexp) {
+      query = new RegExp(query, option.matchCase ? '' : 'i')
+    } else if (!option.matchCase) {
+      query = query.toLowerCase()
+    }
+
+    return (keyword: string, value: string) => {
       try {
-        if (this._isUndefined(query) || query === null || !query.toLowerCase || query.length === 0) return false
-        if (this._isUndefined(value) || value === null) return false
+        if (!keyword || !value) return false
 
         // 正規表現検索
-        if (option.regexp) {
-          const regexQuery = new RegExp(query, option.matchCase ? '' : 'i')
-          return regexQuery.test(value)
-        }
+        if (query instanceof RegExp) return query.test(value)
 
-        if (!option.matchCase) {
-          query = query.toLowerCase()
-          value = value.toLowerCase()
-        }
+        // 大文字小文字を区別しない
+        if (!option.matchCase) value = value.toLowerCase()
 
         return value.toString().indexOf(query) !== -1
       } catch (e) {
@@ -160,31 +159,38 @@ class Search {
         return
     }
 
+    const data: [number, number, string][] = []
     const query = this.option.regexp ? new RegExp(this._keyword, this.option.matchCase ? '' : 'i') : this._keyword
-    cells.forEach(cell => {
+    cells.forEach(async cell => {
       const row = this.hasHeader ? cell.row + 1 : cell.row
-      this._data[row][cell.col] = this._data[row][cell.col].replace(query, this.option.replace)
+      data.push([row, cell.col, this.data[row][cell.col].replace(query, this.option.replace)])
     })
+    this.table.setDataAtRowProp(data)
   }
 
   public query (reverse = false, preserveCursor = false, replace: ReplaceFlag = REPLACE_NONE) {
-    // イベント発火のたびに検索処理を行うと重いためディレイを設ける
-    clearTimeout(this._queryDelay)
-    this._queryDelay = window.setTimeout(() => {
-      if (this.option.enable && this.table && this.searchPlugin) {
-        const queryMethod = this._generateQueryMethod(this.option)
+    try {
+      if (!this.option.enable) return
 
-        this._results = this.searchPlugin.query(this.option.keyword, this.searchPlugin.getCallback(), queryMethod)
-        this.table.render()
-        this._focusCell(reverse, true, true)
-      }
-    }, 50)
+      // イベント発火のたびに検索処理を行うと重いためディレイを設ける
+      clearTimeout(this._queryDelay)
+      this._queryDelay = window.setTimeout(() => {
+        if (this.option.enable && this.table && this.searchPlugin) {
+          const queryMethod = this._generateQueryMethod(this.option)
 
-    // 置換処理
-    if (this._results.length && replace !== REPLACE_NONE) this._replace(replace)
+          if (!this.searchPlugin.isPluginsReady) return
+          this._results = this.searchPlugin.query(this.option.keyword, this.searchPlugin.getCallback(), queryMethod)
+          this.table.render()
+          this._focusCell(reverse, true, true)
+        }
+      }, 50)
 
-    // フォーカス処理
-    this._focusCell(reverse, preserveCursor)
+      // 置換処理
+      if (this._results.length && replace !== REPLACE_NONE) this._replace(replace)
+
+      // フォーカス処理
+      this._focusCell(reverse, preserveCursor)
+    } catch (e) {}
   }
 }
 
