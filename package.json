@@ -1,11 +1,11 @@
 {
   "name": "csv-plus",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "CSV+ is simplify cross-platform CSV tab editor.",
   "author": "Masaki Enomoto <m_enomoto@plus-one.tech>",
   "license": "MIT",
   "private": true,
-  "main": "src/main/index.ts",
+  "main": "background.js",
   "homepage": "https://plus-one.tech/csv-plus",
   "keywords": [
     "csv",
