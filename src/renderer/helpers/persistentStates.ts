@@ -5,7 +5,7 @@ import * as channels from '@/common/channels'
 /**
  * タブのファイルパスを記録に残す
  *
- * @param tabs
+ * @param {Tab[]} tabs
  */
 export const persistentTabs = (tabs: Tab[]) => {
   const tabMap = tabs

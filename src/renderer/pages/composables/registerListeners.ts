@@ -21,14 +21,14 @@ export default (useTab: UseTab) => {
 
   // Search
   watch(() => useTab.activeTab.value?.table.options.search.keyword, () => useTab.activeTab.value?.table.search())
-  watch(() => useTab.activeTab.value?.table.options.search.enable, () => useTab.activeTab.value?.table.search(false, true))
+  watch(() => useTab.activeTab.value?.table.options.search.enable, e => e && useTab.activeTab.value?.table.search(false, true))
 
   // IPC events
   watch(() => useTab.activeTab.value?.table.instance, () => {
     if (useTab.activeTab.value?.table.instance) {
       ipcRenderer.on(channels.MENU_SELECT_ALL, useTab.activeTab.value?.table.instance.selectAll)
-      ipcRenderer.on(channels.MENU_UNDO, useTab.activeTab.value?.table.instance.undo)
-      ipcRenderer.on(channels.MENU_REDO, useTab.activeTab.value?.table.instance.redo)
+      ipcRenderer.on(channels.MENU_UNDO, () => useTab.activeTab.value?.table.undoRedo!.undo())
+      ipcRenderer.on(channels.MENU_REDO, () => useTab.activeTab.value?.table.undoRedo!.redo())
     }
   })
 
