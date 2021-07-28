@@ -36,7 +36,7 @@ export default new MenuItem({
   submenu: [
     {
       label: '新規作成',
-      accelerator: 'Alt+Insert',
+      accelerator: 'Ctrl+N',
       click: FileMenuController.newFile,
     },
     { type: 'separator' },

@@ -54,7 +54,7 @@ export default defineComponent({
     return {
       clearBorder: () => props.tab?.table.borders?.clearBorders(),
       onSearch: (e?: KeyboardEvent) => props.tab?.table.search && props.tab.table.search(e?.shiftKey),
-      onReplace: (all: boolean) => props.tab?.table.search && props.tab.table.search(false, true, all ? REPLACE_ALL : REPLACE_SINGLE),
+      onReplace: (all: boolean) => props.tab?.table.search && props.tab.table.search(false, all, all ? REPLACE_ALL : REPLACE_SINGLE),
       onEdit: () => context.emit('edit'),
     }
   },

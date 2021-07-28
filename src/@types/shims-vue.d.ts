@@ -20,6 +20,6 @@ declare type SanitizeOption = {
 }
 
 declare module 'sanitize-html' {
-  type sanitizeHtml = (str: string, options?: SanitizeOption) => string
-  export = sanitizeHtml
+  const sanitizeHtml: (str: string, options?: SanitizeOption) => string
+  export default sanitizeHtml
 }

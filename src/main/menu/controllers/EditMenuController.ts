@@ -8,7 +8,7 @@ export default class EditMenuController {
    * @param {MenuItem} menu
    * @param {BrowserWindow} window
    */
-  public static selectAll (menu: MenuItem, window: BrowserWindow) {
+  public static selectAll (menu: MenuItem, window?: BrowserWindow) {
     if (!window) return
     window.webContents.send(channels.MENU_SELECT_ALL)
   }

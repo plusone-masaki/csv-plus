@@ -95,6 +95,9 @@ const jumpCell = (tab: Tab|undefined, direction: Direction, fill = false) => {
 }
 
 export default (useTab: UseTab) => {
+  /**
+   * タブがフォーカスされる度にショートカットを上書き登録
+   */
   watch(() => useTab.activeTab.value?.table.instance, (table) => {
     const tab = useTab.activeTab.value
     if (tab && table) {
@@ -102,8 +105,8 @@ export default (useTab: UseTab) => {
       shortcut.addShortcutEvent(shortcuts.NEXT_TAB, () => moveTab(useTab.state, 1))
       shortcut.addShortcutEvent(shortcuts.PREV_TAB, () => moveTab(useTab.state, -1))
       shortcut.addShortcutEvent(shortcuts.SELECT_ALL, table.selectAll)
-      shortcut.addShortcutEvent(shortcuts.UNDO, table.undo!)
-      shortcut.addShortcutEvent(shortcuts.REDO, table.redo!)
+      shortcut.addShortcutEvent(shortcuts.UNDO, () => tab.table.undoRedo!.undo())
+      shortcut.addShortcutEvent(shortcuts.REDO, () => tab.table.undoRedo!.redo())
       shortcut.addShortcutEvent(shortcuts.SEARCH_OPEN, () => {
         tab.table.options.search.enable = !tab.table.options.search.enable
         tab.table.options.search.enableReplace = false

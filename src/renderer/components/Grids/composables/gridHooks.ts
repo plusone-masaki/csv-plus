@@ -1,11 +1,94 @@
 import { SetupContext } from 'vue'
 import { Tab } from '@/@types/types'
+import * as operations from '@/common/operations'
 import shortcut from '@/renderer/plugins/Shortcut'
 
 export default (props: { tab: Tab }, context: SetupContext) => ({
-  afterChange: (_: unknown, src: string) => {
-    if (!['loadData', 'undo'].includes(src)) context.emit('edit')
+  afterChange: (details: [number, string|number, string, string][]|null, operation: string) => {
+    if (!['loadData', 'ObserveChanges.change'].includes(operation)) {
+      context.emit('edit')
+      props.tab.table.undoRedo!.add({
+        operation: operations.EDIT,
+        details: details!.map(detail => ({
+          hasHeader: props.tab.table.options.hasHeader,
+          row: detail[0],
+          col: detail[1] as number,
+          before: detail[2],
+          after: detail[3],
+        })),
+      })
+    }
   },
+
+  beforeCreateRow: (row: number, amount: number) => {
+    const details = []
+    for (let i = row; i < row + amount; i++) {
+      details.push({
+        hasHeader: props.tab.table.options.hasHeader,
+        row: i,
+        amount,
+        before: [],
+      })
+    }
+
+    props.tab.table.undoRedo!.add({
+      operation: operations.ROW_INSERT,
+      details,
+    })
+  },
+
+  beforeRemoveRow: (row: number, amount: number) => {
+    const details = []
+    for (let i = row; i < row + amount; i++) {
+      details.push({
+        hasHeader: props.tab.table.options.hasHeader,
+        row: i,
+        amount,
+        before: props.tab.file.data[i + Number(props.tab.table.options.hasHeader)],
+      })
+    }
+
+    props.tab.table.undoRedo!.add({
+      operation: operations.ROW_REMOVE,
+      details,
+    })
+  },
+
+  beforeCreateCol: (col: number, amount: number) => {
+    const emptyCols = () => new Array(amount).fill('')
+    const details = [{
+      hasHeader: props.tab.table.options.hasHeader,
+      col,
+      amount,
+      before: emptyCols(),
+    }]
+
+    props.tab.table.undoRedo!.add({
+      operation: operations.COL_INSERT,
+      details,
+    })
+  },
+
+  beforeRemoveCol: (col: number, amount: number) => {
+    const details = [{
+      hasHeader: props.tab.table.options.hasHeader,
+      col,
+      amount,
+      before: props.tab.file.data
+        .slice(Number(props.tab.table.options.hasHeader))
+        .map(data => {
+          const colData = []
+          for (let i = col; i < col + amount; i++) colData.push(data[i])
+          return colData
+        }),
+    }]
+
+    props.tab.table.undoRedo!.add({
+      operation: operations.COL_REMOVE,
+      details,
+    })
+  },
+
   afterSelection: (startRow: number, startCol: number, endRow: number, endCol: number) => {
     if (!props.tab.table.instance) return
 
@@ -19,12 +102,14 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
       summary: (rowLength || colLength) && values.reduce((a, b) => a + Number(b), 0),
     }
   },
+
   beforeSetRangeEnd: () => props.tab.table.borders?.clearBorders(),
-  beforeKeyDown: (event: Event) => {
+
+  beforeKeyDown: (event: any) => {
     // キーバインドが登録済みの場合、HandsOnTableのキーバインディングを無効化
     if (shortcut.existsKeyBinding(event as KeyboardEvent)) {
-      (event as any).isImmediatePropagationEnabled = false;
-      (event as any).isImmediatePropagationStopped = () => true
+      event.isImmediatePropagationEnabled = false
+      event.isImmediatePropagationStopped = () => true
     }
   },
 })

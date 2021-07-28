@@ -14,14 +14,6 @@
     "settings": "設定",
     "help": "ヘルプ"
   },
-  "control_panel": {
-    "add": "新規作成",
-    "open": "ファイルを開く",
-    "save": "上書き保存",
-    "print": "印刷",
-    "set_header": "１行目をヘッダに設定します",
-    "search": "検索"
-  },
   "search-box": {
     "search": "検索",
     "replace": "置換",
@@ -49,6 +41,8 @@
     "print": "印刷",
     "set_header": "１行目をヘッダに設定します",
     "search": "検索",
-    "search_close": "検索窓を閉じる"
+    "search_close": "検索窓を閉じる",
+    "undo": "元に戻す",
+    "redo": "やり直し"
   }
 }

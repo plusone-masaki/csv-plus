@@ -67,10 +67,10 @@ export default (): UseTab => {
   const { t } = useI18n()
 
   const count = ref(0)
-  const state = reactive({
+  const state: State = reactive({
     count,
     activeId: -1,
-    tabs: [] as Tab[],
+    tabs: [],
   })
 
   // computed

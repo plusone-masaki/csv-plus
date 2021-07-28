@@ -17,7 +17,7 @@ class Search {
   private readonly customBordersPlugin: CustomBordersPlugin
   private readonly option: SearchOption
   private readonly hasHeader: boolean
-  private readonly _data: string[][] = []
+  private readonly data: string[][] = []
 
   private _keyword = ''
   private _matchCase = false
@@ -32,7 +32,7 @@ class Search {
     this.customBordersPlugin = table.getPlugin('customBorders') as any as customBordersPlugin
     this.option = tab.table.options.search
     this.hasHeader = tab.table.options.hasHeader
-    this._data = tab.file.data
+    this.data = tab.file.data
 
     this.query()
   }
@@ -159,21 +159,26 @@ class Search {
         return
     }
 
+    const data: [number, number, string][] = []
     const query = this.option.regexp ? new RegExp(this._keyword, this.option.matchCase ? '' : 'i') : this._keyword
     cells.forEach(async cell => {
       const row = this.hasHeader ? cell.row + 1 : cell.row
-      this._data[row][cell.col] = this._data[row][cell.col].replace(query, this.option.replace)
+      data.push([row, cell.col, this.data[row][cell.col].replace(query, this.option.replace)])
     })
+    this.table.setDataAtRowProp(data)
   }
 
   public query (reverse = false, preserveCursor = false, replace: ReplaceFlag = REPLACE_NONE) {
     try {
+      if (!this.option.enable) return
+
       // イベント発火のたびに検索処理を行うと重いためディレイを設ける
       clearTimeout(this._queryDelay)
       this._queryDelay = window.setTimeout(() => {
         if (this.option.enable && this.table && this.searchPlugin) {
           const queryMethod = this._generateQueryMethod(this.option)
 
+          if (!this.searchPlugin.isPluginsReady) return
           this._results = this.searchPlugin.query(this.option.keyword, this.searchPlugin.getCallback(), queryMethod)
           this.table.render()
           this._focusCell(reverse, true, true)

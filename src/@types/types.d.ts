@@ -1,6 +1,7 @@
 import { TFunction } from 'i18next'
 import HandsOnTable from 'handsontable'
 import { TableInstance, CustomBordersPlugin } from '@/@types/handsontable'
+import UndoRedo from '@/renderer/plugins/UndoRedo'
 
 declare global {
   const __: TFunction
@@ -107,6 +108,7 @@ declare interface Options {
 declare interface Table {
   instance?: TableInstance
   search: (reverse?: boolean, preserve?: boolean, replace?: ReplaceFlag) => void
+  undoRedo?: UndoRedo
   borders?: CustomBordersPlugin
   options: Options
 }
