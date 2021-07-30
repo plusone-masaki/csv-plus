@@ -1,3 +1,7 @@
+---
+pageClass: op
+---
+
 # シート操作
 
 ## ■ 範囲選択
@@ -57,9 +61,9 @@
 
 ## ■ 選択範囲のコピー
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| Windows | MacOS |
 | :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `C` | `⌘` &nbsp; + &nbsp; ` C` |
+| `Ctrl`  +  `C` | `⌘`  +  ` C` |
 
 選択したセルをクリップボードにコピーします。
 
@@ -70,9 +74,9 @@
 
 ## ■ 選択範囲の切り取り
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| Windows | MacOS |
 | :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `X` | `⌘` &nbsp; + &nbsp; ` X` |
+| `Ctrl`  +  `X` | `⌘`  +  ` X` |
 
 選択したセルを切り取り、クリップボードにコピーします。
 
@@ -83,9 +87,9 @@
 
 ## ■ 貼り付け
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| Windows | MacOS |
 | :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `V` | `⌘` &nbsp; + &nbsp; ` V` |
+| `Ctrl`  +  `V` | `⌘`  +  ` V` |
 
 クリップボードに保存されているテキストまたは範囲を貼り付けます。
 
@@ -96,9 +100,9 @@
 
 ## ■ 全選択　
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| Windows | MacOS |
 | :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `A` | `⌘` &nbsp; + &nbsp; ` A` |
+| `Ctrl`  +  `A` | `⌘`  +  ` A` |
 
 シート上の全てのセルを選択します。
 
@@ -109,9 +113,9 @@
 
 ## ■ 直前の操作を取り消す
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| Windows | MacOS |
 | :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `Z` | `⌘` &nbsp; + &nbsp; ` Z` |
+| `Ctrl`  +  `Z` | `⌘`  +  ` Z` |
 
 直前に行った操作の処理を取り消し、元の状態に戻します。
 
@@ -126,9 +130,9 @@
 
 ## ■ 取り消した操作をやり直す
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| Windows | MacOS |
 | :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `Shift` &nbsp; + &nbsp; `Z` | `⌘` &nbsp; + &nbsp; `Shift` &nbsp; + &nbsp; ` Z` |
+| `Ctrl`  +  `Shift`  +  `Z` | `⌘`  +  `Shift`  +  ` Z` |
 
 直前の操作を取り消す機能で一旦取り消した操作をやり直します。
 
@@ -143,9 +147,9 @@
 
 ## ■ 検索
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| Windows | MacOS |
 | :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `F` | `⌘` &nbsp; + &nbsp; ` F` |
+| `Ctrl`  +  `F` | `⌘`  +  ` F` |
 
 シート内の検索をします。
 
@@ -160,9 +164,9 @@
 
 ## ■ タブを閉じる
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| Windows | MacOS |
 | :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `F4` | `Option` &nbsp; + &nbsp; ` W` |
+| `Ctrl`  +  `F4` | `Option`  +  ` W` |
 
 選択中のタブを閉じます。
 

@@ -2,9 +2,9 @@
 
 ## ■ 新規作成
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| Windows | MacOS |
 | :-: | :-: |
-| `Alt` &nbsp; + &nbsp; `Insert` | - |
+| `Alt` + `Insert` | - |
 
 新しいタブを作成します。
 
@@ -13,9 +13,9 @@
 
 ## ■ ファイルを開く 
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| Windows | MacOS |
 | :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `O` | `⌘` &nbsp; + &nbsp; `O` |
+| `Ctrl`  +  `O` | `⌘`  +  `O` |
 
 ファイルを開き、新しいタブに表示します。
 
@@ -32,9 +32,9 @@
 
 ## ■ 上書き保存 
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| Windows | MacOS |
 | :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `S` | `⌘` &nbsp; + &nbsp; `S` |
+| `Ctrl`  +  `S` | `⌘`  +  `S` |
 
 ファイルを上書き保存します。
 
@@ -43,9 +43,9 @@
 
 ## ■ 名前を付けて保存 
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| Windows | MacOS |
 | :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `Shift` &nbsp; + &nbsp; `S` | `⌘` &nbsp; + &nbsp; `Shift` &nbsp; + &nbsp; `S` |
+| `Ctrl`  +  `Shift`  +  `S` | `⌘`  +  `Shift`  +  `S` |
 
 ファイルに名前を付けて保存します。
 
@@ -54,9 +54,9 @@
 
 ## ■ 印刷 
 
-| &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  Windows &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MacOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| Windows | MacOS |
 | :-: | :-: |
-| `Ctrl` &nbsp; + &nbsp; `Shift` &nbsp; + &nbsp; `P` | - |
+| `Ctrl`  +  `Shift`  +  `P` | - |
 
 ファイルを印刷します。
 
@@ -83,3 +83,10 @@ data-full-width-responsive="true"></ins>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
+
+<!-- <style scoped>
+  table
+    display: table
+    table-layout: fixed
+    width: 100%
+</style> -->
