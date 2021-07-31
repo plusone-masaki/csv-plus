@@ -10,7 +10,7 @@
       <div class="downloads__os--buttons">
         <DownloadButton
             title="Windows"
-            subtitle="(.exe)"
+            subtitle="(インストーラ版)"
             :href="downloads.windows.browser_download_url"
         />
       </div>
@@ -29,28 +29,22 @@
       </div>
     </div>
 
-    <div v-if="downloads.ubuntu || downloads.linux" class="downloads__os">
+    <div v-if="downloads.debian" class="downloads__os">
       <div class="downloads__os--icon">
         <MdiIcon icon="linux" />
       </div>
       <div class="downloads__os--buttons">
         <DownloadButton
-            v-if="downloads.ubuntu"
-            title="Ubuntu"
+            v-if="downloads.debian"
+            title="Debian/Ubuntu"
             subtitle="(.deb)"
-            :href="downloads.ubuntu.browser_download_url"
-        />
-        <DownloadButton
-            v-if="downloads.linux"
-            title="Linux"
-            subtitle="(.AppImage)"
-            :href="downloads.linux.browser_download_url"
+            :href="downloads.debian.browser_download_url"
         />
       </div>
     </div>
   </div>
 
-  <div v-if="downloads.zip" class="downloads__other-release">
+  <div v-if="downloads.others.length" class="downloads__other-release">
     <h3>その他のリリース</h3>
     <table v-if="release" class="downloads__table">
       <thead>
@@ -62,11 +56,11 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-if="downloads.zip">
-        <td>Windows</td>
+      <tr v-for="asset in downloads.others">
+        <td>{{ targetOS(asset) }}</td>
         <td>{{ release.tag_name }}</td>
         <td>
-          <a :href="downloads.zip.browser_download_url">{{ downloads.zip.name }}</a>
+          <a :href="asset.browser_download_url">{{ asset.name }}</a>
         </td>
         <td>{{ release.created_at }}</td>
       </tr>
@@ -92,10 +86,9 @@ export default {
       release: null,
       downloads: {
         windows: null,
-        zip: null,
         mac: null,
-        ubuntu: null,
-        linux: null,
+        debian: null,
+        others: [],
       },
     }
   },
@@ -105,12 +98,18 @@ export default {
     const { data } = await axios.get(url, { headers: { accept: 'application/vnd.github.v3+json' } })
     this.release = data.filter(release => !release.draft)[0]
     this.release.assets.forEach(asset => {
-      if (/\.exe$/.test(asset.name)) this.downloads.windows = asset
-      if (/\.zip$/.test(asset.name)) this.downloads.zip = asset
-      if (/\.dmg$/.test(asset.name)) this.downloads.mac = asset
-      if (/\.deb$/.test(asset.name)) this.downloads.ubuntu = asset
-      if (/\.AppImage$/.test(asset.name)) this.downloads.linux = asset
+      if (/setup.+\.zip$/.test(asset.name)) this.downloads.windows = asset
+      else if (/\.dmg$/.test(asset.name)) this.downloads.mac = asset
+      else if (/\.deb$/.test(asset.name)) this.downloads.debian = asset
+      else if (!/(.blockmap|ya?ml)$/.test(asset.name)) this.downloads.others.push(asset)
     })
+  },
+  methods: {
+    targetOS (asset) {
+      if (asset.name.indexOf('exe') !== -1) return 'Windows'
+      if (asset.name.indexOf('win') !== -1) return 'Windows'
+      if (asset.name.indexOf('AppImage') !== -1) return 'Linux'
+    },
   },
 }
 </script>
