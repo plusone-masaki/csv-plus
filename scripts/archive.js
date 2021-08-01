@@ -10,7 +10,7 @@ const archiver = require('archiver')
  * @returns {Promise<void>}
  */
 module.exports = async buildResult => {
-  const winInstaller = buildResult.artifactPaths.find(filePath => /CSV\+ Setup.*\.exe$/.test(filePath))
+  const winInstaller = buildResult.artifactPaths.find(filePath => /setup.*\.exe$/i.test(filePath))
   if (winInstaller) {
     const output = fs.createWriteStream(winInstaller.replace('exe', 'zip'))
     const archive = archiver('zip')
