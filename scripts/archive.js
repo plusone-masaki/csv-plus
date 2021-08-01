@@ -40,7 +40,7 @@ module.exports = async buildResult => {
     })
 
     archive.pipe(output)
-    archive.file(winInstaller, { name: winInstaller.split(path.sep).pop() }).finalize()
+    await archive.file(winInstaller, { name: winInstaller.split(path.sep).pop() }).finalize()
     return [filepath]
   }
 }
