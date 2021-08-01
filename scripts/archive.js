@@ -7,12 +7,13 @@ const archiver = require('archiver')
  * Windowsインストーラのzip圧縮
  *
  * @param {object} buildResult
- * @returns {Promise<void>}
+ * @returns {Promise<string[]>}
  */
 module.exports = async buildResult => {
   const winInstaller = buildResult.artifactPaths.find(filePath => /setup.*\.exe$/i.test(filePath))
   if (winInstaller) {
-    const output = fs.createWriteStream(winInstaller.replace('exe', 'zip'))
+    const filepath = winInstaller.replace('exe', 'zip')
+    const output = fs.createWriteStream(filepath)
     const archive = archiver('zip')
 
     output.on('close', () => {
@@ -39,6 +40,7 @@ module.exports = async buildResult => {
     })
 
     archive.pipe(output)
-    return archive.file(winInstaller, { name: winInstaller.split(path.sep).pop() }).finalize()
+    archive.file(winInstaller, { name: winInstaller.split(path.sep).pop() }).finalize()
+    return [filepath]
   }
 }
