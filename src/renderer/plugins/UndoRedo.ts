@@ -8,7 +8,7 @@ interface Cell {
   amount?: number
 }
 
-interface ChangeDetail extends Cell {
+export interface ChangeDetail extends Cell {
   before: string|string[]|string[][]
   after?: string|string[]|string[][]
 }

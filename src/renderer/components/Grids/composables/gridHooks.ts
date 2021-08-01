@@ -2,6 +2,14 @@ import { SetupContext } from 'vue'
 import { Tab } from '@/@types/types'
 import * as operations from '@/common/operations'
 import shortcut from '@/renderer/plugins/Shortcut'
+import { ChangeDetail } from '@/renderer/plugins/UndoRedo'
+
+interface Cell {
+  startRow: number
+  startCol: number
+  endRow: number
+  endCol: number
+}
 
 export default (props: { tab: Tab }, context: SetupContext) => ({
   afterChange: (details: [number, string|number, string, string][]|null, operation: string) => {
@@ -114,6 +122,39 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
       rowLength,
       colLength,
       summary: (rowLength || colLength) && values.reduce((a, b) => a + Number(b), 0),
+    }
+  },
+
+  beforePaste: (data: string[][], cells: Cell[]) => {
+    // 区切り文字で分割してペーストする
+    if (data[0].length === 1) {
+      const details: ChangeDetail[] = []
+
+      cells.forEach((cell) => {
+        for (let i = 0; i < data.length; i++) {
+          const row = cell.startRow + i
+          const rowData = data[i][0].split(props.tab.file.meta.delimiter)
+          for (let col = cell.startCol; col < rowData.length; col++) {
+            details.push({
+              hasHeader: props.tab.table.options.hasHeader,
+              row,
+              col,
+              before: props.tab.file.data[row][col],
+              after: rowData[col],
+            })
+            props.tab.file.data[row][col] = rowData[col]
+          }
+        }
+      })
+
+      // 操作履歴の追加
+      props.tab.table.undoRedo!.add({
+        operation: operations.EDIT,
+        details,
+      })
+
+      // 標準のペースト機能を中止
+      return false
     }
   },
 
