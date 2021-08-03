@@ -23,23 +23,25 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
   },
 
   beforeCreateRow: (row: number, amount: number) => {
-    props.tab.dirty = true
+    if (props.tab.table.instance) {
+      props.tab.dirty = true
 
-    // 操作履歴の追加
-    const details = []
-    for (let i = row; i < row + amount; i++) {
-      details.push({
-        hasHeader: props.tab.table.options.hasHeader,
-        row: i,
-        amount,
-        before: [],
+      // 操作履歴の追加
+      const details = []
+      for (let i = row; i < row + amount; i++) {
+        details.push({
+          hasHeader: props.tab.table.options.hasHeader,
+          row: i,
+          amount,
+          before: [],
+        })
+      }
+
+      props.tab.table.undoRedo!.add({
+        operation: operations.ROW_INSERT,
+        details,
       })
     }
-
-    props.tab.table.undoRedo!.add({
-      operation: operations.ROW_INSERT,
-      details,
-    })
   },
 
   beforeRemoveRow: (row: number, amount: number) => {
@@ -63,21 +65,23 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
   },
 
   beforeCreateCol: (col: number, amount: number) => {
-    props.tab.dirty = true
+    if (props.tab.table.instance) {
+      props.tab.dirty = true
 
-    // 操作履歴の追加
-    const emptyCols = () => new Array(amount).fill('')
-    const details = [{
-      hasHeader: props.tab.table.options.hasHeader,
-      col,
-      amount,
-      before: emptyCols(),
-    }]
+      // 操作履歴の追加
+      const emptyCols = () => new Array(amount).fill('')
+      const details = [{
+        hasHeader: props.tab.table.options.hasHeader,
+        col,
+        amount,
+        before: emptyCols(),
+      }]
 
-    props.tab.table.undoRedo!.add({
-      operation: operations.COL_INSERT,
-      details,
-    })
+      props.tab.table.undoRedo!.add({
+        operation: operations.COL_INSERT,
+        details,
+      })
+    }
   },
 
   beforeRemoveCol: (col: number, amount: number) => {
