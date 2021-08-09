@@ -36,6 +36,7 @@ module.exports = {
    * ref：https://v1.vuepress.vuejs.org/theme/default-theme-config.html
    */
   themeConfig: {
+    domain: 'https://plus-one.tech/csv-plus',
     repo: 'https://github.com/plusone-masaki/csv-plus',
     editLinks: false,
     docsDir: 'docs',
@@ -51,6 +52,10 @@ module.exports = {
         text: '使い方',
         link: '/guide/',
       },
+      {
+        text: 'プライバシーポリシー',
+        link: '/privacy/',
+      }
     ],
     sidebar: {
       '/guide/': [
@@ -74,5 +79,10 @@ module.exports = {
     ['@vuepress/google-analytics', { ga: 'UA-155750684-1' }],
     '@vuepress/plugin-back-to-top',
     '@vuepress/plugin-medium-zoom',
+    ['vuepress-plugin-seo', {
+      description: ($page, $site) => $page.frontmatter.description || ($page.excerpt && $page.excerpt.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "")) || $site.description || "",
+      title: ($page, $site) => $page.title || $site.title,
+      image: ($page, $site) => `${$site.themeConfig.domain}/logo.png`,
+    }],
   ],
 }

@@ -1,7 +1,7 @@
 {
   "name": "csv-plus",
   "version": "0.0.1",
-  "description": "シンプルで使いやすい、タブCSVエディタ",
+  "description": "複数のファイルをタブで開ける、シンプルで使いやすいCSVエディタ",
   "main": "index.js",
   "authors": {
     "name": "Masaki Enomoto",
@@ -17,7 +17,8 @@
     "@vuepress/plugin-google-analytics": "^1.8.2",
     "pug": "^3.0.2",
     "pug-plain-loader": "^1.1.0",
-    "vuepress": "^1.5.3"
+    "vuepress": "^1.5.3",
+    "vuepress-plugin-seo": "^0.1.4"
   },
   "dependencies": {
     "@mdi/js": "^5.9.55",
