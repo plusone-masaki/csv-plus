@@ -129,6 +129,16 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
     }
   },
 
+  beforeCopy: (data: string[][]) => {
+    // 設定された区切り文字・改行コードでデータをコピー
+    if (navigator.clipboard) {
+      const linefeed = props.tab.file.meta.linefeed === 'LF' ? '\n' : '\r\n'
+      const dataString = data.map(row => row.join(props.tab.file.meta.delimiter)).join(linefeed)
+      navigator.clipboard.writeText(dataString)
+      return false
+    }
+  },
+
   beforePaste: (data: string[][], cells: Cell[]) => {
     // 区切り文字で分割してペーストする
     if (data[0].length === 1) {
