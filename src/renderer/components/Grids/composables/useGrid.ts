@@ -62,11 +62,13 @@ export default (props: { tab: Tab }, context: SetupContext) => {
 
   onMounted(() => {
     if (wrapper.value) {
+      console.log('create table')
       const handsOnTable = new HandsOnTable(wrapper.value, settings.value) as TableInstance
       props.tab.table.instance = handsOnTable
       props.tab.table.search = Search(handsOnTable, props.tab)
       props.tab.table.undoRedo = props.tab.table.undoRedo || new UndoRedo(props.tab)
       props.tab.table.borders = handsOnTable.getPlugin('customBorders')
+      console.log('table created')
     }
   })
 
