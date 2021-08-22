@@ -55,13 +55,7 @@ const defaultMeta = (): FileMeta => ({
   bom: false,
 })
 
-const defaultCalculation = (): Calculation => ({
-  selected: {
-    rowLength: 0,
-    colLength: 0,
-    summary: NaN,
-  },
-})
+const defaultCalculation = (): Calculation => ({})
 
 export default (): UseTab => {
   const { t } = useI18n()

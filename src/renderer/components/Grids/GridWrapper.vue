@@ -5,9 +5,9 @@ section.content(:id="`grid-wrapper-${tab.id}`")
       search-box(
         v-if="tab && tab.table.options.search.enable"
         v-model="tab.table.options.search"
-        :absolute="true"
-        :top="true"
-        :right="true"
+        absolute
+        top
+        right
         @search="onSearch"
         @replace="onReplace"
         @blur="clearBorder"

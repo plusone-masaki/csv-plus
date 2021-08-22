@@ -114,9 +114,11 @@ declare interface Table {
 }
 
 declare interface Calculation {
-  selected: {
-    rowLength: number
-    colLength: number
+  selected?: {
+    startRow: number
+    endRow: number
+    startCol: number
+    endCol: number
     summary: number
   }
 }

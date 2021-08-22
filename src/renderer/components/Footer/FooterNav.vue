@@ -3,7 +3,7 @@ footer.footer-nav
   template(v-if="tab")
     // 選択したセルの合計
     footer-nav-label(
-      v-show="tab.calculation.selected.summary"
+      v-if="tab.calculation.selected && tab.calculation.selected.summary"
       :label="$t('footer.summary') + tab.calculation.selected.summary"
     )
 

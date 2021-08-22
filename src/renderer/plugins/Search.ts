@@ -114,7 +114,7 @@ class Search {
     } else if (this._results.length) {
       this.option.results = {
         length: this._results.length,
-        current: 0,
+        current: this.option.results?.current || 0,
       }
     } else {
       this.option.results = undefined
