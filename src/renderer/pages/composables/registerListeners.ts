@@ -22,8 +22,10 @@ export default (useTab: UseTab) => {
   })
 
   // Search
-  watch(() => useTab.activeTab.value?.table.options.search.keyword, () => useTab.activeTab.value?.table.search())
-  watch(() => useTab.activeTab.value?.table.options.search.enable, e => e && useTab.activeTab.value?.table.search(false, true))
+  watch(
+    () => useTab.activeTab.value?.table.options.search.enable,
+    e => e && useTab.activeTab.value?.table.search({ preserve: true, delay: false }),
+  )
 
   // HandsOnTable インスタンスが起動した時
   watch(() => useTab.activeTab.value?.table.instance, instance => {

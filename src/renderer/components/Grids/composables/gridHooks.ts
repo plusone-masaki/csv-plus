@@ -23,8 +23,8 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
   },
 
   afterInit: async () => {
+    await nextTick()
     if (props.tab.calculation.selected) {
-      await nextTick()
       const { startRow, startCol, endRow, endCol } = props.tab.calculation.selected
       // eslint-disable-next-line no-unused-expressions
       props.tab.table.instance?.selectCell(startRow, startCol, endRow, endCol, true)

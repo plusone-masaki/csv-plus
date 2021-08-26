@@ -3,19 +3,19 @@ import HandsOnTable from 'handsontable'
 import { TableInstance, CustomBordersPlugin } from '@/@types/handsontable'
 import UndoRedo from '@/renderer/plugins/UndoRedo'
 
-declare global {
+export global {
   const __: TFunction
   const __static: string
 
   namespace NodeJS {
-    declare interface Global {
+    export interface Global {
       __: TFunction
     }
   }
 }
 
-declare type Linefeed = 'CRLF' | 'LF'
-declare type SupportedEncoding =
+export type Linefeed = 'CRLF' | 'LF'
+export type SupportedEncoding =
   'UTF-8' |
   'UTF-16' |
   'UTF-16LE' |
@@ -52,9 +52,9 @@ type REPLACE_NONE = 0
 type REPLACE_SINGLE = 1
 type REPLACE_ALL = 2
 
-declare type ReplaceFlag = REPLACE_NONE|REPLACE_SINGLE|REPLACE_ALL
+export type ReplaceFlag = REPLACE_NONE|REPLACE_SINGLE|REPLACE_ALL
 
-declare interface KeyBind {
+export interface KeyBind {
   key: string
   shiftKey?: boolean
   ctrlKey?: boolean
@@ -62,12 +62,12 @@ declare interface KeyBind {
   metaKey?: boolean
 }
 
-declare interface ShortcutEvent {
+export interface ShortcutEvent {
   name: string
   callback: () => void
 }
 
-declare interface FileMeta {
+export interface FileMeta {
   delimiter: string
   quoteChar: string
   escapeChar: string
@@ -77,7 +77,7 @@ declare interface FileMeta {
   colWidth?: number
 }
 
-declare interface FileData {
+export interface FileData {
   label: string
   path: string
   data: HandsOnTable.CellValue[][]
@@ -89,7 +89,7 @@ interface SearchResults {
   current: number
 }
 
-declare interface SearchOption {
+export interface SearchOption {
   enable: boolean
   enableReplace: boolean
   matchCase: boolean
@@ -99,21 +99,28 @@ declare interface SearchOption {
   results?: SearchResults
 }
 
-declare interface Options {
+export interface Options {
   hasHeader: boolean
   printMode: boolean
   search: SearchOption
 }
 
-declare interface Table {
+export interface QueryOption {
+  delay?: boolean
+  reverse?: boolean
+  preserve?: boolean
+  replace?: ReplaceFlag
+}
+
+export interface Table {
   instance?: TableInstance
-  search: (reverse?: boolean, preserve?: boolean, replace?: ReplaceFlag) => void
+  search: (QueryOption?) => void
   undoRedo?: UndoRedo
   borders?: CustomBordersPlugin
   options: Options
 }
 
-declare interface Calculation {
+export interface Calculation {
   selected?: {
     startRow: number
     endRow: number
@@ -123,7 +130,7 @@ declare interface Calculation {
   }
 }
 
-declare interface Tab {
+export interface Tab {
   id: number
   table: Table
   dirty: boolean
@@ -131,6 +138,6 @@ declare interface Tab {
   calculation: Calculation
 }
 
-declare interface ConfigData {
+export interface ConfigData {
   updateNotification: boolean
 }
