@@ -1,4 +1,4 @@
-import { SetupContext } from 'vue'
+import { nextTick, SetupContext } from 'vue'
 import { Tab } from '@/@types/types'
 import * as operations from '@/common/operations'
 import shortcut from '@/renderer/plugins/Shortcut'
@@ -27,6 +27,31 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
           after: detail[3],
         })),
       })
+    }
+  },
+
+  afterInit: async () => {
+    await nextTick()
+    if (props.tab.calculation.selected) {
+      const { startRow, startCol, endRow, endCol } = props.tab.calculation.selected
+      // eslint-disable-next-line no-unused-expressions
+      props.tab.table.instance?.selectCell(startRow, startCol, endRow, endCol, true)
+    }
+  },
+
+  afterSelection: (startRow: number, startCol: number, endRow: number, endCol: number) => {
+    if (!props.tab.table.instance) return
+
+    const rowLength = endRow - startRow
+    const colLength = endCol - startCol
+
+    const values = props.tab.table.instance.getData(startRow, startCol, endRow, endCol).flat() as string[]
+    props.tab.calculation.selected = {
+      startRow,
+      endRow,
+      startCol,
+      endCol,
+      summary: (rowLength || colLength) && values.reduce((a, b) => a + Number(b), 0),
     }
   },
 

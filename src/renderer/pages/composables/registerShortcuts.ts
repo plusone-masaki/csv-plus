@@ -114,7 +114,7 @@ export default (useTab: UseTab) => {
       shortcut.addShortcutEvent(shortcuts.SEARCH_CLOSE, () => { tab.table.options.search.enable = false })
       shortcut.addShortcutEvent(shortcuts.REPLACE_OPEN, () => { tab.table.options.search.enableReplace = tab.table.options.search.enable = true })
       shortcut.addShortcutEvent(shortcuts.SEARCH, () => tab.table.search())
-      shortcut.addShortcutEvent(shortcuts.SEARCH_REVERSE, () => tab.table.search(true))
+      shortcut.addShortcutEvent(shortcuts.SEARCH_REVERSE, () => tab.table.search({ reverse: true }))
       shortcut.addShortcutEvent(shortcuts.JUMP_UP, () => jumpCell(tab, 'up'))
       shortcut.addShortcutEvent(shortcuts.JUMP_DOWN, () => jumpCell(tab, 'down'))
       shortcut.addShortcutEvent(shortcuts.JUMP_LEFT, () => jumpCell(tab, 'left'))

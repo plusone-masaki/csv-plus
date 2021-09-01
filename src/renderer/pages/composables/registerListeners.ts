@@ -9,26 +9,31 @@ import * as channels from '@/common/channels'
 import { UseTab } from '@/renderer/pages/composables/useTabs'
 
 export default (useTab: UseTab) => {
-  watch(() => useTab.state.activeId, () => {
-    // 画面リサイズ時に再描画するリスナを登録
+  watch(useTab.activeTab, tab => {
+    if (!tab) return
+
+    // 画面リサイズ時に再描画する
     window.onresize = async () => {
       await nextTick()
-      if (useTab.activeTab.value?.table.instance && !useTab.activeTab.value?.table.instance!.isDestroyed) {
+      if (tab.table.instance && !tab.table.instance!.isDestroyed) {
         useTab.activeTab.value?.table.instance!.render()
       }
     }
   })
 
   // Search
-  watch(() => useTab.activeTab.value?.table.options.search.keyword, () => useTab.activeTab.value?.table.search())
-  watch(() => useTab.activeTab.value?.table.options.search.enable, e => e && useTab.activeTab.value?.table.search(false, true))
+  watch(
+    () => useTab.activeTab.value?.table.options.search.enable,
+    e => e && useTab.activeTab.value?.table.search({ preserve: true, delay: false }),
+  )
 
-  // IPC events
-  watch(() => useTab.activeTab.value?.table.instance, () => {
-    if (useTab.activeTab.value?.table.instance) {
-      ipcRenderer.on(channels.MENU_SELECT_ALL, useTab.activeTab.value?.table.instance.selectAll)
-      ipcRenderer.on(channels.MENU_UNDO, () => useTab.activeTab.value?.table.undoRedo!.undo())
-      ipcRenderer.on(channels.MENU_REDO, () => useTab.activeTab.value?.table.undoRedo!.redo())
+  // HandsOnTable インスタンスが起動した時
+  watch(() => useTab.activeTab.value?.table.instance, instance => {
+    if (instance && !instance.isDestroyed) {
+      // IPC イベントの再登録
+      ipcRenderer.on(channels.MENU_SELECT_ALL, useTab.activeTab.value!.table.instance!.selectAll)
+      ipcRenderer.on(channels.MENU_UNDO, () => useTab.activeTab.value!.table.undoRedo!.undo())
+      ipcRenderer.on(channels.MENU_REDO, () => useTab.activeTab.value!.table.undoRedo!.redo())
     }
   })
 
