@@ -20,6 +20,7 @@ export default new MenuItem({
     {
       label: '全て選択',
       accelerator: 'CmdOrCtrl+A',
+      registerAccelerator: false,
       click: EditMenuController.selectAll,
     },
   ],
