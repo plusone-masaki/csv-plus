@@ -5,9 +5,9 @@ section.content(:id="`grid-wrapper-${tab.id}`")
       search-box(
         v-if="tab && tab.table.options.search.enable"
         v-model="tab.table.options.search"
-        :absolute="true"
-        :top="true"
-        :right="true"
+        absolute
+        top
+        right
         @search="onSearch"
         @replace="onReplace"
         @blur="clearBorder"
@@ -53,8 +53,8 @@ export default defineComponent({
 
     return {
       clearBorder: () => props.tab?.table.borders?.clearBorders(),
-      onSearch: (e?: KeyboardEvent) => props.tab?.table.search && props.tab.table.search(e?.shiftKey),
-      onReplace: (all: boolean) => props.tab?.table.search && props.tab.table.search(false, all, all ? REPLACE_ALL : REPLACE_SINGLE),
+      onSearch: (e?: KeyboardEvent) => props.tab?.table.search && props.tab.table.search({ reverse: e?.shiftKey }),
+      onReplace: (all: boolean) => props.tab?.table.search && props.tab.table.search({ preserve: all, replace: all ? REPLACE_ALL : REPLACE_SINGLE }),
       onEdit: () => context.emit('edit'),
     }
   },

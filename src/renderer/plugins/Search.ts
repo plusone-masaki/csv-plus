@@ -1,4 +1,4 @@
-import { Tab, SearchOption, ReplaceFlag } from '@/@types/types'
+import { Tab, SearchOption, QueryOption, ReplaceFlag, Calculation } from '@/@types/types'
 import { TableInstance, CustomBordersPlugin, SearchPlugin } from '@/@types/handsontable'
 
 export const REPLACE_NONE = 0
@@ -15,6 +15,7 @@ class Search {
   private readonly table: TableInstance
   private readonly searchPlugin: SearchPlugin
   private readonly customBordersPlugin: CustomBordersPlugin
+  private readonly calculation: Calculation
   private readonly option: SearchOption
   private readonly hasHeader: boolean
   private readonly data: string[][] = []
@@ -30,13 +31,21 @@ class Search {
     this.searchPlugin = table.getPlugin('search') as any as SearchPlugin
     /* @ts-ignore */
     this.customBordersPlugin = table.getPlugin('customBorders') as any as customBordersPlugin
+    this.calculation = tab.calculation
     this.option = tab.table.options.search
     this.hasHeader = tab.table.options.hasHeader
     this.data = tab.file.data
 
-    this.query()
+    this.query({ delay: false, preserve: true })
   }
 
+  /**
+   * 検索メソッドの生成
+   *
+   * @private
+   * @param {QueryOption} option
+   * @return {function}
+   */
   private _generateQueryMethod (option: SearchOption) {
     let query: string|RegExp = option.keyword
     if (option.regexp) {
@@ -67,7 +76,7 @@ class Search {
    *
    * @private
    */
-  private _focusCell (reverse: boolean, preserveCursor: boolean, force = false) {
+  private _focusCell (reverse: boolean, preserve: boolean, force = false) {
     // 検索条件が変わっている場合、結果が出るまでフォーカス処理をスキップ
     if (!force && (
       this._keyword !== this.option.keyword ||
@@ -100,7 +109,7 @@ class Search {
           this.option.results.current = this._results
             .findIndex(r => ((r.row === selectedCell[ROW] && r.col >= selectedCell[COL])) || (r.row > selectedCell[ROW]))
         }
-      } else if (preserveCursor) { // 前回と同じセルをフォーカス
+      } else if (preserve) { // 前回と同じセルをフォーカス
         // no change
       } else if (reverse) { // 上へ検索
         this.option.results.current -= 1
@@ -114,7 +123,7 @@ class Search {
     } else if (this._results.length) {
       this.option.results = {
         length: this._results.length,
-        current: 0,
+        current: this.option.results?.current || 0,
       }
     } else {
       this.option.results = undefined
@@ -127,6 +136,7 @@ class Search {
 
     this.table.deselectCell()
     this.customBordersPlugin.clearBorders()
+    delete this.calculation.selected
     if (this.option.results) {
       const result = this._results[this.option.results.current]
       const border = { width: 2, color: 'rgb(75, 137, 255)' }
@@ -168,13 +178,22 @@ class Search {
     this.table.setDataAtRowProp(data)
   }
 
-  public query (reverse = false, preserveCursor = false, replace: ReplaceFlag = REPLACE_NONE) {
+  /**
+   * 検索処理の実行
+   *
+   * @param {QueryOption} option
+   */
+  public query (option: QueryOption = {}) {
     try {
+      const {
+        delay = true,
+        reverse = false,
+        preserve = false,
+        replace = REPLACE_NONE,
+      } = option
       if (!this.option.enable) return
 
-      // イベント発火のたびに検索処理を行うと重いためディレイを設ける
-      clearTimeout(this._queryDelay)
-      this._queryDelay = window.setTimeout(() => {
+      const search = () => {
         if (this.option.enable && this.table && this.searchPlugin) {
           const queryMethod = this._generateQueryMethod(this.option)
 
@@ -183,13 +202,21 @@ class Search {
           this.table.render()
           this._focusCell(reverse, true, true)
         }
-      }, 50)
+      }
+
+      // イベント発火のたびに検索処理を行うと重いためディレイを設ける
+      clearTimeout(this._queryDelay)
+      if (delay) {
+        this._queryDelay = window.setTimeout(search, 50)
+      } else {
+        search()
+      }
 
       // 置換処理
       if (this._results.length && replace !== REPLACE_NONE) this._replace(replace)
 
       // フォーカス処理
-      this._focusCell(reverse, preserveCursor)
+      this._focusCell(reverse, preserve)
     } catch (e) {}
   }
 }
@@ -197,5 +224,5 @@ class Search {
 let instance: Search
 export default (table: TableInstance, tab: Tab) => {
   instance = new Search(table, tab)
-  return (reverse?: boolean, preserveCursor?: boolean, replace?: ReplaceFlag) => instance.query(reverse, preserveCursor, replace)
+  return (option?: QueryOption) => instance.query(option)
 }

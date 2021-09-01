@@ -1,4 +1,4 @@
-import { SetupContext } from 'vue'
+import { nextTick, SetupContext } from 'vue'
 import { Tab } from '@/@types/types'
 import * as operations from '@/common/operations'
 import shortcut from '@/renderer/plugins/Shortcut'
@@ -22,24 +22,51 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
     }
   },
 
-  beforeCreateRow: (row: number, amount: number) => {
-    props.tab.dirty = true
+  afterInit: async () => {
+    await nextTick()
+    if (props.tab.calculation.selected) {
+      const { startRow, startCol, endRow, endCol } = props.tab.calculation.selected
+      // eslint-disable-next-line no-unused-expressions
+      props.tab.table.instance?.selectCell(startRow, startCol, endRow, endCol, true)
+    }
+  },
 
-    // 操作履歴の追加
-    const details = []
-    for (let i = row; i < row + amount; i++) {
-      details.push({
-        hasHeader: props.tab.table.options.hasHeader,
-        row: i,
-        amount,
-        before: [],
+  afterSelection: (startRow: number, startCol: number, endRow: number, endCol: number) => {
+    if (!props.tab.table.instance) return
+
+    const rowLength = endRow - startRow
+    const colLength = endCol - startCol
+
+    const values = props.tab.table.instance.getData(startRow, startCol, endRow, endCol).flat() as string[]
+    props.tab.calculation.selected = {
+      startRow,
+      endRow,
+      startCol,
+      endCol,
+      summary: (rowLength || colLength) && values.reduce((a, b) => a + Number(b), 0),
+    }
+  },
+
+  beforeCreateRow: (row: number, amount: number) => {
+    if (props.tab.table.instance) {
+      props.tab.dirty = true
+
+      // 操作履歴の追加
+      const details = []
+      for (let i = row; i < row + amount; i++) {
+        details.push({
+          hasHeader: props.tab.table.options.hasHeader,
+          row: i,
+          amount,
+          before: [],
+        })
+      }
+
+      props.tab.table.undoRedo!.add({
+        operation: operations.ROW_INSERT,
+        details,
       })
     }
-
-    props.tab.table.undoRedo!.add({
-      operation: operations.ROW_INSERT,
-      details,
-    })
   },
 
   beforeRemoveRow: (row: number, amount: number) => {
@@ -63,21 +90,23 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
   },
 
   beforeCreateCol: (col: number, amount: number) => {
-    props.tab.dirty = true
+    if (props.tab.table.instance) {
+      props.tab.dirty = true
 
-    // 操作履歴の追加
-    const emptyCols = () => new Array(amount).fill('')
-    const details = [{
-      hasHeader: props.tab.table.options.hasHeader,
-      col,
-      amount,
-      before: emptyCols(),
-    }]
+      // 操作履歴の追加
+      const emptyCols = () => new Array(amount).fill('')
+      const details = [{
+        hasHeader: props.tab.table.options.hasHeader,
+        col,
+        amount,
+        before: emptyCols(),
+      }]
 
-    props.tab.table.undoRedo!.add({
-      operation: operations.COL_INSERT,
-      details,
-    })
+      props.tab.table.undoRedo!.add({
+        operation: operations.COL_INSERT,
+        details,
+      })
+    }
   },
 
   beforeRemoveCol: (col: number, amount: number) => {
@@ -101,20 +130,6 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
       operation: operations.COL_REMOVE,
       details,
     })
-  },
-
-  afterSelection: (startRow: number, startCol: number, endRow: number, endCol: number) => {
-    if (!props.tab.table.instance) return
-
-    const rowLength = endRow - startRow
-    const colLength = endCol - startCol
-
-    const values = props.tab.table.instance.getData(startRow, startCol, endRow, endCol).flat() as string[]
-    props.tab.calculation.selected = {
-      rowLength,
-      colLength,
-      summary: (rowLength || colLength) && values.reduce((a, b) => a + Number(b), 0),
-    }
   },
 
   beforeSetRangeEnd: () => props.tab.table.borders?.clearBorders(),

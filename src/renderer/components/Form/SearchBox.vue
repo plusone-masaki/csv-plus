@@ -12,6 +12,7 @@ div.search-box(
       id="search-input"
       ref="searchInput"
       width="150"
+      @input="onSubmit"
       @keypress.enter.stop="onSubmit"
     )
       template(v-slot:append)
