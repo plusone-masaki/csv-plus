@@ -1,5 +1,6 @@
 import { Tab, Table } from '@/@types/types'
 import * as operations from '@/common/operations'
+import History from '@/main/models/History'
 
 interface Cell {
   hasHeader: boolean
@@ -13,9 +14,13 @@ export interface ChangeDetail extends Cell {
   after?: string|string[]|string[][]
 }
 
-interface History {
+interface Operation {
   operation: string
   details: ChangeDetail[]
+}
+
+interface History extends Operation {
+  id: number
 }
 
 const MAX_HISTORY = 100
@@ -25,7 +30,9 @@ export default class UndoRedo {
   private readonly table: Table
 
   private _histories: History[] = []
+  private _transactionOperation: History[] = []
   private _pointer = 0
+  private _isTransaction = false
 
   /**
    * シートのセルを変更する
@@ -50,12 +57,14 @@ export default class UndoRedo {
    * 行の追加・削除
    */
   private _spliceRow (cell: Cell, amount: number): void
-  private _spliceRow (cell: Cell, data: string[]): void
-  private _spliceRow (cell: Cell, data: number|string[]): void {
+  private _spliceRow (cell: Cell, data: string[][]): void
+  private _spliceRow (cell: Cell, data: number|string[][]): void {
     if (typeof data === 'number') {
+      // remove row
       this.data.splice(cell.row! + Number(cell.hasHeader), data)
     } else {
-      this.data.splice(cell.row! + Number(cell.hasHeader), 0, data)
+      // insert row
+      this.data.splice(cell.row! + Number(cell.hasHeader), 0, ...data)
     }
   }
 
@@ -66,10 +75,12 @@ export default class UndoRedo {
   private _spliceCol (cell: Cell, data: string[][]): void
   private _spliceCol (cell: Cell, data: number|string[][]) {
     if (typeof data === 'number') {
+      // remove col
       for (let i = Number(cell.hasHeader); i < this.data.length; i++) {
         this.data[i].splice(cell.col!, data)
       }
     } else {
+      // insert col
       for (let i = Number(cell.hasHeader); i < this.data.length; i++) {
         this.data[i].splice(cell.col!, 0, ...data[i])
       }
@@ -96,73 +107,150 @@ export default class UndoRedo {
     }
   }
 
+  /**
+   * 一連の操作を履歴に追加
+   *
+   * @private
+   */
+  private _mergeTransaction () {
+    // 現在ポインタが指している履歴以降を破棄
+    const endIndex = this._histories.findIndex(h => h.id === this._pointer)
+
+    this._histories = this._histories
+      .slice(0, endIndex === -1 ? undefined : endIndex)
+      // 一連の操作履歴を追加
+      .concat(this._transactionOperation)
+      // 履歴保持件数より古い履歴を破棄
+      .reduce((acc: History[][], history) => {
+        const transaction = acc[acc.length - 1]
+
+        if (transaction.length && transaction[0].id === history.id) transaction.push(history)
+        else acc.push([history])
+        return acc
+      }, [[]])
+      .slice(-MAX_HISTORY)
+      .flat()
+
+    // 一時領域をクリア
+    this._transactionOperation = []
+
+    this._pointer++
+  }
+
   public constructor (tab: Tab) {
     this.table = tab.table
     this.data = tab.file.data
   }
 
-  public add (history: History) {
-    // 現在ポインタが指している履歴以降を破棄
-    const histories = this._histories.slice(0, this._pointer)
+  /**
+   * 一連の処理をまとめる
+   *
+   * @param {function} process
+   */
+  public transaction (process: () => any) {
+    try {
+      // 現在ポインタが指している履歴以降を破棄
+      this.beginTransaction()
+      process()
+    } finally {
+      this.endTransaction()
+    }
+  }
 
-    // 履歴の追加
-    histories.push(history)
+  public beginTransaction () {
+    this._isTransaction = true
+  }
 
-    // 履歴保持件数より古い履歴を破棄
-    this._histories = histories.slice(-MAX_HISTORY)
+  public endTransaction () {
+    if (this._isTransaction) {
+      this._mergeTransaction()
+      this.table.instance!.render()
+      this._isTransaction = false
+    }
+  }
 
-    if (this._pointer < MAX_HISTORY) this._pointer++
+  /**
+   * 操作履歴の追加
+   *
+   * @param {Operation} operation
+   */
+  public add (operation: Operation) {
+    this._transactionOperation.push({
+      id: this._pointer,
+      ...operation,
+    })
+
+    if (!this._isTransaction) this._mergeTransaction()
   }
 
   public undo () {
-    if (!this._pointer) return
+    if (this._pointer <= this._histories[0].id) return
 
-    const history = this._histories[--this._pointer]
-    const details = history.details
+    this._pointer--
+    let lastDetails: ChangeDetail|undefined
+    this._histories.filter(history => history.id === this._pointer).reverse().forEach(history => {
+      const details = history.details
 
-    switch (history.operation) {
-      case operations.EDIT:
-        details.forEach(detail => this._editCell(detail, detail.before as string))
-        break
-      case operations.ROW_INSERT:
-        details.forEach(detail => this._spliceRow(detail, detail.amount!))
-        break
-      case operations.ROW_REMOVE:
-        details.forEach(detail => this._spliceRow(detail, detail.before as string[]))
-        break
-      case operations.COL_INSERT:
-        details.forEach(detail => this._spliceCol(detail, detail.amount!))
-        break
-      case operations.COL_REMOVE:
-        details.forEach(detail => this._spliceCol(detail, detail.before as string[][]))
-        break
-    }
-    this._jumpToCell(details[details.length - 1])
+      switch (history.operation) {
+        case operations.EDIT:
+          details.forEach(detail => this._editCell(detail, detail.before as string))
+          break
+        case operations.INSERT_ROW:
+          details.forEach(detail => this._spliceRow(detail, detail.amount!))
+          break
+        case operations.REMOVE_ROW:
+          details.forEach(detail => this._spliceRow(detail, detail.before as string[][]))
+          break
+        case operations.INSERT_COL:
+          details.forEach(detail => this._spliceCol(detail, detail.amount!))
+          break
+        case operations.REMOVE_COL:
+          details.forEach(detail => this._spliceCol(detail, detail.before as string[][]))
+          break
+      }
+      lastDetails = details[details.length - 1]
+    })
+
+    if (lastDetails) this._jumpToCell(lastDetails)
   }
 
   public redo () {
-    if (this._pointer >= this._histories.length) return
+    if (!this._histories.some(h => h.id >= this._pointer)) return
 
-    const history = this._histories[this._pointer++]
-    const details = history.details
+    let lastDetails: ChangeDetail|undefined
+    this._histories.filter(history => history.id === this._pointer).forEach(history => {
+      const details = history.details
 
-    switch (history.operation) {
-      case operations.EDIT:
-        details.forEach(detail => this._editCell(detail, detail.after as string))
-        break
-      case operations.ROW_INSERT:
-        details.forEach(detail => this._spliceRow(detail, new Array(detail.amount).fill('')))
-        break
-      case operations.ROW_REMOVE:
-        this._spliceRow(details[0], details[0].amount!)
-        break
-      case operations.COL_INSERT:
-        details.forEach(detail => this._spliceCol(detail, new Array(detail.amount).fill('')))
-        break
-      case operations.COL_REMOVE:
-        details.forEach(detail => this._spliceCol(detail, detail.amount!))
-        break
-    }
-    this._jumpToCell(details[details.length - 1])
+      switch (history.operation) {
+        case operations.EDIT:
+          details.forEach(detail => this._editCell(detail, detail.after as string))
+          break
+        case operations.INSERT_ROW:
+          details.forEach(detail => {
+            const data: string[][] = [];
+            (detail.before as string[][]).forEach(d => {
+              for (let i = 0; i < detail.amount!; i++) data.push(d.slice())
+            })
+            this._spliceRow(detail, data)
+          })
+          break
+        case operations.REMOVE_ROW:
+          this._spliceRow(details[0], details[0].amount!)
+          break
+        case operations.INSERT_COL:
+          details.forEach(detail => {
+            const data = new Array(this.data.length).fill(new Array(detail.amount).fill(''))
+            this._spliceCol(detail, data)
+          })
+          break
+        case operations.REMOVE_COL:
+          details.forEach(detail => this._spliceCol(detail, detail.amount!))
+          break
+      }
+      lastDetails = details[details.length - 1]
+    })
+
+    this._pointer++
+    if (lastDetails) this._jumpToCell(lastDetails)
   }
 }

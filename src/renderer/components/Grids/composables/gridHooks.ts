@@ -11,6 +11,9 @@ interface Cell {
   endCol: number
 }
 
+const HISTORY_INTERVAL = 500
+let wait: NodeJS.Timeout
+
 export default (props: { tab: Tab }, context: SetupContext) => ({
   afterChange: (details: [number, string|number, string, string][]|null, operation: string) => {
     if (!['loadData', 'ObserveChanges.change'].includes(operation)) {
@@ -23,11 +26,28 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
           hasHeader: props.tab.table.options.hasHeader,
           row: detail[0],
           col: detail[1] as number,
-          before: detail[2],
+          before: detail[2] ?? '',
           after: detail[3],
         })),
       })
+      props.tab.table.undoRedo!.endTransaction()
     }
+  },
+
+  afterCreateCol: () => {
+    wait = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
+  },
+
+  afterRemoveCol: () => {
+    wait = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
+  },
+
+  afterCreateRow: () => {
+    wait = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
+  },
+
+  afterRemoveRow: () => {
+    wait = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
   },
 
   afterInit: async () => {
@@ -55,48 +75,6 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
     }
   },
 
-  beforeCreateRow: (row: number, amount: number) => {
-    if (props.tab.table.instance) {
-      props.tab.dirty = true
-
-      // 操作履歴の追加
-      const details = []
-      for (let i = row; i < row + amount; i++) {
-        details.push({
-          hasHeader: props.tab.table.options.hasHeader,
-          row: i,
-          amount,
-          before: [],
-        })
-      }
-
-      props.tab.table.undoRedo!.add({
-        operation: operations.ROW_INSERT,
-        details,
-      })
-    }
-  },
-
-  beforeRemoveRow: (row: number, amount: number) => {
-    props.tab.dirty = true
-
-    // 操作履歴の追加
-    const details = []
-    for (let i = row; i < row + amount; i++) {
-      details.push({
-        hasHeader: props.tab.table.options.hasHeader,
-        row: i,
-        amount,
-        before: props.tab.file.data[i + Number(props.tab.table.options.hasHeader)],
-      })
-    }
-
-    props.tab.table.undoRedo!.add({
-      operation: operations.ROW_REMOVE,
-      details,
-    })
-  },
-
   beforeCreateCol: (col: number, amount: number) => {
     if (props.tab.table.instance) {
       props.tab.dirty = true
@@ -110,8 +88,9 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
         before: emptyCols(),
       }]
 
+      props.tab.table.undoRedo!.beginTransaction()
       props.tab.table.undoRedo!.add({
-        operation: operations.COL_INSERT,
+        operation: operations.INSERT_COL,
         details,
       })
     }
@@ -129,14 +108,55 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
         .slice(Number(props.tab.table.options.hasHeader))
         .map(data => {
           const colData = []
-          for (let i = col; i < col + amount; i++) colData.push(data[i])
+          for (let i = col; i < col + amount; i++) colData.push(data[i] ?? '')
           return colData
         }),
     }]
 
+    props.tab.table.undoRedo!.beginTransaction()
     props.tab.table.undoRedo!.add({
-      operation: operations.COL_REMOVE,
+      operation: operations.REMOVE_COL,
       details,
+    })
+  },
+
+  beforeCreateRow: (row: number, amount: number) => {
+    if (!props.tab.table.instance) return
+    props.tab.dirty = true
+
+    // 操作履歴の追加
+    const details = [{
+      hasHeader: props.tab.table.options.hasHeader,
+      row,
+      amount,
+      before: [new Array(props.tab.file.data[0].length).fill('')],
+    }]
+
+    props.tab.table.undoRedo!.beginTransaction()
+    props.tab.table.undoRedo!.add({
+      operation: operations.INSERT_ROW,
+      details,
+    })
+  },
+
+  beforeRemoveRow: (row: number, amount: number) => {
+    props.tab.dirty = true
+
+    // 操作履歴の追加
+    const before = []
+    for (let i = row; i < row + amount; i++) {
+      before.push(props.tab.file.data[i + Number(props.tab.table.options.hasHeader)])
+    }
+
+    props.tab.table.undoRedo!.beginTransaction()
+    props.tab.table.undoRedo!.add({
+      operation: operations.REMOVE_ROW,
+      details: [{
+        hasHeader: props.tab.table.options.hasHeader,
+        row,
+        amount,
+        before,
+      }],
     })
   },
 
@@ -151,33 +171,53 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
   },
 
   beforePaste: (data: string[][], cells: Cell[]) => {
+    clearTimeout(wait)
+
     // 区切り文字で分割してペーストする
     if (data[0].length === 1) {
-      const details: ChangeDetail[] = []
+      props.tab.table.undoRedo!.transaction(() => {
+        const details: ChangeDetail[] = []
 
-      cells.forEach((cell) => {
-        for (let i = 0; i < data.length; i++) {
-          const row = cell.startRow + i
-          const rowData = data[i][0].split(props.tab.file.meta.delimiter)
-          for (let col = cell.startCol; col < rowData.length; col++) {
-            details.push({
-              hasHeader: props.tab.table.options.hasHeader,
-              row,
-              col,
-              before: props.tab.file.data[row][col],
-              after: rowData[col],
-            })
-            props.tab.file.data[row][col] = rowData[col]
-          }
+        // 行がはみ出る場合、事前に行を追加する
+        if (props.tab.file.data.length <= cells[0].startRow + data.length) {
+          const rowLength = props.tab.file.data.length - 1
+          props.tab.table.instance!
+            .alter(operations.INSERT_ROW, rowLength, (cells[0].startRow + data.length) - rowLength)
         }
+
+        cells.forEach((cell) => {
+          for (let i = 0; i < data.length; i++) {
+            const row = cell.startRow + i
+            const rowData = data[i][0].split(props.tab.file.meta.delimiter)
+
+            // 列がはみ出る場合、事前に列を追加する
+            if (props.tab.file.data[0].length <= cell.startCol + rowData.length) {
+              const colLength = props.tab.file.data[0].length - 1
+              props.tab.table.instance!
+                .alter(operations.INSERT_COL, colLength, (cell.startCol + rowData.length) - colLength)
+            }
+
+            for (let col = cell.startCol; col - cell.startCol < rowData.length; col++) {
+              details.push({
+                hasHeader: props.tab.table.options.hasHeader,
+                row,
+                col,
+                before: props.tab.file.data[row][col] ?? '',
+                after: rowData[col - cell.startCol],
+              })
+              props.tab.file.data[row][col] = rowData[col - cell.startCol]
+            }
+          }
+
+          // 操作履歴の追加
+          props.tab.table.undoRedo!.add({
+            operation: operations.EDIT,
+            details,
+          })
+        })
       })
 
-      // 操作履歴の追加
-      props.tab.table.undoRedo!.add({
-        operation: operations.EDIT,
-        details,
-      })
-
+      props.tab.table.instance!.render()
       // 標準のペースト機能を中止
       return false
     }

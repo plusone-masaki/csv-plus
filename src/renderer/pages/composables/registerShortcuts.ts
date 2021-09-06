@@ -62,7 +62,7 @@ const getEdgeCell = (tab: Tab, direction: Direction, currentCell?: HandsOnTable.
       return 0
     }
     case 'right': {
-      const length = data[currentCell.from.col].length - 1
+      const length = data[currentCell.from.row].length - 1
       const currentCol = Math.max(currentCell.from.col, currentCell.to.col)
       const target = !data[currentCell.from.row][Math.min(currentCol + 1, length)]
       for (let col = Math.min(currentCol + 2, length); col < length; col++) {
