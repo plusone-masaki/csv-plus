@@ -62,7 +62,7 @@ const getEdgeCell = (tab: Tab, direction: Direction, currentCell?: HandsOnTable.
       return 0
     }
     case 'right': {
-      const length = data[currentCell.from.col].length - 1
+      const length = data[currentCell.from.row].length - 1
       const currentCol = Math.max(currentCell.from.col, currentCell.to.col)
       const target = !data[currentCell.from.row][Math.min(currentCol + 1, length)]
       for (let col = Math.min(currentCol + 2, length); col < length; col++) {
@@ -114,7 +114,7 @@ export default (useTab: UseTab) => {
       shortcut.addShortcutEvent(shortcuts.SEARCH_CLOSE, () => { tab.table.options.search.enable = false })
       shortcut.addShortcutEvent(shortcuts.REPLACE_OPEN, () => { tab.table.options.search.enableReplace = tab.table.options.search.enable = true })
       shortcut.addShortcutEvent(shortcuts.SEARCH, () => tab.table.search())
-      shortcut.addShortcutEvent(shortcuts.SEARCH_REVERSE, () => tab.table.search(true))
+      shortcut.addShortcutEvent(shortcuts.SEARCH_REVERSE, () => tab.table.search({ reverse: true }))
       shortcut.addShortcutEvent(shortcuts.JUMP_UP, () => jumpCell(tab, 'up'))
       shortcut.addShortcutEvent(shortcuts.JUMP_DOWN, () => jumpCell(tab, 'down'))
       shortcut.addShortcutEvent(shortcuts.JUMP_LEFT, () => jumpCell(tab, 'left'))

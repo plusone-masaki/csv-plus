@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-var-requires,no-template-curly-in-string */
 const archive = require('./scripts/archive')
 
 module.exports = {
@@ -34,6 +34,7 @@ module.exports = {
           runAfterFinish: true,
           createStartMenuShortcut: true,
           shortcutName: 'CSV+',
+          artifactName: 'csv-plus-setup-${version}.${ext}',
           allowToChangeInstallationDirectory: true,
           installerLanguages: ['ja_JP'],
         },
