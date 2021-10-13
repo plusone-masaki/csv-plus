@@ -3,7 +3,6 @@ import * as operations from '@/common/operations'
 import History from '@/main/models/History'
 
 interface Cell {
-  hasHeader: boolean
   row?: number
   col?: number
   amount?: number
@@ -43,11 +42,11 @@ export default class UndoRedo {
    */
   private _editCell (cell: Cell, data: string|string[]) {
     if (typeof cell.row === 'number' && typeof cell.col === 'number' && typeof data === 'string') {
-      this.data[cell.row + Number(cell.hasHeader)][cell.col] = data
+      this.data[cell.row][cell.col] = data
     } else if (typeof cell.row === 'number' && typeof data !== 'string') {
-      this.data[cell.row + Number(cell.hasHeader)] = data
+      this.data[cell.row] = data
     } else if (typeof cell.col === 'number' && typeof data === 'string') {
-      for (let i = Number(cell.hasHeader); i < this.data.length; i++) {
+      for (let i = 0; i < this.data.length; i++) {
         this.data[i][cell.col] = data
       }
     }
@@ -61,10 +60,10 @@ export default class UndoRedo {
   private _spliceRow (cell: Cell, data: number|string[][]): void {
     if (typeof data === 'number') {
       // remove row
-      this.data.splice(cell.row! + Number(cell.hasHeader), data)
+      this.data.splice(cell.row!, data)
     } else {
       // insert row
-      this.data.splice(cell.row! + Number(cell.hasHeader), 0, ...data)
+      this.data.splice(cell.row!, 0, ...data)
     }
   }
 
@@ -76,12 +75,12 @@ export default class UndoRedo {
   private _spliceCol (cell: Cell, data: number|string[][]) {
     if (typeof data === 'number') {
       // remove col
-      for (let i = Number(cell.hasHeader); i < this.data.length; i++) {
+      for (let i = 0; i < this.data.length; i++) {
         this.data[i].splice(cell.col!, data)
       }
     } else {
       // insert col
-      for (let i = Number(cell.hasHeader); i < this.data.length; i++) {
+      for (let i = 0; i < this.data.length; i++) {
         this.data[i].splice(cell.col!, 0, ...data[i])
       }
     }
@@ -95,12 +94,10 @@ export default class UndoRedo {
    */
   private _jumpToCell (detail: ChangeDetail) {
     if (typeof detail.row === 'number') {
-      const currentHeader = Number(this.table.options.hasHeader)
-      const hasHeader = Number(detail.hasHeader)
       this.table.instance!.selectCell(
-        detail.row - currentHeader + hasHeader,
+        detail.row,
         detail.col || 0,
-        detail.row - currentHeader + hasHeader,
+        detail.row,
         detail.col || 0,
         true,
       )

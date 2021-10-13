@@ -12,7 +12,7 @@ interface Cell {
 }
 
 const HISTORY_INTERVAL = 500
-let wait: NodeJS.Timeout
+let commit: NodeJS.Timeout
 
 export default (props: { tab: Tab }, context: SetupContext) => ({
   afterChange: (details: [number, string|number, string, string][]|null, operation: string) => {
@@ -23,7 +23,6 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
       props.tab.table.undoRedo!.add({
         operation: operations.EDIT,
         details: details!.map(detail => ({
-          hasHeader: props.tab.table.options.hasHeader,
           row: detail[0],
           col: detail[1] as number,
           before: detail[2] ?? '',
@@ -35,19 +34,19 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
   },
 
   afterCreateCol: () => {
-    wait = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
+    commit = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
   },
 
   afterRemoveCol: () => {
-    wait = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
+    commit = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
   },
 
   afterCreateRow: () => {
-    wait = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
+    commit = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
   },
 
   afterRemoveRow: () => {
-    wait = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
+    commit = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
   },
 
   afterInit: async () => {
@@ -82,7 +81,6 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
       // 操作履歴の追加
       const emptyCols = () => new Array(amount).fill('')
       const details = [{
-        hasHeader: props.tab.table.options.hasHeader,
         col,
         amount,
         before: emptyCols(),
@@ -101,11 +99,9 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
 
     // 操作履歴の追加
     const details = [{
-      hasHeader: props.tab.table.options.hasHeader,
       col,
       amount,
       before: props.tab.file.data
-        .slice(Number(props.tab.table.options.hasHeader))
         .map(data => {
           const colData = []
           for (let i = col; i < col + amount; i++) colData.push(data[i] ?? '')
@@ -126,7 +122,6 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
 
     // 操作履歴の追加
     const details = [{
-      hasHeader: props.tab.table.options.hasHeader,
       row,
       amount,
       before: [new Array(props.tab.file.data[0].length).fill('')],
@@ -145,14 +140,13 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
     // 操作履歴の追加
     const before = []
     for (let i = row; i < row + amount; i++) {
-      before.push(props.tab.file.data[i + Number(props.tab.table.options.hasHeader)])
+      before.push(props.tab.file.data[i])
     }
 
     props.tab.table.undoRedo!.beginTransaction()
     props.tab.table.undoRedo!.add({
       operation: operations.REMOVE_ROW,
       details: [{
-        hasHeader: props.tab.table.options.hasHeader,
         row,
         amount,
         before,
@@ -171,7 +165,8 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
   },
 
   beforePaste: (data: string[][], cells: Cell[]) => {
-    clearTimeout(wait)
+    props.tab.table.undoRedo!.endTransaction()
+    clearTimeout(commit)
 
     // 区切り文字で分割してペーストする
     if (data[0].length === 1) {
@@ -198,8 +193,9 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
             }
 
             for (let col = cell.startCol; col - cell.startCol < rowData.length; col++) {
+              if (!props.tab.file.data[row]) props.tab.file.data.push([])
+
               details.push({
-                hasHeader: props.tab.table.options.hasHeader,
                 row,
                 col,
                 before: props.tab.file.data[row][col] ?? '',
@@ -231,5 +227,11 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
       event.isImmediatePropagationEnabled = false
       event.isImmediatePropagationStopped = () => true
     }
+  },
+
+  modifyRow: (row: number) => {
+    if (!props.tab.table.options.hasHeader) return row
+    row += Number(props.tab.table.options.hasHeader)
+    return row < props.tab.file.data.length ? row : null
   },
 })

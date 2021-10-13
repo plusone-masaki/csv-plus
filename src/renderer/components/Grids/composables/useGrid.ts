@@ -23,9 +23,11 @@ const sanitizeOption: SanitizeOption = {
 export default (props: { tab: Tab }, context: SetupContext) => {
   const wrapper = ref<HTMLDivElement>()
   const settings = computed((): HandsOnTable.GridSettings => ({
-    data: props.tab.table.options.hasHeader ? props.tab.file.data.slice(1) : props.tab.file.data,
+    data: props.tab.file.data,
     autoColumnSize: { syncLimit: 10 },
     autoRowSize: false,
+    autoWrapCol: false,
+    autoWrapRow: false,
     colHeaders: props.tab.table.options.hasHeader
       ? props.tab.file.data[0].map((d: string) => d ? sanitize(d, sanitizeOption) : '') as string[]
       : true,

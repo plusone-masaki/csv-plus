@@ -34,7 +34,7 @@ const getEdgeCell = (tab: Tab, direction: Direction, currentCell?: HandsOnTable.
   currentCell = currentCell || tab.table.instance?.getSelectedRange()?.shift()
   if (!currentCell) return 0
 
-  const data = tab.table.options.hasHeader ? tab.file.data.slice(1) : tab.file.data
+  const data = tab.file.data
   switch (direction) {
     case 'up': {
       const currentRow = Math.min(currentCell.from.row, currentCell.to.row)
@@ -45,7 +45,7 @@ const getEdgeCell = (tab: Tab, direction: Direction, currentCell?: HandsOnTable.
       return 0
     }
     case 'down': {
-      const length = data.length - 1
+      const length = data.length - Number(tab.table.options.hasHeader) - 2
       const currentRow = Math.max(currentCell.from.row, currentCell.to.row)
       const target = !data[Math.min(currentRow + 1, length)][currentCell.from.col]
       for (let row = Math.min(currentRow + 2, length); row < length; row++) {
@@ -62,7 +62,7 @@ const getEdgeCell = (tab: Tab, direction: Direction, currentCell?: HandsOnTable.
       return 0
     }
     case 'right': {
-      const length = data[currentCell.from.row].length - 1
+      const length = data[currentCell.from.row].length - 2
       const currentCol = Math.max(currentCell.from.col, currentCell.to.col)
       const target = !data[currentCell.from.row][Math.min(currentCol + 1, length)]
       for (let col = Math.min(currentCol + 2, length); col < length; col++) {
