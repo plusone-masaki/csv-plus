@@ -23,6 +23,7 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
       props.tab.table.undoRedo!.add({
         operation: operations.EDIT,
         details: details!.map(detail => ({
+          hasHeader: props.tab.table.options.hasHeader,
           row: detail[0],
           col: detail[1] as number,
           before: detail[2] ?? '',
@@ -81,6 +82,7 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
       // 操作履歴の追加
       const emptyCols = () => new Array(amount).fill('')
       const details = [{
+        hasHeader: props.tab.table.options.hasHeader,
         col,
         amount,
         before: emptyCols(),
@@ -99,6 +101,7 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
 
     // 操作履歴の追加
     const details = [{
+      hasHeader: props.tab.table.options.hasHeader,
       col,
       amount,
       before: props.tab.file.data
@@ -122,6 +125,7 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
 
     // 操作履歴の追加
     const details = [{
+      hasHeader: props.tab.table.options.hasHeader,
       row,
       amount,
       before: [new Array(props.tab.file.data[0].length).fill('')],
@@ -140,13 +144,14 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
     // 操作履歴の追加
     const before = []
     for (let i = row; i < row + amount; i++) {
-      before.push(props.tab.file.data[i])
+      before.push(props.tab.file.data[i + Number(props.tab.table.options.hasHeader)])
     }
 
     props.tab.table.undoRedo!.beginTransaction()
     props.tab.table.undoRedo!.add({
       operation: operations.REMOVE_ROW,
       details: [{
+        hasHeader: props.tab.table.options.hasHeader,
         row,
         amount,
         before,
@@ -171,13 +176,14 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
     // 区切り文字で分割してペーストする
     if (data[0].length === 1) {
       props.tab.table.undoRedo!.transaction(() => {
+        const hasHeader = props.tab.table.options.hasHeader
         const details: ChangeDetail[] = []
 
         // 行がはみ出る場合、事前に行を追加する
-        if (props.tab.file.data.length <= cells[0].startRow + data.length) {
+        if (props.tab.file.data.length <= cells[0].startRow + data.length + Number(hasHeader)) {
           const rowLength = props.tab.file.data.length - 1
           props.tab.table.instance!
-            .alter(operations.INSERT_ROW, rowLength, (cells[0].startRow + data.length) - rowLength)
+            .alter(operations.INSERT_ROW, rowLength, (cells[0].startRow + data.length + Number(hasHeader)) - rowLength)
         }
 
         cells.forEach((cell) => {
@@ -196,12 +202,13 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
               if (!props.tab.file.data[row]) props.tab.file.data.push([])
 
               details.push({
+                hasHeader,
                 row,
                 col,
-                before: props.tab.file.data[row][col] ?? '',
+                before: props.tab.file.data[row + Number(hasHeader)][col] ?? '',
                 after: rowData[col - cell.startCol],
               })
-              props.tab.file.data[row][col] = rowData[col - cell.startCol]
+              props.tab.file.data[row + Number(hasHeader)][col] = rowData[col - cell.startCol]
             }
           }
 
