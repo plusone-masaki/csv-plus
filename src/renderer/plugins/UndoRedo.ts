@@ -185,7 +185,6 @@ export default class UndoRedo {
 
   public undo () {
     if (this._pointer <= this._histories[0].id) return
-    console.log('undo', this._histories)
 
     this._pointer--
     let lastDetails: ChangeDetail|undefined

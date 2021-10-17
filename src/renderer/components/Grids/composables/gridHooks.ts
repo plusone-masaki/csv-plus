@@ -140,14 +140,20 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
 
   beforeRemoveRow: (row: number, amount: number) => {
     props.tab.dirty = true
-
-    // 操作履歴の追加
-    const before = []
-    for (let i = row; i < row + amount; i++) {
-      before.push(props.tab.file.data[i + Number(props.tab.table.options.hasHeader)])
-    }
+    const headerNum = Number(props.tab.table.options.hasHeader)
+    const data = props.tab.file.data
 
     props.tab.table.undoRedo!.beginTransaction()
+
+    // 行がはみ出る場合、事前に行を追加する
+    const rowLength = data.length - 1
+    if (rowLength <= row + amount + headerNum) {
+      props.tab.table.instance!
+        .alter(operations.INSERT_ROW, rowLength, row + amount + headerNum - rowLength)
+    }
+
+    // 操作履歴の追加
+    const before = data.slice(row + headerNum, row + headerNum + amount)
     props.tab.table.undoRedo!.add({
       operation: operations.REMOVE_ROW,
       details: [{

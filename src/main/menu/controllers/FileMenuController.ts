@@ -6,9 +6,10 @@ import {
 } from 'electron'
 import * as fs from 'fs'
 import * as channels from '@/common/channels'
-import { FILE_FILTERS } from '@/common/files'
+import { FILE_FILTERS, FILE_FILTERS_TSV } from '@/common/files'
 import CSVFile from '@/main/models/CSVFile'
 import History from '@/main/models/History'
+import { FileMeta } from '@/@types/types'
 
 const csvFile = new CSVFile()
 
@@ -134,12 +135,13 @@ export default class FileMenuController {
    * @param {BrowserWindow} window
    */
   public static executeSave (channelName: string, file: channels.FILE_SAVE, window: BrowserWindow): boolean {
+    const meta = JSON.parse(file.meta) as FileMeta
     switch (channelName) {
       case channels.FILE_SAVE:
-        if (!FileMenuController._fileExists(file.path)) file.path = FileMenuController._selectPath(window)
+        if (!FileMenuController._fileExists(file.path)) file.path = FileMenuController._selectPath(window, meta)
         break
       case channels.FILE_SAVE_AS:
-        file.path = FileMenuController._selectPath(window, FileMenuController._fileExists(file.path) ? file.path : undefined)
+        file.path = FileMenuController._selectPath(window, meta, FileMenuController._fileExists(file.path) ? file.path : undefined)
         break
     }
 
@@ -160,18 +162,20 @@ export default class FileMenuController {
    *
    * @private
    * @param {BrowserWindow} window
+   * @param meta
    * @param {string|undefined} path
    * @return {string}
    */
-  private static _selectPath (window: BrowserWindow, path?: string): string {
+  private static _selectPath (window: BrowserWindow, meta: FileMeta, path?: string): string {
     const defaultPath = process.platform === 'win32'
       ? path || app.getPath('recent') || app.getPath('documents')
       : path || app.getPath('documents')
 
+    console.log('デリミタ', meta.delimiter)
     return dialog.showSaveDialogSync(window, {
       title: '名前を付けて保存',
       defaultPath,
-      filters: FILE_FILTERS,
+      filters: meta.delimiter === '\t' ? FILE_FILTERS_TSV : FILE_FILTERS,
       properties: [
         'createDirectory',
         'showOverwriteConfirmation',
