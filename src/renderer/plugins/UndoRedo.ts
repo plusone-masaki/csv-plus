@@ -76,12 +76,12 @@ export default class UndoRedo {
   private _spliceCol (cell: Cell, data: number|string[][]) {
     if (typeof data === 'number') {
       // remove col
-      for (let i = Number(cell.hasHeader); i < this.data.length; i++) {
+      for (let i = 0; i < this.data.length; i++) {
         this.data[i].splice(cell.col!, data)
       }
     } else {
       // insert col
-      for (let i = Number(cell.hasHeader); i < this.data.length; i++) {
+      for (let i = 0; i < this.data.length; i++) {
         this.data[i].splice(cell.col!, 0, ...data[i])
       }
     }
@@ -164,7 +164,7 @@ export default class UndoRedo {
   public endTransaction () {
     if (this._isTransaction) {
       this._mergeTransaction()
-      this.table.instance!.render()
+      // this.table.instance!.render()
       this._isTransaction = false
     }
   }

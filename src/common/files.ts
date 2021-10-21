@@ -4,3 +4,8 @@ export const FILE_FILTERS = [
   { name: 'CSV(*.csv, *.tsv)', extensions: ['csv', 'tsv'] },
   { name: '全てのファイル(*)', extensions: ['*'] },
 ]
+export const FILE_FILTERS_TSV = [
+  { name: 'TSV(*.tsv)', extensions: ['tsv'] },
+  { name: 'CSV(*.csv)', extensions: ['csv'] },
+  { name: '全てのファイル(*)', extensions: ['*'] },
+]
