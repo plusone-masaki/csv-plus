@@ -54,8 +54,8 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
     await nextTick()
     if (props.tab.calculation.selected) {
       const { startRow, startCol, endRow, endCol } = props.tab.calculation.selected
-      // eslint-disable-next-line no-unused-expressions
-      props.tab.table.instance?.selectCell(startRow, startCol, endRow, endCol, true)
+      props.tab.table.instance!.selectCell(startRow, startCol, endRow, endCol, false)
+      props.tab.table.instance!.scrollViewportTo(startRow, startCol)
     }
   },
 
