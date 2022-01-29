@@ -1,6 +1,4 @@
-import {
-  watch,
-} from 'vue'
+import { watch } from 'vue'
 import HandsOnTable from 'handsontable'
 import { Tab } from '@/@types/types'
 import * as shortcuts from '@/common/shortcuts'
@@ -38,35 +36,49 @@ const getEdgeCell = (tab: Tab, direction: Direction, currentCell?: HandsOnTable.
   switch (direction) {
     case 'up': {
       const currentRow = Math.min(currentCell.from.row, currentCell.to.row)
-      const target = !data[Math.max(currentRow - 1, 0)][currentCell.from.col]
+
+      // 1つ上のセルが空白かどうか
+      const cellState = !data[Math.max(currentRow - 1, 0)][currentCell.from.col]
+
       for (let row = Math.max(currentRow - 2, 0); row >= 0; row--) {
-        if (!!data[row][currentCell.from.col] === target) return target ? row : row + 1
+        if (!!data[row][currentCell.from.col] === cellState) return cellState ? row : row + 1
       }
       return 0
     }
     case 'down': {
-      const length = data.length - 1
+      const length = data.length - 2
       const currentRow = Math.max(currentCell.from.row, currentCell.to.row)
-      const target = !data[Math.min(currentRow + 1, length)][currentCell.from.col]
+      if (length <= currentRow) return length + 1
+
+      // 1つ下のセルが空白かどうか
+      const cellState = !data[Math.min(currentRow + 1, length)][currentCell.from.col]
+
       for (let row = Math.min(currentRow + 2, length); row < length; row++) {
-        if (!!data[row][currentCell.from.col] === target) return target ? row : row - 1
+        if (!!data[row][currentCell.from.col] === cellState) return cellState ? row : row - 1
       }
       return length
     }
     case 'left': {
       const currentCol = Math.min(currentCell.from.col, currentCell.to.col)
-      const target = !data[Math.max(currentCell.from.row, 0)][currentCol - 1]
+
+      // 1つ左のセルが空白かどうか
+      const cellState = !data[Math.max(currentCell.from.row, 0)][currentCol - 1]
+
       for (let col = Math.max(currentCol - 2, 0); col >= 0; col--) {
-        if (!!data[currentCell.from.row][col] === target) return target ? col : col + 1
+        if (!!data[currentCell.from.row][col] === cellState) return cellState ? col : col + 1
       }
       return 0
     }
     case 'right': {
-      const length = data[currentCell.from.row].length - 1
+      const length = data[currentCell.from.row].length - 2
       const currentCol = Math.max(currentCell.from.col, currentCell.to.col)
-      const target = !data[currentCell.from.row][Math.min(currentCol + 1, length)]
+      if (length <= currentCol) return length + 1
+
+      // 1つ右のセルが空白かどうか
+      const cellState = !data[currentCell.from.row][Math.min(currentCol + 1, length)]
+
       for (let col = Math.min(currentCol + 2, length); col < length; col++) {
-        if (!!data[currentCell.from.row][col] === target) return target ? col : col - 1
+        if (!!data[currentCell.from.row][col] === cellState) return cellState ? col : col - 1
       }
       return length
     }

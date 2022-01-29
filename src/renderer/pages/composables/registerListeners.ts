@@ -4,7 +4,6 @@ import {
   onUnmounted,
   watch,
 } from 'vue'
-import { ipcRenderer } from 'electron'
 import * as channels from '@/common/channels'
 import { UseTab } from '@/renderer/pages/composables/useTabs'
 
@@ -31,9 +30,9 @@ export default (useTab: UseTab) => {
   watch(() => useTab.activeTab.value?.table.instance, instance => {
     if (instance && !instance.isDestroyed) {
       // IPC イベントの再登録
-      ipcRenderer.on(channels.MENU_SELECT_ALL, useTab.activeTab.value!.table.instance!.selectAll)
-      ipcRenderer.on(channels.MENU_UNDO, () => useTab.activeTab.value!.table.undoRedo!.undo())
-      ipcRenderer.on(channels.MENU_REDO, () => useTab.activeTab.value!.table.undoRedo!.redo())
+      window.api.on(channels.MENU_SELECT_ALL, useTab.activeTab.value!.table.instance!.selectAll)
+      window.api.on(channels.MENU_UNDO, () => useTab.activeTab.value!.table.undoRedo!.undo())
+      window.api.on(channels.MENU_REDO, () => useTab.activeTab.value!.table.undoRedo!.redo())
     }
   })
 
@@ -47,9 +46,9 @@ export default (useTab: UseTab) => {
   })
 
   onUnmounted(() => {
-    ipcRenderer.removeAllListeners(channels.MENU_SELECT_ALL)
-    ipcRenderer.removeAllListeners(channels.MENU_UNDO)
-    ipcRenderer.removeAllListeners(channels.MENU_REDO)
+    window.api.removeAllListeners(channels.MENU_SELECT_ALL)
+    window.api.removeAllListeners(channels.MENU_UNDO)
+    window.api.removeAllListeners(channels.MENU_REDO)
     window.removeEventListener('afterprint', afterPrint)
   })
 }

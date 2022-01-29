@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron'
+import { IpcRendererEvent } from 'electron'
 import {
   computed,
   reactive,
@@ -7,7 +7,6 @@ import {
   watch,
   WritableComputedRef,
 } from 'vue'
-import csvStringify from 'csv-stringify/lib/sync'
 import HandsOnTable from 'handsontable'
 import { FileData, Tab, Options, FileMeta, Calculation } from '@/@types/types'
 import * as channels from '@/common/channels'
@@ -46,14 +45,22 @@ const defaultOptions = (): Options => ({
   printMode: false,
 })
 
-const defaultMeta = (): FileMeta => ({
-  delimiter: ',',
-  quoteChar: '"',
-  escapeChar: '"',
-  linefeed: defaultLinefeed(),
-  encoding: 'UTF-8',
-  bom: false,
-})
+const defaultMeta = async (data: string[][]): Promise<FileMeta> => {
+  const _genMeta = async (): Promise<FileMeta> => ({
+    delimiter: ',',
+    quoteChar: '"',
+    escapeChar: '"',
+    linefeed: defaultLinefeed(),
+    encoding: 'UTF-8',
+    bom: false,
+    hash: await window.api[channels.DATA_HASH](JSON.stringify(data)),
+  })
+
+  return {
+    ...(await _genMeta()),
+    _origin: await _genMeta(),
+  }
+}
 
 const defaultCalculation = (): Calculation => ({})
 
@@ -71,7 +78,10 @@ export default (): UseTab => {
   const activeTab = computed<Tab|undefined>({
     get: () => state.tabs.find((tab: Tab) => tab.id === state.activeId),
     set: tabData => {
-      if (!tabData) return delete window.onresize
+      if (!tabData) {
+        window.onresize = null
+        return
+      }
       const index = state.tabs.findIndex(tab => tab.id === state.activeId)
       state.tabs[index] = tabData
     },
@@ -99,15 +109,17 @@ export default (): UseTab => {
    *
    * @param {FileData|undefined} fileData
    */
-  const addTab = (fileData?: FileData) => {
+  const addTab = async (fileData?: FileData) => {
+    const emptyData = HandsOnTable.helper.createEmptySpreadsheetData(100, 26)
+
     const file = fileData || {
       label: t('tabs.new_tab'),
       path: `newTab${count.value}`,
       data: HandsOnTable.helper.createEmptySpreadsheetData(100, 26),
-      meta: defaultMeta(),
+      meta: await defaultMeta(emptyData),
     }
 
-    if (!file.data.length) file.data = HandsOnTable.helper.createEmptySpreadsheetData(100, 26)
+    if (!file.data.length) file.data = emptyData
 
     const tab: Tab = {
       id: count.value++,
@@ -124,7 +136,7 @@ export default (): UseTab => {
     state.activeId = tab.id
     if (fileData) persistentTabs(state.tabs)
   }
-  ipcRenderer.on(channels.FILE_NEW, () => addTab())
+  window.api.on(channels.FILE_NEW, addTab)
 
   /**
    * タブを閉じる
@@ -134,13 +146,14 @@ export default (): UseTab => {
   const closeTab = async (tab: Tab) => {
     // ファイルが未保存の場合は確認ダイアログを表示
     if (tab.dirty) {
+      const meta = JSON.stringify(tab.file.meta)
       const item = {
         name: tab.file.label,
         path: tab.file.path,
         meta: JSON.stringify(tab.file.meta),
-        data: csvStringify(tab.file.data),
+        data: await window.api[channels.CSV_STRINGIFY](JSON.stringify(tab.file.data), meta),
       }
-      if (!await ipcRenderer.invoke(channels.FILE_DESTROY_CONFIRM, item)) return
+      if (!await window.api[channels.FILE_DESTROY_CONFIRM](item)) return
     }
 
     const index = state.tabs.findIndex(tb => tb.id === tab.id)
@@ -156,7 +169,7 @@ export default (): UseTab => {
   }
 
   // アプリ起動時、全てのタブが開き終わったら並び順まで復元
-  ipcRenderer.on(channels.TABS_LOADED, (_, paths: channels.TABS_LOADED, filepath?: string) => {
+  window.api.on(channels.TABS_LOADED, (e: IpcRendererEvent, paths: channels.TABS_LOADED, filepath?: string) => {
     state.tabs = paths
       .map(path => state.tabs.find((tab: Tab) => tab.file.path === path))
       .filter((tab?: Tab) => !!tab)
@@ -171,30 +184,33 @@ export default (): UseTab => {
   /**
    * アプリ終了前処理
    */
-  ipcRenderer.on(channels.APP_WILL_CLOSE, async () => {
+  window.api.on(channels.APP_WILL_CLOSE, async () => {
     // ファイルが未保存の場合は確認ダイアログを表示
     const allConfirmed: Promise<boolean>[] = []
 
     state.tabs.forEach(tab => {
-      allConfirmed.push(new Promise(resolve => {
-        if (tab.dirty) {
-          const item = {
-            name: tab.file.label,
-            path: tab.file.path,
-            meta: JSON.stringify(tab.file.meta),
-            data: csvStringify(tab.file.data),
+      allConfirmed.push((async () => {
+        try {
+          if (tab.dirty) {
+            const meta = JSON.stringify(tab.file.meta)
+            const item = {
+              name: tab.file.label,
+              path: tab.file.path,
+              meta: JSON.stringify(tab.file.meta),
+              data: await window.api[channels.CSV_STRINGIFY](JSON.stringify(tab.file.data), meta),
+            }
+            return window.api[channels.FILE_DESTROY_CONFIRM](item) as Promise<boolean>
+          } else {
+            return true
           }
-          ipcRenderer.invoke(channels.FILE_DESTROY_CONFIRM, item)
-            .then(res => resolve(res))
-            .catch(() => resolve(true))
-        } else {
-          resolve(true)
+        } catch (e) {
+          return true
         }
-      }))
+      })())
     })
 
     const confirmed = await Promise.all(allConfirmed)
-    if (confirmed.every(c => c)) ipcRenderer.send(channels.APP_CLOSE)
+    if (confirmed.every(c => c)) window.api[channels.APP_CLOSE]()
   })
 
   // 新しいタブを1件作成しておく

@@ -1,8 +1,9 @@
 import fs from 'fs'
-import Stream, { Transform } from 'stream'
+import * as crypt from 'crypto'
+import Stream from 'stream'
 import { EventEmitter } from 'events'
 import { BrowserWindow, dialog } from 'electron'
-import csvParse from 'csv-parse'
+import csvParse, { parse } from 'csv-parse'
 import chardet from 'chardet'
 import iconv from 'iconv-lite'
 import * as hasBom from 'has-bom'
@@ -10,7 +11,7 @@ import { Match } from 'chardet/lib/match'
 import { FileMeta, Linefeed, SupportedEncoding } from '@/@types/types'
 import * as channels from '@/common/channels'
 import * as files from '@/common/files'
-import { defaultLinefeed } from '@/common/plugins/helpers'
+import { defaultLinefeed, linefeedChar } from '@/common/helpers'
 import History from '@/main/models/History'
 
 const DEFAULT_ENCODING = 'UTF-8'
@@ -22,22 +23,14 @@ const defaultFileMeta = (): FileMeta => ({
   linefeed: defaultLinefeed(),
   encoding: '',
   bom: false,
+  hash: '',
 })
-
-const linefeedChar = (linefeed: string): '\r\n'|'\n' => {
-  switch (linefeed) {
-    case 'CRLF': return '\r\n'
-    case 'LF':
-    default: return '\n'
-  }
-}
 
 export default class CSVFile {
   readonly _ready?: Promise<boolean>
 
   private _event: EventEmitter = new EventEmitter()
   private _window: BrowserWindow|null = null
-  private _meta: FileMeta = defaultFileMeta()
 
   public constructor () {
     const event = this._event
@@ -46,36 +39,33 @@ export default class CSVFile {
     })
   }
 
-  public initialize () {
-    this._window = null
-    this._meta = defaultFileMeta()
-    return this
-  }
-
   public setWindow (window: BrowserWindow) {
     this._window = window
     this._event.emit('ready')
     return this
   }
 
-  public setMeta (fileMeta: FileMeta) {
-    this._meta = fileMeta
-    return this
-  }
-
-  public async open (path: string) {
+  public async open (path: string, meta?: FileMeta) {
     if (!await CSVFile._isFile(path)) throw Error('File not found.')
-    await this.parse(path)
+    await this.parse(path, meta || defaultFileMeta())
 
     // 最近使ったファイルに追加
     History.addRecentDocument(path)
   }
 
   public save (path: string, data: string, options: FileMeta) {
-    const buf = iconv.encode(data.replace(/\n/g, linefeedChar(options.linefeed)), options.encoding, { addBOM: options.bom })
+    const csv = data.replace(/\r\n|\r|\n/g, linefeedChar(options.linefeed))
+    const buf = iconv.encode(csv, options.encoding, { addBOM: options.bom })
+
     fs.writeFile(path, buf, error => {
       if (error) throw error
     })
+  }
+
+  public calculateHash (data: string): string {
+    const hash = crypt.createHash('md5')
+    hash.update(data)
+    return hash.digest('hex')
   }
 
   /**
@@ -100,8 +90,7 @@ export default class CSVFile {
    * @private
    * @return {Stream.Transform}
    */
-  private _decode (): Stream.Transform {
-    const meta = this._meta
+  private _decode (meta: FileMeta): Stream.Transform {
     let buffer: Buffer = Buffer.from('')
     return new Stream.Transform({
       transform (chunk: Buffer, _: BufferEncoding, next: Stream.TransformCallback) {
@@ -135,7 +124,7 @@ export default class CSVFile {
    * @private
    * @return {Stream.Transform}
    */
-  private _detectLinefeed (): Stream.Transform {
+  private _detectLinefeed (meta: FileMeta): Stream.Transform {
     let linefeed = ''
     const stream = new Stream.Transform({
       transform (chunk: Buffer, encoding: BufferEncoding, next: Stream.TransformCallback) {
@@ -148,7 +137,7 @@ export default class CSVFile {
     })
 
     stream.on('end', () => {
-      this._meta.linefeed = linefeed as Linefeed || defaultLinefeed()
+      meta.linefeed = linefeed as Linefeed || defaultLinefeed()
     })
 
     return stream
@@ -175,45 +164,51 @@ export default class CSVFile {
       data.some(cols => cols.length > files.MAX_COL_LENGTH)
   }
 
-  private async parse (path: string) {
+  private async parse (path: string, meta: FileMeta) {
     return new Promise(resolve => {
       try {
-        this._meta.delimiter = this._meta.delimiter || CSVFile._guessDelimiter(path)
+        meta.delimiter = meta.delimiter || CSVFile._guessDelimiter(path)
         const options: csvParse.Options = {
           bom: true,
-          delimiter: this._meta.delimiter,
-          relax: true,
+          delimiter: meta.delimiter,
           relaxColumnCount: true,
+          relaxQuotes: true,
         }
 
         fs.createReadStream(path)
-          .pipe(this._decode())
-          .pipe(this._detectLinefeed())
-          .pipe(csvParse(options, async (error: Error | undefined, data: string[][]) => {
+          .pipe(this._decode(meta))
+          .pipe(this._detectLinefeed(meta))
+          .pipe(parse(options, async (error: Error | undefined, data: string[][]) => {
             if (error) {
               console.error(error)
               dialog.showErrorBox('ファイルを開けませんでした', 'ファイル形式が間違っていないかご確認下さい')
-              resolve()
+              resolve(null)
             }
 
             // 基準を越えるサイズの場合に列幅の自動計算をキャンセル
-            if (CSVFile._hasOverflow(data)) this._meta.colWidth = 120
+            if (CSVFile._hasOverflow(data)) meta.colWidth = 200
 
             // メタデータの補完
-            if (!this._meta.encoding) this._meta.encoding = DEFAULT_ENCODING
+            if (!meta.encoding) meta.encoding = DEFAULT_ENCODING
+
+            // ハッシュ値の計算
+            meta.hash = this.calculateHash(JSON.stringify(data))
 
             const payload: channels.FILE_LOADED = {
               label: path.split(process.platform === 'win32' ? '\\' : '/').pop() || '',
               path,
               data,
-              meta: this._meta,
+              meta: {
+                _origin: meta,
+                ...meta,
+              },
             }
 
             await this._ready
             if (this._window) {
               this._window.webContents.send(channels.FILE_LOADED, payload)
             }
-            resolve()
+            resolve(null)
           }))
       } catch (e) {
         console.error(e)

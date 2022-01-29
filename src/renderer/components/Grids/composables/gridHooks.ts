@@ -12,7 +12,7 @@ interface Cell {
 }
 
 const HISTORY_INTERVAL = 500
-let wait: NodeJS.Timeout
+let commit: NodeJS.Timeout
 
 export default (props: { tab: Tab }, context: SetupContext) => ({
   afterChange: (details: [number, string|number, string, string][]|null, operation: string) => {
@@ -35,19 +35,19 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
   },
 
   afterCreateCol: () => {
-    wait = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
+    commit = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
   },
 
   afterRemoveCol: () => {
-    wait = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
+    commit = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
   },
 
   afterCreateRow: () => {
-    wait = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
+    commit = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
   },
 
   afterRemoveRow: () => {
-    wait = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
+    commit = setTimeout(() => props.tab.table.undoRedo!.endTransaction(), HISTORY_INTERVAL)
   },
 
   afterInit: async () => {
@@ -105,7 +105,6 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
       col,
       amount,
       before: props.tab.file.data
-        .slice(Number(props.tab.table.options.hasHeader))
         .map(data => {
           const colData = []
           for (let i = col; i < col + amount; i++) colData.push(data[i] ?? '')
@@ -141,14 +140,20 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
 
   beforeRemoveRow: (row: number, amount: number) => {
     props.tab.dirty = true
-
-    // 操作履歴の追加
-    const before = []
-    for (let i = row; i < row + amount; i++) {
-      before.push(props.tab.file.data[i + Number(props.tab.table.options.hasHeader)])
-    }
+    const headerNum = Number(props.tab.table.options.hasHeader)
+    const data = props.tab.file.data
 
     props.tab.table.undoRedo!.beginTransaction()
+
+    // 行がはみ出る場合、事前に行を追加する
+    const rowLength = data.length - 1
+    if (rowLength <= row + amount + headerNum) {
+      props.tab.table.instance!
+        .alter(operations.INSERT_ROW, rowLength, row + amount + headerNum - rowLength)
+    }
+
+    // 操作履歴の追加
+    const before = data.slice(row + headerNum, row + headerNum + amount)
     props.tab.table.undoRedo!.add({
       operation: operations.REMOVE_ROW,
       details: [{
@@ -171,18 +176,20 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
   },
 
   beforePaste: (data: string[][], cells: Cell[]) => {
-    clearTimeout(wait)
+    props.tab.table.undoRedo!.endTransaction()
+    clearTimeout(commit)
 
     // 区切り文字で分割してペーストする
     if (data[0].length === 1) {
       props.tab.table.undoRedo!.transaction(() => {
+        const hasHeader = props.tab.table.options.hasHeader
         const details: ChangeDetail[] = []
 
         // 行がはみ出る場合、事前に行を追加する
-        if (props.tab.file.data.length <= cells[0].startRow + data.length) {
+        if (props.tab.file.data.length <= cells[0].startRow + data.length + Number(hasHeader)) {
           const rowLength = props.tab.file.data.length - 1
           props.tab.table.instance!
-            .alter(operations.INSERT_ROW, rowLength, (cells[0].startRow + data.length) - rowLength)
+            .alter(operations.INSERT_ROW, rowLength, (cells[0].startRow + data.length + Number(hasHeader)) - rowLength)
         }
 
         cells.forEach((cell) => {
@@ -198,14 +205,16 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
             }
 
             for (let col = cell.startCol; col - cell.startCol < rowData.length; col++) {
+              if (!props.tab.file.data[row]) props.tab.file.data.push([])
+
               details.push({
-                hasHeader: props.tab.table.options.hasHeader,
+                hasHeader,
                 row,
                 col,
-                before: props.tab.file.data[row][col] ?? '',
+                before: props.tab.file.data[row + Number(hasHeader)][col] ?? '',
                 after: rowData[col - cell.startCol],
               })
-              props.tab.file.data[row][col] = rowData[col - cell.startCol]
+              props.tab.file.data[row + Number(hasHeader)][col] = rowData[col - cell.startCol]
             }
           }
 
@@ -231,5 +240,11 @@ export default (props: { tab: Tab }, context: SetupContext) => ({
       event.isImmediatePropagationEnabled = false
       event.isImmediatePropagationStopped = () => true
     }
+  },
+
+  modifyRow: (row: number) => {
+    if (!props.tab.table.options.hasHeader) return row
+    row += Number(props.tab.table.options.hasHeader)
+    return row < props.tab.file.data.length ? row : null
   },
 })

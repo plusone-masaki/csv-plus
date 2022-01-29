@@ -1,5 +1,4 @@
 import { Tab } from '@/@types/types'
-import { ipcRenderer } from 'electron'
 import * as channels from '@/common/channels'
 
 /**
@@ -12,5 +11,5 @@ export const persistentTabs = (tabs: Tab[]) => {
     .filter(tab => !/^newTab\d+$/.test(tab.file.path))
     .map(tab => tab.file.path)
 
-  ipcRenderer.send(channels.TABS_SAVE, JSON.stringify(tabMap))
+  window.api[channels.TABS_SAVE](JSON.stringify(tabMap))
 }

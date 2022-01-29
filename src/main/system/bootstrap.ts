@@ -1,4 +1,4 @@
-import fs from 'fs'
+import * as fs from 'fs'
 import * as path from 'path'
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
@@ -46,8 +46,9 @@ async function createWindow () {
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: true,
-      contextIsolation: false,
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.resolve(__dirname, 'preloadApp.js'),
     },
     icon: app.isPackaged ? path.join(process.resourcesPath, 'public/icon.png') : path.join(__static, 'icon.png'),
   })
@@ -56,7 +57,7 @@ async function createWindow () {
 
   // File load from arguments
   window.webContents.on('did-finish-load', async () => {
-    csvFile.initialize().setWindow(window)
+    csvFile.setWindow(window)
     let paths: string[] = []
 
     // 前回開いていたタブの復元
