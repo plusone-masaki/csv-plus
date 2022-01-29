@@ -1,6 +1,4 @@
-import {
-  watch,
-} from 'vue'
+import { watch } from 'vue'
 import HandsOnTable from 'handsontable'
 import { Tab } from '@/@types/types'
 import * as shortcuts from '@/common/shortcuts'

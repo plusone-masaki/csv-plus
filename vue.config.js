@@ -11,7 +11,10 @@ module.exports = {
       outputDir: 'dist',
       mainProcessFile: 'src/main/index.ts',
       mainProcessWatch: ['src/main/**/*'],
-      nodeIntegration: true,
+      nodeIntegration: false,
+      preload: {
+        preloadApp: 'src/main/preload/preload-app.ts',
+      },
       builderOptions: {
         appId: 'tech.plus-one.csv-plus',
         afterSign: 'scripts/notarize.js',
@@ -82,5 +85,8 @@ module.exports = {
         },
       },
     },
+  },
+  configureWebpack: {
+    target: 'web',
   },
 }

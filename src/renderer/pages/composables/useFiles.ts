@@ -1,7 +1,5 @@
-import * as pathModule from 'path'
-import { ipcRenderer, IpcRendererEvent } from 'electron'
+import { IpcRendererEvent } from 'electron'
 import { nextTick } from 'vue'
-import csvStringify from 'csv-stringify/lib/sync'
 import * as channels from '@/common/channels'
 import { Tab } from '@/@types/types'
 import { UseTab } from './useTabs'
@@ -22,8 +20,8 @@ export default ({ state, activeTab, addTab, closeTab }: UseTab) => {
   }
 
   // ファイルを開く
-  const open = () => ipcRenderer.send(channels.FILE_OPEN)
-  ipcRenderer.on(channels.FILE_LOADED, async (e: IpcRendererEvent, file: channels.FILE_LOADED) => {
+  const open = () => window.api[channels.FILE_OPEN]()
+  window.api.on(channels.FILE_LOADED, async (e: IpcRendererEvent, file: channels.FILE_LOADED) => {
     if (!file) return
 
     // データ未操作の場合、初期表示のタブは削除
@@ -51,27 +49,26 @@ export default ({ state, activeTab, addTab, closeTab }: UseTab) => {
     if (!(e.dataTransfer && e.dataTransfer.files)) return
     const files = Array.from(e.dataTransfer.files)
     const paths = files.map(file => file.path)
-    ipcRenderer.send(channels.FILE_DROPPED, paths)
+    window.api[channels.FILE_DROPPED](paths)
   })
 
   // ファイルを保存
-  const save = (channelName?: string) => {
+  const save = async (channelName?: 'FILE_SAVE'|'FILE_SAVE_AS') => {
     if (!channelName) channelName = channels.FILE_SAVE
     if (!activeTab.value) return
 
     const fileData = activeTab.value.file
-    const options = { ...fileData.meta }
-    delete options.encoding
+    const meta = JSON.stringify(fileData.meta)
     const file: channels.FILE_SAVE = {
       path: fileData.path,
       meta: JSON.stringify(fileData.meta),
-      data: csvStringify(_trimEmptyCells(fileData.data), options),
+      data: await window.api[channels.CSV_STRINGIFY](JSON.stringify(_trimEmptyCells(fileData.data)), meta),
     }
-    ipcRenderer.send(channelName, file)
+    window.api[channelName](file)
   }
-  ipcRenderer.on(channels.FILE_SAVE, () => save(channels.FILE_SAVE))
-  ipcRenderer.on(channels.FILE_SAVE_AS, () => save(channels.FILE_SAVE_AS))
-  ipcRenderer.on(channels.FILE_SAVE_COMPLETE, async (e: IpcRendererEvent, path: channels.FILE_SAVE_COMPLETE) => {
+  window.api.on(channels.FILE_SAVE, () => save(channels.FILE_SAVE))
+  window.api.on(channels.FILE_SAVE_AS, () => save(channels.FILE_SAVE_AS))
+  window.api.on(channels.FILE_SAVE_COMPLETE, async (e: IpcRendererEvent, path: channels.FILE_SAVE_COMPLETE) => {
     if (!activeTab.value) return
 
     // 既に同じファイルを開いていた場合は閉じる
@@ -82,7 +79,7 @@ export default ({ state, activeTab, addTab, closeTab }: UseTab) => {
     }
 
     activeTab.value.dirty = false
-    activeTab.value.file.label = path.split(pathModule.sep).pop() || ''
+    activeTab.value.file.label = path.split(window.const.sep).pop() || ''
     activeTab.value.file.path = path
 
     persistentTabs(state.tabs)
@@ -95,7 +92,7 @@ export default ({ state, activeTab, addTab, closeTab }: UseTab) => {
       activeTab.value.table.options.printMode = true
     }
   }
-  ipcRenderer.on(channels.MENU_PRINT, print)
+  window.api.on(channels.MENU_PRINT, print)
 
   return {
     activeTab,

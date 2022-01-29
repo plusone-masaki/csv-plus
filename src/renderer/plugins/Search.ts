@@ -29,8 +29,7 @@ class Search {
   public constructor (table: TableInstance, tab: Tab) {
     this.table = table
     this.searchPlugin = table.getPlugin('search') as any as SearchPlugin
-    /* @ts-ignore */
-    this.customBordersPlugin = table.getPlugin('customBorders') as any as customBordersPlugin
+    this.customBordersPlugin = table.getPlugin('customBorders') as any as CustomBordersPlugin
     this.calculation = tab.calculation
     this.option = tab.table.options.search
     this.hasHeader = tab.table.options.hasHeader

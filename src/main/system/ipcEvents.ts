@@ -1,5 +1,9 @@
 import * as fs from 'fs'
 import * as path from 'path'
+import csvParse from 'csv-parse'
+import { parse } from 'csv-parse/lib/sync'
+import csvStringify from 'csv-stringify'
+import { stringify } from 'csv-stringify/lib/sync'
 import {
   app,
   BrowserWindow,
@@ -14,13 +18,37 @@ import * as channels from '@/common/channels'
 import FileMenuController from '@/main/menu/controllers/FileMenuController'
 import CSVFile from '@/main/models/CSVFile'
 
-const csvLoader = new CSVFile()
+const csvFile = new CSVFile()
 
 const getWindow = (contents: WebContents): BrowserWindow => {
   const window = BrowserWindow.fromWebContents(contents)
   if (!window) throw Error('BrowserWindow not found')
   return window
 }
+
+ipcMain.handle(channels.CSV_PARSE, (e: IpcMainInvokeEvent, { data, meta }: channels.CSV_PARSE): string[][] => {
+  const options: csvParse.Options = {
+    ...meta,
+    encoding: 'utf8',
+    quote: meta.quoteChar,
+    recordDelimiter: ['\r\n', '\n', '\r'],
+    relaxQuotes: true,
+    relaxColumnCount: true,
+  }
+
+  return parse(data, options)
+})
+
+ipcMain.handle(channels.CSV_STRINGIFY, (e: IpcMainInvokeEvent, { data, meta }: channels.CSV_STRINGIFY): string => {
+  const options: csvStringify.Options = {
+    ...meta,
+    encoding: 'utf8',
+    quote: meta.quoteChar,
+    record_delimiter: meta.linefeed === 'CRLF' ? 'windows' : 'unix',
+  }
+
+  return stringify(JSON.parse(data), options)
+})
 
 ipcMain.on(channels.FILE_OPEN, (e: IpcMainEvent) => {
   FileMenuController.open(getWindow(e.sender))
@@ -29,19 +57,18 @@ ipcMain.on(channels.FILE_OPEN, (e: IpcMainEvent) => {
 ipcMain.on(channels.FILE_DROPPED, (e: IpcMainEvent, paths: Array<string>) => {
   const window = getWindow(e.sender)
   paths.forEach(async path => {
-    const csv = await csvLoader.initialize().setWindow(window).open(path)
+    const csv = await csvFile.setWindow(window).open(path)
     window.webContents.send(channels.FILE_LOADED, csv)
   })
 })
 
-ipcMain.on(channels.FILE_RELOAD, (e: IpcMainEvent, path: string, meta: string) => {
+ipcMain.on(channels.FILE_RELOAD, (e: IpcMainEvent, path: string, meta: FileMeta) => {
   try {
     if (!fs.statSync(path).isFile()) return
 
     const BUTTON_RELOAD = 1
 
     const window = getWindow(e.sender)
-    const fileMeta: FileMeta = JSON.parse(meta)
     const selected = dialog.showMessageBoxSync(window, {
       title: process.env.npm_package_name,
       message: '設定した文字コードでファイルを再読込しますか？',
@@ -52,7 +79,7 @@ ipcMain.on(channels.FILE_RELOAD, (e: IpcMainEvent, path: string, meta: string) =
     })
 
     if (selected === BUTTON_RELOAD) {
-      csvLoader.setWindow(window).setMeta(fileMeta).open(path)
+      csvFile.setWindow(window).open(path, meta)
     }
   } catch (e) {}
 })
@@ -63,6 +90,10 @@ ipcMain.on(channels.FILE_SAVE, (e: IpcMainEvent, file: channels.FILE_SAVE) => {
 
 ipcMain.on(channels.FILE_SAVE_AS, (e: IpcMainEvent, file: channels.FILE_SAVE_AS) => {
   FileMenuController.executeSave(channels.FILE_SAVE_AS, file, getWindow(e.sender))
+})
+
+ipcMain.handle(channels.DATA_HASH, (e: IpcMainInvokeEvent, data: channels.DATA_HASH) => {
+  return csvFile.calculateHash(data)
 })
 
 /**
