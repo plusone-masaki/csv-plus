@@ -42,7 +42,7 @@ export default class FileMenuController {
     })
     if (!files) return
 
-    files.forEach((path: string) => csvFile.initialize().setWindow(window as BrowserWindow).open(path))
+    files.forEach((path: string) => csvFile.setWindow(window as BrowserWindow).open(path))
   }
 
   /**
@@ -53,7 +53,7 @@ export default class FileMenuController {
    */
   public static openRecent (menu: MenuItem, window?: BrowserWindow) {
     if (!window) return
-    return csvFile.initialize().setWindow(window as BrowserWindow).open(menu.label)
+    return csvFile.setWindow(window as BrowserWindow).open(menu.label)
   }
 
   /**
@@ -113,7 +113,7 @@ export default class FileMenuController {
       webPreferences: {
         // Use pluginOptions.nodeIntegration, leave this alone
         // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-        nodeIntegration: true,
+        nodeIntegration: false,
       },
     })
     settings.menuBarVisible = false

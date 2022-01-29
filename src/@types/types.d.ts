@@ -1,15 +1,38 @@
 import { TFunction } from 'i18next'
+import * as channels from '@/common/channels'
 import HandsOnTable from 'handsontable'
 import { TableInstance, CustomBordersPlugin } from '@/@types/handsontable'
 import UndoRedo from '@/renderer/plugins/UndoRedo'
 
-export global {
+declare global {
   const __: TFunction
   const __static: string
 
   namespace NodeJS {
     export interface Global {
       __: TFunction
+    }
+  }
+
+  interface Window {
+    const: {
+      sep: '/'|'\\'
+    }
+    api: {
+      on: (channel: string, cb: (e: IpcRendererEvent, ...argv: any) => void) => IpcRenderer
+      removeAllListeners: (channel: string) => IpcRenderer
+      [channels.APP_CLOSE]: () => void
+      [channels.CSV_PARSE]: (data: string, meta: string) => Promise<any>
+      [channels.CSV_STRINGIFY]: (data: string, meta: string) => Promise<string>
+      [channels.FILE_RELOAD]: (path: string, meta: string) => Promise<void>
+      [channels.FILE_OPEN]: () => Promise<void>
+      [channels.FILE_DROPPED]: (paths: string[]) => Promise<void>
+      [channels.FILE_SAVE]: (file: channels.FILE_SAVE) => Promise<void>
+      [channels.FILE_SAVE_AS]: (file: channels.FILE_SAVE) => Promise<void>
+      [channels.FILE_DESTROY_CONFIRM]: (item: channels.FILE_DESTROY_CONFIRM) => Promise<boolean>
+      [channels.DATA_HASH]: (data: channels.DATA_HASH) => Promise<string>
+      [channels.TABS_SAVE]: (data: string) => Promise<void>
+      [channels.MENU_SELECT_ALL]: (data: string) => Promise<void>
     }
   }
 }
@@ -68,12 +91,14 @@ export interface ShortcutEvent {
 }
 
 export interface FileMeta {
+  _origin?: FileMeta
   delimiter: string
   quoteChar: string
   escapeChar: string
   linefeed: Linefeed
   encoding: SupportedEncoding
   bom: boolean
+  hash: string
   colWidth?: number
 }
 

@@ -1,4 +1,3 @@
-import { ipcRenderer } from 'electron'
 import {
   computed,
   onBeforeUnmount,
@@ -97,7 +96,7 @@ export default (props: Props, context: SetupContext) => {
 
     props.modelValue.dirty = true
     const file = props.modelValue.file
-    ipcRenderer.send(channels.FILE_RELOAD, file.path, JSON.stringify(file.meta))
+    window.api[channels.FILE_RELOAD](file.path, JSON.stringify(file.meta))
   }
 
   const changeBOM = () => {
