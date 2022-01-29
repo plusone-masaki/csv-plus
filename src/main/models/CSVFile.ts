@@ -135,7 +135,6 @@ export default class CSVFile {
     let linefeed = ''
     const stream = new Stream.Transform({
       transform (chunk: Buffer, encoding: BufferEncoding, next: Stream.TransformCallback) {
-        console.log('_detectLinefeed', chunk)
         if (!linefeed) {
           if (chunk.indexOf('\r\n') !== -1) linefeed = 'CRLF'
           else if (chunk.indexOf('\n') !== -1) linefeed = 'LF'
@@ -192,7 +191,6 @@ export default class CSVFile {
               dialog.showErrorBox('ファイルを開けませんでした', 'ファイル形式が間違っていないかご確認下さい')
               resolve(null)
             }
-            console.log('parsed', data)
 
             // 基準を越えるサイズの場合に列幅の自動計算をキャンセル
             if (CSVFile._hasOverflow(data)) meta.colWidth = 200
