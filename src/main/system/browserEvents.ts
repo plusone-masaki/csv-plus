@@ -45,7 +45,7 @@ export default (window: BrowserWindow) => {
 
       switch (pressed.response) {
         case DOWNLOAD_PAGE:
-          shell.openExternal(`${process.env.npm_package_homepage}/download`)
+          shell.openExternal('https://www.plus-one.tech/csv-plus/download/')
           break
         case RELEASE_NOTE:
           shell.openExternal(latest.html_url)
