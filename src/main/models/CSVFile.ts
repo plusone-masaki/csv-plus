@@ -46,7 +46,10 @@ export default class CSVFile {
   }
 
   public async open (path: string, meta?: FileMeta) {
-    if (!await CSVFile._isFile(path)) throw Error('File not found.')
+    if (!await CSVFile._isFile(path)) {
+      dialog.showErrorBox('ファイルを開けませんでした', `ファイルが見つかりません。\n${path}`)
+      throw Error('File not found.')
+    }
     await this.parse(path, meta || defaultFileMeta())
 
     // 最近使ったファイルに追加
