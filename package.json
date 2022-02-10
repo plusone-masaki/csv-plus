@@ -1,6 +1,6 @@
 {
   "name": "csv-plus",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "description": "CSV+ is simplify cross-platform CSV tab editor.",
   "author": "Masaki Enomoto <m_enomoto@plus-one.tech>",
   "license": "MIT",
