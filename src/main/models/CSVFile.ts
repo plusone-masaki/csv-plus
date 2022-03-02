@@ -119,7 +119,7 @@ export default class CSVFile {
         next()
       },
       final (next: Stream.TransformCallback) {
-        this.push(iconv.decode(buffer, meta.encoding))
+        if (buffer.length) this.push(iconv.decode(buffer, meta.encoding))
         next()
       },
     })
