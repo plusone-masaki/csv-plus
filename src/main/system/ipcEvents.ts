@@ -1,5 +1,4 @@
 import * as fs from 'fs'
-import * as path from 'path'
 import csvParse from 'csv-parse'
 import { parse } from 'csv-parse/lib/sync'
 import csvStringify from 'csv-stringify'
@@ -16,6 +15,7 @@ import {
 import { FileMeta } from '@/@types/types'
 import * as channels from '@/common/channels'
 import FileMenuController from '@/main/menu/controllers/FileMenuController'
+import History from '@/main/models/History'
 import CSVFile from '@/main/models/CSVFile'
 
 const csvFile = new CSVFile()
@@ -127,8 +127,6 @@ ipcMain.handle(channels.FILE_DESTROY_CONFIRM, (e: IpcMainInvokeEvent, file: chan
   return selected === BUTTON_NO_SAVE
 })
 
-ipcMain.on(channels.TABS_SAVE, (e: IpcMainEvent, paths: channels.TABS_SAVE) => {
-  fs.writeFileSync(path.join(app.getPath('userData'), 'tab_history.json'), paths)
-})
+ipcMain.on(channels.TABS_SAVE, (e: IpcMainEvent, paths: channels.TABS_SAVE) => History.persistentTabHistory(paths))
 
 ipcMain.on(channels.APP_CLOSE, () => app.exit())
