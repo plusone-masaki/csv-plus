@@ -1,10 +1,10 @@
 import {
-  app,
   dialog,
   BrowserWindow,
   MenuItem,
 } from 'electron'
 import * as fs from 'fs'
+import * as pathModule from 'path'
 import * as channels from '@/common/channels'
 import { FILE_FILTERS, FILE_FILTERS_TSV } from '@/common/files'
 import CSVFile from '@/main/models/CSVFile'
@@ -31,18 +31,21 @@ export default class FileMenuController {
   public static open (menu: MenuItem|BrowserWindow, window?: BrowserWindow) {
     window = window || menu as BrowserWindow
 
-    const defaultPath = process.platform === 'win32'
-      ? app.getPath('recent') || app.getPath('documents')
-      : app.getPath('documents')
-
     const files = dialog.showOpenDialogSync(window, {
-      defaultPath,
+      defaultPath: History.recentDirectory,
       properties: ['openFile', 'multiSelections'],
       filters: FILE_FILTERS,
     })
     if (!files) return
 
-    files.forEach((path: string) => csvFile.setWindow(window as BrowserWindow).open(path))
+    files.forEach((path: string) => {
+      csvFile
+        .setWindow(window as BrowserWindow)
+        .open(path)
+        .then(() => {
+          History.recentDirectory = pathModule.dirname(path)
+        })
+    })
   }
 
   /**
@@ -167,14 +170,9 @@ export default class FileMenuController {
    * @return {string}
    */
   private static _selectPath (window: BrowserWindow, meta: FileMeta, path?: string): string {
-    const defaultPath = process.platform === 'win32'
-      ? path || app.getPath('recent') || app.getPath('documents')
-      : path || app.getPath('documents')
-
-    console.log('デリミタ', meta.delimiter)
     return dialog.showSaveDialogSync(window, {
       title: '名前を付けて保存',
-      defaultPath,
+      defaultPath: path || History.recentDirectory,
       filters: meta.delimiter === '\t' ? FILE_FILTERS_TSV : FILE_FILTERS,
       properties: [
         'createDirectory',
