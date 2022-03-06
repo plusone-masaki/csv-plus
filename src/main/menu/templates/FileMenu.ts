@@ -11,7 +11,7 @@ const recentDocumentsMenu: MenuItemConstructorOptions = {
 
 const getRecentDocuments = () => {
   const menu = new Menu()
-  History.getRecentDocuments().forEach(menuItem => menu.append(menuItem))
+  History.recentDocuments.forEach(menuItem => menu.append(menuItem))
   menu.append(new MenuItem({
     label: '履歴を消去',
     click: FileMenuController.clearRecent,

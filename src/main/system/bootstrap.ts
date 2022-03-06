@@ -1,4 +1,3 @@
-import * as fs from 'fs'
 import * as path from 'path'
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
@@ -58,13 +57,9 @@ async function createWindow () {
   // File load from arguments
   window.webContents.on('did-finish-load', async () => {
     csvFile.setWindow(window)
-    let paths: string[] = []
 
     // 前回開いていたタブの復元
-    try {
-      const tabHistory = fs.readFileSync(path.join(app.getPath('userData'), 'tab_history.json'))
-      paths = paths.concat(JSON.parse(tabHistory.toString()) as string[])
-    } catch (e) {}
+    const paths: string[] = History.tabHistory
 
     // ファイルを開こうとしている場合読み込み
     const argv = process.argv
