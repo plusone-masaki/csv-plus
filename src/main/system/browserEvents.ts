@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from 'axios'
 import versions from 'compare-versions'
 import * as channels from '@/common/channels'
 import HelpMenuController from '@/main/menu/controllers/HelpMenuController'
-import ConfigFile from '@/main/models/Config'
+import ConfigFile from '@/main/modules/Config'
 
 const isWindows = process.platform === 'win32'
 

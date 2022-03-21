@@ -12,7 +12,7 @@ import { FileMeta, Linefeed, SupportedEncoding } from '@/@types/types'
 import * as channels from '@/common/channels'
 import * as files from '@/common/files'
 import { defaultLinefeed, linefeedChar } from '@/common/helpers'
-import History from '@/main/models/History'
+import History from '@/main/modules/History'
 
 const DEFAULT_ENCODING = 'UTF-8'
 
@@ -27,8 +27,7 @@ const defaultFileMeta = (): FileMeta => ({
 })
 
 export default class CSVFile {
-  readonly _ready?: Promise<boolean>
-
+  private readonly _ready?: Promise<boolean>
   private _event: EventEmitter = new EventEmitter()
   private _window: BrowserWindow|null = null
 
@@ -50,10 +49,23 @@ export default class CSVFile {
       dialog.showErrorBox('ファイルを開けませんでした', `ファイルが見つかりません。\n${path}`)
       throw Error('File not found.')
     }
-    await this.parse(path, meta || defaultFileMeta())
 
-    // 最近使ったファイルに追加
-    History.addRecentDocument(path)
+    try {
+      const payload = await this._parse(path, meta || defaultFileMeta())
+
+      await this._ready
+      if (this._window) {
+        this._window.webContents.send(channels.FILE_LOADED, payload)
+      }
+
+      // 最近使ったファイルに追加
+      History.addRecentDocument(path)
+
+      return payload
+    } catch (e) {
+      console.error(e)
+      dialog.showErrorBox('ファイルを開けませんでした', 'ファイル形式が間違っていないかご確認下さい')
+    }
   }
 
   public save (path: string, data: string, options: FileMeta) {
@@ -171,56 +183,43 @@ export default class CSVFile {
       data.some(cols => cols.length > files.MAX_COL_LENGTH)
   }
 
-  private async parse (path: string, meta: FileMeta) {
-    return new Promise(resolve => {
-      try {
-        meta.delimiter = meta.delimiter || CSVFile._guessDelimiter(path)
-        const options: csvParse.Options = {
-          bom: true,
-          delimiter: meta.delimiter,
-          relaxColumnCount: true,
-          relaxQuotes: true,
-        }
-
-        fs.createReadStream(path)
-          .pipe(this._decode(meta))
-          .pipe(this._detectLinefeed(meta))
-          .pipe(parse(options, async (error: Error | undefined, data: string[][]) => {
-            if (error) {
-              console.error(error)
-              dialog.showErrorBox('ファイルを開けませんでした', 'ファイル形式が間違っていないかご確認下さい')
-              resolve(null)
-            }
-
-            // 基準を越えるサイズの場合に列幅の自動計算をキャンセル
-            if (CSVFile._hasOverflow(data)) meta.colWidth = 200
-
-            // メタデータの補完
-            if (!meta.encoding) meta.encoding = DEFAULT_ENCODING
-
-            // ハッシュ値の計算
-            meta.hash = this.calculateHash(JSON.stringify(data))
-
-            const payload: channels.FILE_LOADED = {
-              label: path.split(process.platform === 'win32' ? '\\' : '/').pop() || '',
-              path,
-              data,
-              meta: {
-                _origin: meta,
-                ...meta,
-              },
-            }
-
-            await this._ready
-            if (this._window) {
-              this._window.webContents.send(channels.FILE_LOADED, payload)
-            }
-            resolve(null)
-          }))
-      } catch (e) {
-        console.error(e)
-        throw e
+  private async _parse (path: string, meta: FileMeta): Promise<channels.FILE_LOADED> {
+    return new Promise((resolve, reject) => {
+      meta.delimiter = meta.delimiter || CSVFile._guessDelimiter(path)
+      const options: csvParse.Options = {
+        bom: true,
+        delimiter: meta.delimiter,
+        relaxColumnCount: true,
+        relaxQuotes: true,
       }
+
+      fs.createReadStream(path)
+        .pipe(this._decode(meta))
+        .pipe(this._detectLinefeed(meta))
+        .pipe(parse(options, async (error: Error | undefined, data: string[][]) => {
+          if (error) return reject(error)
+
+          // 基準を越えるサイズの場合に列幅の自動計算をキャンセル
+          if (CSVFile._hasOverflow(data)) meta.colWidth = 200
+
+          // メタデータの補完
+          if (!meta.encoding) meta.encoding = DEFAULT_ENCODING
+
+          // ハッシュ値の計算
+          meta.hash = this.calculateHash(JSON.stringify(data))
+
+          const payload: channels.FILE_LOADED = {
+            label: path.split(process.platform === 'win32' ? '\\' : '/').pop() || '',
+            path,
+            data,
+            meta: {
+              _origin: meta,
+              ...meta,
+            },
+          }
+
+          resolve(payload)
+        }))
     })
   }
 }

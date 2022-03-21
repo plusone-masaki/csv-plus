@@ -1,7 +1,7 @@
 import { app, MenuItem } from 'electron'
 import * as path from 'path'
 import { menu } from '@/main/menu'
-import ConfigFile from '@/main/models/Config'
+import ConfigFile from '@/main/modules/Config'
 
 app.setAboutPanelOptions({
   applicationName: app.getName(),
