@@ -7,9 +7,9 @@ import * as fs from 'fs'
 import * as pathModule from 'path'
 import * as channels from '@/common/channels'
 import { FILE_FILTERS, FILE_FILTERS_TSV } from '@/common/files'
-import CSVFile from '@/main/models/CSVFile'
-import History from '@/main/models/History'
 import { FileMeta } from '@/@types/types'
+import CSVFile from '@/main/modules/CSVFile'
+import History from '@/main/modules/History'
 
 const csvFile = new CSVFile()
 

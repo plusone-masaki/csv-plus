@@ -15,8 +15,8 @@ import {
 import { FileMeta } from '@/@types/types'
 import * as channels from '@/common/channels'
 import FileMenuController from '@/main/menu/controllers/FileMenuController'
-import History from '@/main/models/History'
-import CSVFile from '@/main/models/CSVFile'
+import History from '@/main/modules/History'
+import CSVFile from '@/main/modules/CSVFile'
 
 const csvFile = new CSVFile()
 
