@@ -31,11 +31,21 @@ footer: Made by Plus one
 
 ### 文字コード・改行コードの変換に対応
 
-![文字コードの変更](/csv-plus/assets/img/encoding.png)
-
 **ShiftJIS** や **UTF-8** をはじめとした、 様々なエンコーディングに対応。
 改行コードの変更も簡単に行なえます。
 
+![文字コードの変更](/csv-plus/assets/img/encoding.png)
+
+<br>
+<br>
+
+### 区切り文字の指定が可能
+
+**.csv** はもちろん、 **.tsv** 形式のファイルにも対応。
+<br>
+「カンマ区切り」や「タブ区切り」のほか、「|（パイプ）」「★」など任意の区切り文字を指定できます。
+
+![区切り文字の指定](/csv-plus/assets/img/delimiter.png)
 
 
 <!-- CSV+トップ -->
