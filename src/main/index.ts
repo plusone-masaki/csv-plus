@@ -1,3 +1,3 @@
 import './menu/index'
-import './system/initializeApp'
+import './system/initialize-app'
 import './system/bootstrap'

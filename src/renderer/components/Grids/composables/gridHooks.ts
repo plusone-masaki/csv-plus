@@ -1,6 +1,6 @@
 import { nextTick, SetupContext } from 'vue'
 import { Tab } from '@/@types/types'
-import * as operations from '@/common/operations'
+import * as operations from '@/assets/constants/operations'
 import shortcut from '@/renderer/plugins/Shortcut'
 import { ChangeDetail } from '@/renderer/plugins/UndoRedo'
 

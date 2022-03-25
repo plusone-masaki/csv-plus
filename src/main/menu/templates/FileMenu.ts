@@ -1,6 +1,6 @@
 import { Menu, MenuItem, MenuItemConstructorOptions } from 'electron'
 import FileMenuController from '@/main/menu/controllers/FileMenuController'
-import History from '@/main/modules/History'
+import { history } from '@/main/modules/History'
 
 const isMac = process.platform === 'darwin'
 
@@ -11,7 +11,10 @@ const recentDocumentsMenu: MenuItemConstructorOptions = {
 
 const getRecentDocuments = () => {
   const menu = new Menu()
-  History.recentDocuments.forEach(menuItem => menu.append(menuItem))
+  history.recentDocuments.forEach(doc => menu.append(new MenuItem({
+    label: doc.path,
+    click: FileMenuController.openRecent,
+  })))
   menu.append(new MenuItem({
     label: '履歴を消去',
     click: FileMenuController.clearRecent,
