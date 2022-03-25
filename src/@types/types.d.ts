@@ -1,5 +1,5 @@
 import { TFunction } from 'i18next'
-import * as channels from '@/common/channels'
+import * as channels from '@/assets/constants/channels'
 import HandsOnTable from 'handsontable'
 import { TableInstance, CustomBordersPlugin } from '@/@types/handsontable'
 import UndoRedo from '@/renderer/plugins/UndoRedo'

@@ -13,12 +13,10 @@ import {
   WebContents,
 } from 'electron'
 import { FileMeta } from '@/@types/types'
-import * as channels from '@/common/channels'
+import * as channels from '@/assets/constants/channels'
 import FileMenuController from '@/main/menu/controllers/FileMenuController'
-import History from '@/main/modules/History'
-import CSVFile from '@/main/modules/CSVFile'
-
-const csvFile = new CSVFile()
+import { history } from '@/main/modules/History'
+import { csvFile } from '@/main/modules/CSVFile'
 
 const getWindow = (contents: WebContents): BrowserWindow => {
   const window = BrowserWindow.fromWebContents(contents)
@@ -44,6 +42,7 @@ ipcMain.handle(channels.CSV_STRINGIFY, (e: IpcMainInvokeEvent, { data, meta }: c
     ...meta,
     encoding: 'utf8',
     quote: meta.quoteChar,
+    quoted_match: /\s/,
     record_delimiter: meta.linefeed === 'CRLF' ? 'windows' : 'unix',
   }
 
@@ -57,7 +56,7 @@ ipcMain.on(channels.FILE_OPEN, (e: IpcMainEvent) => {
 ipcMain.on(channels.FILE_DROPPED, (e: IpcMainEvent, paths: Array<string>) => {
   const window = getWindow(e.sender)
   paths.forEach(async path => {
-    const csv = await csvFile.setWindow(window).open(path)
+    const csv = await csvFile.load(path)
     window.webContents.send(channels.FILE_LOADED, csv)
   })
 })
@@ -79,7 +78,7 @@ ipcMain.on(channels.FILE_RELOAD, (e: IpcMainEvent, path: string, meta: FileMeta)
     })
 
     if (selected === BUTTON_RELOAD) {
-      csvFile.setWindow(window).open(path, meta)
+      csvFile.load(path, meta)
     }
   } catch (e) {}
 })
@@ -127,6 +126,6 @@ ipcMain.handle(channels.FILE_DESTROY_CONFIRM, (e: IpcMainInvokeEvent, file: chan
   return selected === BUTTON_NO_SAVE
 })
 
-ipcMain.on(channels.TABS_SAVE, (e: IpcMainEvent, paths: channels.TABS_SAVE) => History.persistentTabHistory(paths))
+ipcMain.on(channels.TABS_SAVE, (e: IpcMainEvent, paths: channels.TABS_SAVE) => history.persistentTabHistory(paths))
 
 ipcMain.on(channels.APP_CLOSE, () => app.exit())

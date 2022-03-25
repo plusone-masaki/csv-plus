@@ -4,7 +4,7 @@ import {
   onUnmounted,
   watch,
 } from 'vue'
-import * as channels from '@/common/channels'
+import * as channels from '@/assets/constants/channels'
 import { UseTab } from '@/renderer/pages/composables/useTabs'
 
 export default (useTab: UseTab) => {

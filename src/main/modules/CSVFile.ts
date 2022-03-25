@@ -1,18 +1,15 @@
 import fs from 'fs'
 import * as crypt from 'crypto'
 import Stream from 'stream'
-import { EventEmitter } from 'events'
-import { BrowserWindow, dialog } from 'electron'
 import csvParse, { parse } from 'csv-parse'
 import chardet from 'chardet'
 import iconv from 'iconv-lite'
 import * as hasBom from 'has-bom'
 import { Match } from 'chardet/lib/match'
-import { FileMeta, Linefeed, SupportedEncoding } from '@/@types/types'
-import * as channels from '@/common/channels'
-import * as files from '@/common/files'
+import { FileData, FileMeta, Linefeed, SupportedEncoding } from '@/@types/types'
+import * as files from '@/assets/constants/files'
 import { defaultLinefeed, linefeedChar } from '@/common/helpers'
-import History from '@/main/modules/History'
+import { EventEmitter } from 'events'
 
 const DEFAULT_ENCODING = 'UTF-8'
 
@@ -26,55 +23,32 @@ const defaultFileMeta = (): FileMeta => ({
   hash: '',
 })
 
-export default class CSVFile {
-  private readonly _ready?: Promise<boolean>
-  private _event: EventEmitter = new EventEmitter()
-  private _window: BrowserWindow|null = null
+class CSVFile extends EventEmitter {
+  public async load (filepath: string, meta?: FileMeta) {
+    this.emit('BEFORE_LOAD', filepath)
 
-  public constructor () {
-    const event = this._event
-    this._ready = new Promise(resolve => {
-      event.once('ready', () => resolve(true))
-    })
-  }
-
-  public setWindow (window: BrowserWindow) {
-    this._window = window
-    this._event.emit('ready')
-    return this
-  }
-
-  public async open (path: string, meta?: FileMeta) {
-    if (!await CSVFile._isFile(path)) {
-      dialog.showErrorBox('ファイルを開けませんでした', `ファイルが見つかりません。\n${path}`)
-      throw Error('File not found.')
+    if (!await CSVFile._isFile(filepath)) {
+      this.emit('FAILED_LOAD', filepath, 'ファイルが見つかりません。')
+      return
     }
 
     try {
-      const payload = await this._parse(path, meta || defaultFileMeta())
-
-      await this._ready
-      if (this._window) {
-        this._window.webContents.send(channels.FILE_LOADED, payload)
-      }
-
-      // 最近使ったファイルに追加
-      History.addRecentDocument(path)
-
+      const payload = await this._parse(filepath, meta || defaultFileMeta())
+      this.emit('AFTER_LOAD', payload)
       return payload
     } catch (e) {
       console.error(e)
-      dialog.showErrorBox('ファイルを開けませんでした', 'ファイル形式が間違っていないかご確認下さい')
+      this.emit('FAILED_LOAD', filepath, 'ファイル形式が間違っていないかご確認下さい。')
     }
   }
 
   public save (path: string, data: string, options: FileMeta) {
+    this.emit('BEFORE_SAVE', path, data, options)
     const csv = data.replace(/\r\n|\r|\n/g, linefeedChar(options.linefeed))
     const buf = iconv.encode(csv, options.encoding, { addBOM: options.bom })
 
-    fs.writeFile(path, buf, error => {
-      if (error) throw error
-    })
+    fs.writeFileSync(path, buf)
+    this.emit('AFTER_SAVE', path, buf)
   }
 
   public calculateHash (data: string): string {
@@ -183,7 +157,7 @@ export default class CSVFile {
       data.some(cols => cols.length > files.MAX_COL_LENGTH)
   }
 
-  private async _parse (path: string, meta: FileMeta): Promise<channels.FILE_LOADED> {
+  private async _parse (path: string, meta: FileMeta): Promise<FileData> {
     return new Promise((resolve, reject) => {
       meta.delimiter = meta.delimiter || CSVFile._guessDelimiter(path)
       const options: csvParse.Options = {
@@ -208,7 +182,7 @@ export default class CSVFile {
           // ハッシュ値の計算
           meta.hash = this.calculateHash(JSON.stringify(data))
 
-          const payload: channels.FILE_LOADED = {
+          const payload = {
             label: path.split(process.platform === 'win32' ? '\\' : '/').pop() || '',
             path,
             data,
@@ -223,3 +197,5 @@ export default class CSVFile {
     })
   }
 }
+
+export const csvFile = new CSVFile()

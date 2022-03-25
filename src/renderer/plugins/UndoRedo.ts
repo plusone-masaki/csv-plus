@@ -1,6 +1,5 @@
 import { Tab, Table } from '@/@types/types'
-import * as operations from '@/common/operations'
-import History from '@/main/modules/History'
+import * as operations from '@/assets/constants/operations'
 
 interface Cell {
   hasHeader: boolean

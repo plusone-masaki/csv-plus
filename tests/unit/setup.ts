@@ -1,1 +1,3 @@
-// jest.unmock('iconv-lite')
+import * as electron from './mocks/electron'
+
+jest.mock('electron', () => electron)

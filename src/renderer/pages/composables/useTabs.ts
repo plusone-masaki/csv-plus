@@ -9,7 +9,7 @@ import {
 } from 'vue'
 import HandsOnTable from 'handsontable'
 import { FileData, Tab, Options, FileMeta, Calculation } from '@/@types/types'
-import * as channels from '@/common/channels'
+import * as channels from '@/assets/constants/channels'
 import { useI18n } from 'vue-i18n'
 import { defaultLinefeed } from '@/common/plugins/helpers'
 import { persistentTabs } from '@/renderer/helpers/persistentStates'
@@ -115,7 +115,7 @@ export default (): UseTab => {
     const file = fileData || {
       label: t('tabs.new_tab'),
       path: `newTab${count.value}`,
-      data: HandsOnTable.helper.createEmptySpreadsheetData(100, 26),
+      data: emptyData,
       meta: await defaultMeta(emptyData),
     }
 

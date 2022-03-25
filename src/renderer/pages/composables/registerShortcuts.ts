@@ -1,7 +1,7 @@
 import { watch } from 'vue'
 import HandsOnTable from 'handsontable'
 import { Tab } from '@/@types/types'
-import * as shortcuts from '@/common/shortcuts'
+import * as shortcuts from '@/assets/constants/shortcuts'
 import { UseTab, State } from '@/renderer/pages/composables/useTabs'
 import shortcut from '@/renderer/plugins/Shortcut'
 

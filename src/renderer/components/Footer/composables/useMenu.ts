@@ -7,7 +7,7 @@ import {
   SetupContext,
   WritableComputedRef,
 } from 'vue'
-import * as channels from '@/common/channels'
+import * as channels from '@/assets/constants/channels'
 import { Tab } from '@/@types/types'
 import vModel from '@/renderer/helpers/v-model'
 

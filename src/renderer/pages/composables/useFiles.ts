@@ -1,7 +1,8 @@
 import { IpcRendererEvent } from 'electron'
 import { nextTick } from 'vue'
-import * as channels from '@/common/channels'
-import { Tab } from '@/@types/types'
+import HandsOnTable from 'handsontable'
+import * as channels from '@/assets/constants/channels'
+import { FileData, Tab } from '@/@types/types'
 import { UseTab } from './useTabs'
 import { persistentTabs } from '@/renderer/helpers/persistentStates'
 
@@ -21,7 +22,7 @@ export default ({ state, activeTab, addTab, closeTab }: UseTab) => {
 
   // ファイルを開く
   const open = () => window.api[channels.FILE_OPEN]()
-  window.api.on(channels.FILE_LOADED, async (e: IpcRendererEvent, file: channels.FILE_LOADED) => {
+  window.api.on(channels.FILE_LOADED, async (e: IpcRendererEvent, file?: FileData) => {
     if (!file) return
 
     // データ未操作の場合、初期表示のタブは削除
@@ -35,6 +36,7 @@ export default ({ state, activeTab, addTab, closeTab }: UseTab) => {
 
     const exists = state.tabs.find((tab: Tab) => tab.file.path === file.path)
     if (exists) {
+      if (!file.data.length) file.data = HandsOnTable.helper.createEmptySpreadsheetData(100, 26)
       state.activeId = exists.id
       exists.file = file
     } else {

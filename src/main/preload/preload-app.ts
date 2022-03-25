@@ -1,6 +1,6 @@
 import * as pathModule from 'path'
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron'
-import * as channels from '@/common/channels'
+import * as channels from '@/assets/constants/channels'
 import { FileMeta } from '@/@types/types'
 
 const parseMeta = (meta: string): FileMeta => JSON.parse(meta)

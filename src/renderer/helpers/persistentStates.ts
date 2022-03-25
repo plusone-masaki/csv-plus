@@ -1,5 +1,5 @@
 import { Tab } from '@/@types/types'
-import * as channels from '@/common/channels'
+import * as channels from '@/assets/constants/channels'
 
 /**
  * タブのファイルパスを記録に残す

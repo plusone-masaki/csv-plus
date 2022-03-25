@@ -1,5 +1,5 @@
 import { BrowserWindow, MenuItem } from 'electron'
-import * as channels from '@/common/channels'
+import * as channels from '@/assets/constants/channels'
 
 export default class EditMenuController {
   /**

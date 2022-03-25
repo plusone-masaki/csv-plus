@@ -4,73 +4,72 @@ import {
   MenuItem,
 } from 'electron'
 import * as fs from 'fs'
-import * as pathModule from 'path'
-import * as channels from '@/common/channels'
-import { FILE_FILTERS, FILE_FILTERS_TSV } from '@/common/files'
+import * as path from 'path'
+import * as channels from '@/assets/constants/channels'
+import { FILE_FILTERS, FILE_FILTERS_TSV } from '@/assets/constants/files'
 import { FileMeta } from '@/@types/types'
-import CSVFile from '@/main/modules/CSVFile'
-import History from '@/main/modules/History'
+import { csvFile } from '@/main/modules/CSVFile'
+import { history } from '@/main/modules/History'
+import { menu } from '@/main/menu'
 
-const csvFile = new CSVFile()
+const MAX_HISTORY_LENGTH = 10
+const isMac = process.platform === 'darwin'
 
 export default class FileMenuController {
+  /**
+   * [新規作成]
+   */
   public static newFile (menu: MenuItem, window?: BrowserWindow) {
     if (!window) return
     window.webContents.send(channels.FILE_NEW)
   }
 
-  public static open (window: BrowserWindow): void
-  public static open (menu: MenuItem, window?: BrowserWindow): void
-
   /**
    * [ファイルを開く]
-   *
-   * @param {MenuItem|BrowserWindow} menu
-   * @param {BrowserWindow|undefined} window
    */
+  public static open (window: BrowserWindow): void
+  public static open (menu: MenuItem, window?: BrowserWindow): void
   public static open (menu: MenuItem|BrowserWindow, window?: BrowserWindow) {
     window = window || menu as BrowserWindow
 
     const files = dialog.showOpenDialogSync(window, {
-      defaultPath: History.recentDirectory,
+      defaultPath: history.recentDirectory,
       properties: ['openFile', 'multiSelections'],
       filters: FILE_FILTERS,
     })
     if (!files) return
 
-    files.forEach((path: string) => {
+    files.forEach((filepath: string) => {
       csvFile
-        .setWindow(window as BrowserWindow)
-        .open(path)
+        .load(filepath)
         .then(() => {
-          History.recentDirectory = pathModule.dirname(path)
+          history.recentDirectory = path.dirname(filepath)
         })
     })
   }
 
   /**
    * 「最近開いたファイル」
-   *
-   * @param menu
-   * @param window
    */
   public static openRecent (menu: MenuItem, window?: BrowserWindow) {
     if (!window) return
-    return csvFile.setWindow(window as BrowserWindow).open(menu.label)
+    return csvFile.load(menu.label)
   }
 
   /**
    * 「最近開いたファイル > 履歴の消去」
    */
   public static clearRecent () {
-    History.clearRecentDocuments()
+    history.clearRecentDocuments()
+    const recentDocumentsMenu = menu.getMenuItemById('recentDocuments')
+    recentDocumentsMenu!.submenu!.items
+      .forEach((item, index, items) => {
+        if (index !== (items.length - 1)) item.visible = false
+      })
   }
 
   /**
    * [上書き保存]
-   *
-   * @param {MenuItem} menu
-   * @param {BrowserWindow} window
    */
   public static save (menu: MenuItem, window?: BrowserWindow) {
     if (!window) return
@@ -79,9 +78,6 @@ export default class FileMenuController {
 
   /**
    * [名前を付けて保存]
-   *
-   * @param {MenuItem} menu
-   * @param {BrowserWindow} window
    */
   public static saveAs (menu: MenuItem, window?: BrowserWindow) {
     if (!window) return
@@ -90,9 +86,6 @@ export default class FileMenuController {
 
   /**
    * [印刷]
-   *
-   * @param {MenuItem} menu
-   * @param {BrowserWindow} window
    */
   public static print (menu: MenuItem, window?: BrowserWindow) {
     if (!window) return
@@ -101,9 +94,6 @@ export default class FileMenuController {
 
   /**
    * [設定]
-   *
-   * @param {MenuItem} menu
-   * @param {BrowserWindow} window
    * @todo 設定画面のHTML作成
    */
   public static async openSettingsWindow (menu: MenuItem, window: BrowserWindow) {
@@ -132,10 +122,6 @@ export default class FileMenuController {
 
   /**
    * 保存処理の実行
-   *
-   * @param {string} channelName
-   * @param {{ path: string, data: string }} file
-   * @param {BrowserWindow} window
    */
   public static executeSave (channelName: string, file: channels.FILE_SAVE, window: BrowserWindow): boolean {
     const meta = JSON.parse(file.meta) as FileMeta
@@ -152,6 +138,7 @@ export default class FileMenuController {
 
     try {
       const fileMeta = JSON.parse(file.meta)
+      console.log('data', file.data)
       csvFile.save(file.path, file.data, fileMeta)
       window.webContents.send(channels.FILE_SAVE_COMPLETE, file.path)
       return true
@@ -161,18 +148,49 @@ export default class FileMenuController {
   }
 
   /**
-   * 保存する場所を選択
-   *
-   * @private
-   * @param {BrowserWindow} window
-   * @param meta
-   * @param {string|undefined} path
-   * @return {string}
+   * 「最近開いたファイル」に項目を追加
    */
-  private static _selectPath (window: BrowserWindow, meta: FileMeta, path?: string): string {
+  public static addRecentDocument (filepath: string) {
+    history.addRecentDocument(filepath)
+
+    if (isMac) return
+
+    const recentDocument = new MenuItem({
+      label: filepath,
+      click: FileMenuController.openRecent,
+    })
+
+    const menuItem = menu.getMenuItemById('recentDocuments')
+    if (!menuItem || !menuItem.submenu) return
+
+    let count = 0
+    menuItem.submenu.insert(0, recentDocument)
+    menuItem.submenu.items.forEach((item, index, items) => {
+      if (count && item.label === filepath) item.visible = false
+      if (item.visible) count++
+      if (count > MAX_HISTORY_LENGTH && index < (items.length - 1)) item.visible = false
+    })
+  }
+
+  /**
+   * 「最近開いたファイル」から項目を削除
+   */
+  public static removeRecentDocument (filepath: string) {
+    const menuItem = menu.getMenuItemById('recentDocuments')
+    if (!menuItem || !menuItem.submenu) return
+
+    menuItem.submenu.items.forEach((item) => {
+      if (item.label === filepath) item.visible = false
+    })
+  }
+
+  /**
+   * 保存する場所を選択
+   */
+  private static _selectPath (window: BrowserWindow, meta: FileMeta, filepath?: string): string {
     return dialog.showSaveDialogSync(window, {
       title: '名前を付けて保存',
-      defaultPath: path || History.recentDirectory,
+      defaultPath: filepath || history.recentDirectory,
       filters: meta.delimiter === '\t' ? FILE_FILTERS_TSV : FILE_FILTERS,
       properties: [
         'createDirectory',
@@ -183,14 +201,10 @@ export default class FileMenuController {
 
   /**
    * ファイルの存在確認
-   *
-   * @private
-   * @param {string} path
-   * @return {boolean}
    */
-  private static _fileExists (path: string): boolean {
+  private static _fileExists (filepath: string): boolean {
     try {
-      return fs.statSync(path).isFile()
+      return fs.statSync(filepath).isFile()
     } catch (e) {
       return false
     }

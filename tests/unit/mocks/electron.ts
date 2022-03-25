@@ -7,4 +7,8 @@ export const app = {
   setAboutPanelOptions: jest.fn(),
 }
 
-export const MenuItem = jest.fn()
+export const dialog = {
+  showErrorBox: jest.fn(),
+}
+
+export const BrowserWindow = jest.fn()

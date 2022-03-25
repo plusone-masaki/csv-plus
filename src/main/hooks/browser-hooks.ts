@@ -1,7 +1,7 @@
 import { app, BrowserWindow, dialog, shell } from 'electron'
 import axios, { AxiosResponse } from 'axios'
 import versions from 'compare-versions'
-import * as channels from '@/common/channels'
+import * as channels from '@/assets/constants/channels'
 import HelpMenuController from '@/main/menu/controllers/HelpMenuController'
 import ConfigFile from '@/main/modules/Config'
 
@@ -16,27 +16,20 @@ export default (window: BrowserWindow) => {
     const currentVersion = app.getVersion()
     const newVersion = latest.tag_name.slice(1)
 
-    let DOWNLOAD_PAGE = 0
-    let RELEASE_NOTE = 1
-    let CANCEL = 2
-    let buttons = [
+    const DOWNLOAD_PAGE = isWindows ? 0 : 2
+    const RELEASE_NOTE = 1
+    const CANCEL = isWindows ? 2 : 0
+    const buttons = [
       __('system.download_page'),
       __('system.release_note'),
       __('system.cancel'),
     ]
 
-    if (!isWindows) {
-      DOWNLOAD_PAGE = 2
-      RELEASE_NOTE = 1
-      CANCEL = 0
-      buttons = buttons.reverse()
-    }
-
     if (versions.compare(currentVersion, newVersion, '<')) {
       const pressed = await dialog.showMessageBox(window, {
         title: __('system.update_version', { old: currentVersion, new: newVersion }),
         message: __('system.update_available'),
-        buttons: buttons,
+        buttons: isWindows ? buttons : buttons.reverse(),
         checkboxLabel: __('system.dont_show_again'),
         cancelId: CANCEL,
       })

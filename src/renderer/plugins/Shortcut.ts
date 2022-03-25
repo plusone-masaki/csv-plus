@@ -1,5 +1,5 @@
 import { KeyBind, ShortcutEvent } from '@/@types/types'
-import * as shortcuts from '@/common/shortcuts'
+import * as shortcuts from '@/assets/constants/shortcuts'
 
 const NAME = 0
 const VALUE = 1
