@@ -5,8 +5,10 @@ import {
 } from 'electron'
 import { FileData } from '@/@types/types'
 import * as channels from '@/assets/constants/channels'
-import { csvFile } from '@/main/modules/CSVFile'
 import FileMenuController from '@/main/menu/controllers/FileMenuController'
+import { getModule } from '@/main/modules'
+
+const csvFile = getModule('csvFile')
 
 export default class EditorWindow extends BrowserWindow {
   public constructor (options: BrowserWindowConstructorOptions) {

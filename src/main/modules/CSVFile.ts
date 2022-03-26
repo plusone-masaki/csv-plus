@@ -3,8 +3,8 @@ import fs from 'fs'
 import * as crypt from 'crypto'
 import Stream from 'stream'
 import csvParse, { parse } from 'csv-parse'
-import chardet from 'chardet'
 import hasBom from 'has-bom'
+import chardet from 'chardet'
 import { Match } from 'chardet/lib/match'
 import { FileData, FileMeta, Linefeed, SupportedEncoding } from '@/@types/types'
 import * as files from '@/assets/constants/files'
@@ -23,7 +23,7 @@ const defaultFileMeta = (): FileMeta => ({
   hash: '',
 })
 
-class CSVFile extends EventEmitter {
+export default class CSVFile extends EventEmitter {
   public async load (filepath: string, meta?: FileMeta) {
     this.emit('BEFORE_LOAD', filepath)
 
@@ -198,5 +198,3 @@ class CSVFile extends EventEmitter {
     })
   }
 }
-
-export const csvFile = new CSVFile()

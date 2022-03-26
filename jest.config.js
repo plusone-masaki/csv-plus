@@ -7,7 +7,6 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^~/(.*)$': '<rootDir>/src/$1',
     '^@tests/(.*)$': '<rootDir>/tests/$1',
-    // electron: '<rootDir>/tests/unit/mocks/electron',
   },
   preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
   testMatch: ['<rootDir>/tests/unit/**/*(*.)@(spec|test).[jt]s?(x)'],
@@ -18,5 +17,6 @@ module.exports = {
     '^.+\\.vue$': '@vue/vue3-jest',
   },
   setupFiles: ['<rootDir>/tests/unit/setup.ts'],
-  verbose: true,
+  setupFilesAfterEnv: ['<rootDir>/tests/unit/mocks/index.ts'],
+  // verbose: true,
 }
