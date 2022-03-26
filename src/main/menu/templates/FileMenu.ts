@@ -1,8 +1,9 @@
 import { Menu, MenuItem, MenuItemConstructorOptions } from 'electron'
 import FileMenuController from '@/main/menu/controllers/FileMenuController'
-import { history } from '@/main/modules/History'
+import { getModule } from '@/main/modules'
 
 const isMac = process.platform === 'darwin'
+const history = getModule('history')
 
 const recentDocumentsMenu: MenuItemConstructorOptions = {
   id: 'recentDocuments',

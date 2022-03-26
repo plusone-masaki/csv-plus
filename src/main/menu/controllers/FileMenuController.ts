@@ -8,12 +8,14 @@ import * as path from 'path'
 import * as channels from '@/assets/constants/channels'
 import { FILE_FILTERS, FILE_FILTERS_TSV } from '@/assets/constants/files'
 import { FileMeta } from '@/@types/types'
-import { csvFile } from '@/main/modules/CSVFile'
-import { history } from '@/main/modules/History'
 import { menu } from '@/main/menu'
+import { getModule } from '@/main/modules'
 
 const MAX_HISTORY_LENGTH = 10
 const isMac = process.platform === 'darwin'
+
+const csvFile = getModule('csvFile')
+const history = getModule('history')
 
 export default class FileMenuController {
   /**

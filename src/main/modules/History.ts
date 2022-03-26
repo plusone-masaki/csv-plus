@@ -1,7 +1,6 @@
 import * as fs from 'fs'
-import * as pathModule from 'path'
+import * as path from 'path'
 import { app } from 'electron'
-import path from 'path'
 import { EventEmitter } from 'events'
 
 interface RecentDocument {
@@ -11,38 +10,25 @@ interface RecentDocument {
 
 const isMac = process.platform === 'darwin'
 
-class History extends EventEmitter {
-  private _recentDirectory: string = app.getPath('documents')
+export default class History extends EventEmitter {
   private _recentDocuments: RecentDocument[] = []
-  private _tabHistory: string[] = []
+  public recentDirectory: string
+  public readonly tabHistory: string[] = []
 
   public constructor () {
     super()
-    this._recentDirectory = this._loadPersistentHistory('recent-directory')
+    this.recentDirectory = this._loadPersistentHistory('recent-directory') || app.getPath('documents')
     this._recentDocuments = JSON.parse(this._loadPersistentHistory('recent-documents.json'))
-    this._tabHistory = JSON.parse(this._loadPersistentHistory('tab-history.json'))
-  }
-
-  public get recentDirectory (): string {
-    return this._recentDirectory
-  }
-
-  public set recentDirectory (path: string) {
-    this._recentDirectory = path
-    this.persistentHistory('recent-directory', path)
+    this.tabHistory = JSON.parse(this._loadPersistentHistory('tab-history.json'))
   }
 
   /**
-   * [最近開いたファイル]の一覧
+   * 最近開いたファイル
    */
   public get recentDocuments (): RecentDocument[] {
     return this._recentDocuments
       .sort((a, b) => b.timestamp - a.timestamp)
       .slice(0, 10)
-  }
-
-  public get tabHistory (): string[] {
-    return this._tabHistory
   }
 
   /**
@@ -65,11 +51,24 @@ class History extends EventEmitter {
     this._recentDocuments = this._recentDocuments.sort((a, b) => b.timestamp - a.timestamp).slice(0, 10)
   }
 
-  public persistentRecentDocuments () {
+  /**
+   * [最後に使ったフォルダ]の情報をファイルに保存
+   */
+  public persistentRecentDirectory (): void {
+    this.persistentHistory('recent-directory', JSON.stringify(this.recentDirectory))
+  }
+
+  /**
+   * [最近開いたファイル]の情報をファイルに保存
+   */
+  public persistentRecentDocuments (): void {
     this.persistentHistory('recent-documents.json', JSON.stringify(this._recentDocuments))
   }
 
-  public persistentTabHistory (paths: string) {
+  /**
+   * [開いているタブ]の情報をファイルに保存
+   */
+  public persistentTabHistory (paths: string): void {
     this.persistentHistory('tab-history.json', paths)
   }
 
@@ -91,10 +90,8 @@ class History extends EventEmitter {
    */
   public persistentHistory (filename: string, data: string) {
     fs.writeFileSync(
-      pathModule.join(app.getPath('userData'), 'history', filename),
+      path.join(app.getPath('userData'), 'history', filename),
       data,
     )
   }
 }
-
-export const history = new History()

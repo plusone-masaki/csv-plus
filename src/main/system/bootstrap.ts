@@ -5,14 +5,15 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import '@/main/plugins/i18n'
 import * as browserWindow from '@/common/browserWindow'
 import * as channels from '@/assets/constants/channels'
-import { history } from '@/main/modules/History'
 import EditorWindow from '@/main/modules/EditorWindow'
 import browserHooks from '@/main/hooks/browser-hooks'
 import '@/main/hooks/ipc-hooks'
-import { csvFile } from '@/main/modules/CSVFile'
+import { getModule } from '@/main/modules'
 import { FileData } from '@/@types/types'
 
-const isDevelopment = process.env.NODE_ENV !== 'production'
+const csvFile = getModule('csvFile')
+const history = getModule('history')
+
 let window: EditorWindow
 let filepath: string
 
@@ -99,6 +100,7 @@ if (!app.requestSingleInstanceLock()) {
 
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {
+    history.persistentRecentDirectory()
     history.persistentRecentDocuments()
 
     // On macOS it is common for applications and their menu bar
@@ -129,20 +131,19 @@ if (!app.requestSingleInstanceLock()) {
     return createWindow()
   })
 
-  // Exit cleanly on request from parent process in development mode.
-  if (isDevelopment) {
-    if (process.platform === 'win32') {
-      process.on('message', (data) => {
-        if (data === 'graceful-exit') {
-          history.persistentRecentDocuments()
-          app.quit()
-        }
-      })
-    } else {
-      process.on('SIGTERM', () => {
+  if (process.platform === 'win32') {
+    process.on('message', (data) => {
+      if (data === 'graceful-exit') {
+        history.persistentRecentDirectory()
         history.persistentRecentDocuments()
         app.quit()
-      })
-    }
+      }
+    })
+  } else {
+    process.on('SIGTERM', () => {
+      history.persistentRecentDirectory()
+      history.persistentRecentDocuments()
+      app.quit()
+    })
   }
 }

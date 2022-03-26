@@ -1,5 +1,5 @@
-import { app, MenuItem } from 'electron'
 import * as path from 'path'
+import { app, MenuItem } from 'electron'
 import { menu } from '@/main/menu'
 import ConfigFile from '@/main/modules/Config'
 

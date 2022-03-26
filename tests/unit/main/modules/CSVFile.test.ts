@@ -4,9 +4,9 @@ import * as path from 'path'
 import faker, { UsableLocale } from '@tests/utils/faker'
 import iconv from '@/common/plugins/iconv'
 import { stringify } from 'csv-stringify/lib/sync'
-import { csvFile } from '@/main/modules/CSVFile'
 import { FileData, FileMeta, SupportedEncoding } from '@/@types/types'
 import { defaultLinefeed } from '@/common/helpers'
+import CSVFile from '@/main/modules/CSVFile'
 
 const testData = [
   ['CSV', 'csv', ','],
@@ -44,12 +44,14 @@ const encodings: [SupportedEncoding, UsableLocale][] = [
   ['KOI8-R', 'en'],
 ]
 
+const csvFile = new CSVFile()
+
 describe('Module: [CSVFile]', () => {
   describe.each(testData)('[%s] file', (label, ext, delimiter) => {
     describe('Method: load', () => {
       describe('Open 0 bytes file', () => {
         let payload: FileData|undefined
-        const filepath = path.join(os.tmpdir(), `0bytes.${ext}`)
+        const filepath = path.join(os.tmpdir(), 'test', `0bytes.${ext}`)
         const defaultDelimiter = ['csv', 'tsv'].includes(ext) ? delimiter : ','
 
         beforeAll(async () => {
@@ -74,7 +76,7 @@ describe('Module: [CSVFile]', () => {
           let payload: FileData|undefined
           faker.locale = lang
 
-          const filepath = path.join(os.tmpdir(), `${encoding}.${ext}`)
+          const filepath = path.join(os.tmpdir(), 'test', `${encoding}.${ext}`)
           const data = [['name', 'email', 'tel']]
           for (let i = 0; i < 3; i++) {
             data.push([
@@ -118,5 +120,8 @@ describe('Module: [CSVFile]', () => {
         })
       })
     })
+
+    // TODO: save
+    // TODO: calculateHash
   })
 })

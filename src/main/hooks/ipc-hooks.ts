@@ -1,7 +1,4 @@
 import * as fs from 'fs'
-import csvParse from 'csv-parse'
-import { parse } from 'csv-parse/lib/sync'
-import { stringify, Options } from 'csv-stringify/lib/sync'
 import {
   app,
   BrowserWindow,
@@ -11,11 +8,16 @@ import {
   IpcMainInvokeEvent,
   WebContents,
 } from 'electron'
+import csvParse from 'csv-parse'
+import { parse } from 'csv-parse/lib/sync'
+import { stringify, Options } from 'csv-stringify/lib/sync'
 import { FileMeta } from '@/@types/types'
 import * as channels from '@/assets/constants/channels'
 import FileMenuController from '@/main/menu/controllers/FileMenuController'
-import { history } from '@/main/modules/History'
-import { csvFile } from '@/main/modules/CSVFile'
+import { getModule } from '@/main/modules'
+
+const csvFile = getModule('csvFile')
+const history = getModule('history')
 
 const getWindow = (contents: WebContents): BrowserWindow => {
   const window = BrowserWindow.fromWebContents(contents)
