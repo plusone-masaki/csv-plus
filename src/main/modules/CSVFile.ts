@@ -1,15 +1,15 @@
+import { EventEmitter } from 'events'
 import fs from 'fs'
 import * as crypt from 'crypto'
 import Stream from 'stream'
 import csvParse, { parse } from 'csv-parse'
 import chardet from 'chardet'
-import iconv from 'iconv-lite'
-import * as hasBom from 'has-bom'
+import hasBom from 'has-bom'
 import { Match } from 'chardet/lib/match'
 import { FileData, FileMeta, Linefeed, SupportedEncoding } from '@/@types/types'
 import * as files from '@/assets/constants/files'
 import { defaultLinefeed, linefeedChar } from '@/common/helpers'
-import { EventEmitter } from 'events'
+import iconv from '@/common/plugins/iconv'
 
 const DEFAULT_ENCODING = 'UTF-8'
 
@@ -83,19 +83,20 @@ class CSVFile extends EventEmitter {
     let buffer: Buffer = Buffer.from('')
     return new Stream.Transform({
       transform (chunk: Buffer, _: BufferEncoding, next: Stream.TransformCallback) {
+        const endOfRow = chunk.lastIndexOf('\n')
+
         if (!meta.encoding) {
           meta.bom = !!chunk.length && hasBom(chunk)
 
-          const candidates = chardet.analyse(chunk)
+          const candidates = chardet.analyse(chunk.slice(0, endOfRow))
           if (candidates.some(match => match.name === DEFAULT_ENCODING)) {
             meta.encoding = DEFAULT_ENCODING
           } else {
             const match = candidates.reduce((acc: Match, encode: Match) => acc && acc.confidence >= encode.confidence ? acc : encode)
-            meta.encoding = match.name as SupportedEncoding
+            meta.encoding = ['ISO_2022_CN', 'ISO_2022_KR'].includes(match.name) ? 'UTF-8' : match.name as SupportedEncoding
           }
         }
 
-        const endOfRow = chunk.lastIndexOf('\n')
         if (endOfRow === -1) {
           this.push(iconv.decode(Buffer.concat([buffer, chunk]), meta.encoding))
         } else {
