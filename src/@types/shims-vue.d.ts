@@ -25,3 +25,4 @@ declare module 'sanitize-html' {
 }
 
 declare module 'has-bom'
+declare module 'jconv'

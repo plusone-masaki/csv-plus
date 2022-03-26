@@ -1,3 +1,3 @@
-import * as electron from './mocks/electron'
+import 'regenerator-runtime/runtime'
 
-jest.mock('electron', () => electron)
+jest.mock('electron', () => require('@tests/unit/mocks/electron'))

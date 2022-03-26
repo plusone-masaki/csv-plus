@@ -138,7 +138,6 @@ export default class FileMenuController {
 
     try {
       const fileMeta = JSON.parse(file.meta)
-      console.log('data', file.data)
       csvFile.save(file.path, file.data, fileMeta)
       window.webContents.send(channels.FILE_SAVE_COMPLETE, file.path)
       return true

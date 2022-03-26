@@ -1,8 +1,7 @@
 import * as fs from 'fs'
 import csvParse from 'csv-parse'
 import { parse } from 'csv-parse/lib/sync'
-import csvStringify from 'csv-stringify'
-import { stringify } from 'csv-stringify/lib/sync'
+import { stringify, Options } from 'csv-stringify/lib/sync'
 import {
   app,
   BrowserWindow,
@@ -38,7 +37,7 @@ ipcMain.handle(channels.CSV_PARSE, (e: IpcMainInvokeEvent, { data, meta }: chann
 })
 
 ipcMain.handle(channels.CSV_STRINGIFY, (e: IpcMainInvokeEvent, { data, meta }: channels.CSV_STRINGIFY): string => {
-  const options: csvStringify.Options = {
+  const options: Options = {
     ...meta,
     encoding: 'utf8',
     quote: meta.quoteChar,

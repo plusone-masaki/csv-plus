@@ -52,8 +52,6 @@ export type SupportedEncoding =
   'EUC-KR' |
   'GB18030' |
   'ISO_2022_JP' |
-  'ISO_2022_CN' |
-  'ISO_2022_KR' |
   'ISO-8859-1' |
   'ISO-8859-2' |
   'ISO-8859-5' |
