@@ -3,5 +3,9 @@ import fs from 'fs'
 import path from 'path'
 import os from 'os'
 
-fs.rmSync(path.join(os.tmpdir(), 'test'), { recursive: true })
-fs.mkdirSync(path.join(os.tmpdir(), 'test'))
+const testDir = path.resolve(os.tmpdir(), 'test')
+if (fs.existsSync(testDir)) {
+  fs.rmSync(testDir, { recursive: true })
+} else {
+  fs.mkdirSync(testDir)
+}

@@ -29,18 +29,18 @@ const encodings: [SupportedEncoding, UsableLocale][] = [
   ['ISO_2022_JP', 'ja'],
   ['ISO-8859-1', 'en'],
   ['ISO-8859-2', 'en'],
-  ['ISO-8859-5', 'en'],
-  ['ISO-8859-6', 'en'],
-  ['ISO-8859-7', 'en'],
-  ['ISO-8859-8', 'en'],
-  ['ISO-8859-9', 'en'],
-  ['windows-1250', 'en'],
-  ['windows-1251', 'en'],
+  ['ISO-8859-5', 'ru'],
+  ['ISO-8859-6', 'ar'],
+  ['ISO-8859-7', 'el'],
+  ['ISO-8859-8', 'he'],
+  ['ISO-8859-9', 'tr'],
+  ['windows-1250', 'pl'],
+  ['windows-1251', 'ru'],
   ['windows-1252', 'en'],
-  ['windows-1253', 'en'],
-  ['windows-1254', 'en'],
-  ['windows-1255', 'en'],
-  ['windows-1256', 'en'],
+  ['windows-1253', 'el'],
+  ['windows-1254', 'tr'],
+  ['windows-1255', 'he'],
+  ['windows-1256', 'ar'],
   ['KOI8-R', 'en'],
 ]
 
@@ -55,7 +55,7 @@ describe('Module: [CSVFile]', () => {
         const defaultDelimiter = ['csv', 'tsv'].includes(ext) ? delimiter : ','
 
         beforeAll(async () => {
-          await fs.promises.writeFile(filepath, '')
+          fs.writeFileSync(filepath, '')
           payload = await csvFile.load(filepath)
         })
 
@@ -86,7 +86,7 @@ describe('Module: [CSVFile]', () => {
             ])
           }
           beforeAll(() => {
-            fs.promises.writeFile(filepath, iconv.encode(stringify(data, { delimiter }), encoding))
+            fs.writeFileSync(filepath, iconv.encode(stringify(data, { delimiter }), encoding))
           })
 
           describe('Analysis without setting metadata', () => {

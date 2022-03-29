@@ -18,8 +18,8 @@ export default class History extends EventEmitter {
   public constructor () {
     super()
     this.recentDirectory = this._loadPersistentHistory('recent-directory') || app.getPath('documents')
-    this._recentDocuments = JSON.parse(this._loadPersistentHistory('recent-documents.json'))
-    this.tabHistory = JSON.parse(this._loadPersistentHistory('tab-history.json'))
+    this._recentDocuments = JSON.parse(this._loadPersistentHistory('recent-documents.json') || '[]')
+    this.tabHistory = JSON.parse(this._loadPersistentHistory('tab-history.json') || '[]')
   }
 
   /**
@@ -55,7 +55,7 @@ export default class History extends EventEmitter {
    * [最後に使ったフォルダ]の情報をファイルに保存
    */
   public persistentRecentDirectory (): void {
-    this.persistentHistory('recent-directory', JSON.stringify(this.recentDirectory))
+    this.persistentHistory('recent-directory', this.recentDirectory)
   }
 
   /**
