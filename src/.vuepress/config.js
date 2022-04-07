@@ -36,7 +36,7 @@ module.exports = {
    * ref：https://v1.vuepress.vuejs.org/theme/default-theme-config.html
    */
   themeConfig: {
-    domain: 'https://plus-one.tech/csv-plus',
+    domain: 'https://www.plus-one.tech/csv-plus',
     repo: 'https://github.com/plusone-masaki/csv-plus',
     editLinks: false,
     docsDir: 'docs',
