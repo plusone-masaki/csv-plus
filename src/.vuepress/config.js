@@ -45,6 +45,10 @@ module.exports = {
     lastUpdated: false,
     nav: [
       {
+        text: 'トップページ',
+        link: '/',
+      },
+      {
         text: 'ダウンロード',
         link: '/download/',
       },
