@@ -9,6 +9,8 @@ contextBridge.exposeInMainWorld('const', {
   sep: pathModule.sep,
 })
 
+contextBridge.exposeInMainWorld('platform', process.platform)
+
 contextBridge.exposeInMainWorld('api', {
   on: (channel: string, cb: (e: IpcRendererEvent, ...argv: any) => void) =>
     ipcRenderer.on(channel, (e, ...argv) => cb(e, ...argv)),
