@@ -8,7 +8,7 @@ const defaultConfigData = (): ConfigData => ({
   updateNotification: true,
 })
 
-class Config {
+export default class Config {
   readonly config: ConfigData
 
   public constructor () {
@@ -38,5 +38,3 @@ class Config {
     })
   }
 }
-
-export default new Config()

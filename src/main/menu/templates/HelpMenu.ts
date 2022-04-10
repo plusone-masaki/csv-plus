@@ -16,5 +16,10 @@ export default new MenuItem({
       type: 'checkbox',
       click: HelpMenuController.updateNotification,
     },
+    {
+      id: 'check-update',
+      label: 'CSV+の更新を確認する',
+      click: HelpMenuController.checkUpdate,
+    },
   ],
 })

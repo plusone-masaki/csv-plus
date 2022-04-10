@@ -1,7 +1,9 @@
 {
   "system": {
     "update_version": "v{{old}} → v{{new}}",
+    "update_check": "アップデートの確認",
     "update_available": "新しいアップデートがあります。ダウンロードページを見に行きますか？",
+    "update_unavailable": "新しいアップデートはありません",
     "download_page": "ダウンロードページ",
     "release_note": "リリースノート",
     "cancel": "キャンセル",

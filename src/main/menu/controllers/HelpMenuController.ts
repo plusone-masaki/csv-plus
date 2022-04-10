@@ -1,7 +1,10 @@
 import * as path from 'path'
-import { app, MenuItem } from 'electron'
+import { app, BrowserWindow, MenuItem } from 'electron'
 import { menu } from '@/main/menu'
-import ConfigFile from '@/main/modules/Config'
+import { getModule } from '@/main/modules'
+
+const config = getModule('config')
+const updateChecker = getModule('updateChecker')
 
 app.setAboutPanelOptions({
   applicationName: app.getName(),
@@ -24,7 +27,7 @@ export default class HelpMenuController {
    */
   public static updateNotification (menuItem: MenuItem): void {
     const checkbox = menuItem.menu.getMenuItemById('update-notification')
-    ConfigFile.updateNotification = checkbox!.checked
+    config.updateNotification = checkbox!.checked
   }
 
   /**
@@ -33,6 +36,10 @@ export default class HelpMenuController {
   public static disableUpdateNotification () {
     const checkbox = menu.getMenuItemById('update-notification')
     checkbox!.checked = false
-    ConfigFile.updateNotification = checkbox!.checked
+    config.updateNotification = checkbox!.checked
+  }
+
+  public static checkUpdate (menuItem: MenuItem, window?: BrowserWindow) {
+    updateChecker.checkUpdate(window)
   }
 }
