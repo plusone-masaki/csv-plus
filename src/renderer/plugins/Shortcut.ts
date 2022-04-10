@@ -71,7 +71,7 @@ class Shortcut {
 const shortcut = new Shortcut()
 
 // TODO: キーコンフィグ機能の実装後にこの処理を移す
-const isMac = process.platform === 'darwin'
+const isMac = window.platform === 'darwin'
 shortcut.addKeybinding(shortcuts.TAB_CLOSE, isMac ? { key: 'W', altKey: true } : { key: 'F4', ctrlKey: true })
 shortcut.addKeybinding(shortcuts.NEXT_TAB, { key: 'PageUp', ctrlKey: !isMac, metaKey: isMac })
 shortcut.addKeybinding(shortcuts.PREV_TAB, { key: 'PageDown', ctrlKey: !isMac, metaKey: isMac })

@@ -18,6 +18,7 @@ declare global {
     const: {
       sep: '/'|'\\'
     }
+    platform: string
     api: {
       on: (channel: string, cb: (e: IpcRendererEvent, ...argv: any) => void) => IpcRenderer
       removeAllListeners: (channel: string) => IpcRenderer
