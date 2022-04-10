@@ -82,7 +82,11 @@ export default class History extends EventEmitter {
   }
 
   private _loadPersistentHistory (filename: string): string {
-    return fs.readFileSync(path.join(app.getPath('userData'), 'history', filename), { encoding: 'utf8' })
+    const filepath = path.join(app.getPath('userData'), 'history', filename)
+    if (!fs.existsSync(filepath)) {
+      fs.writeFileSync(filepath, '')
+    }
+    return fs.readFileSync(filepath, { encoding: 'utf8' })
   }
 
   /**
