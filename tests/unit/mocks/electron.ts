@@ -9,6 +9,7 @@ export const app = {
 }
 
 export const dialog = {
+  showMessageBox: jest.fn(),
   showErrorBox: jest.fn(),
 }
 
