@@ -14,7 +14,7 @@ export default class Config {
   public constructor () {
     try {
       fs.accessSync(CONFIG_FILE_PATH, fs.constants.F_OK)
-      const configData = JSON.parse(fs.readFileSync(CONFIG_FILE_PATH, { encoding: 'utf8' }))
+      const configData: ConfigData = JSON.parse(fs.readFileSync(CONFIG_FILE_PATH, { encoding: 'utf8' }))
       this.config = Object.assign(defaultConfigData(), configData)
     } catch (e) {
       this.config = defaultConfigData()
