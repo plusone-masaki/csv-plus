@@ -18,7 +18,7 @@ export default new MenuItem({
     },
     {
       id: 'check-update',
-      label: 'CSV+の更新を確認する',
+      label: 'アップデートを確認する',
       click: HelpMenuController.checkUpdate,
     },
   ],
