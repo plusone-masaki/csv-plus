@@ -12,6 +12,6 @@ export const menu = new Menu()
 if (isMac) menu.append(AppMenu)
 menu.append(FileMenu)
 menu.append(EditMenu)
-if (!isMac) menu.append(HelpMenu)
+menu.append(HelpMenu)
 
 app.whenReady().then(() => Menu.setApplicationMenu(menu))
