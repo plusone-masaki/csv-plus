@@ -95,6 +95,7 @@ if (!app.requestSingleInstanceLock()) {
       filepath = path
 
       if (!window || window.isDestroyed()) return createWindow()
+      if (app.isReady()) csvFile.load(filepath)
     })
   })
 
