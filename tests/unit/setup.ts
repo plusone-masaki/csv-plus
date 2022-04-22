@@ -6,6 +6,6 @@ import os from 'os'
 const testDir = path.resolve(os.tmpdir(), 'test')
 if (fs.existsSync(testDir)) {
   fs.rmSync(testDir, { recursive: true })
-} else {
-  fs.mkdirSync(testDir)
 }
+
+fs.mkdirSync(testDir)
