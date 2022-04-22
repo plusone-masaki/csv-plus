@@ -1,8 +1,4 @@
 import * as fs from 'fs'
-import csvParse from 'csv-parse'
-import { parse } from 'csv-parse/lib/sync'
-import csvStringify from 'csv-stringify'
-import { stringify } from 'csv-stringify/lib/sync'
 import {
   app,
   BrowserWindow,
@@ -12,13 +8,16 @@ import {
   IpcMainInvokeEvent,
   WebContents,
 } from 'electron'
+import csvParse from 'csv-parse'
+import { parse } from 'csv-parse/lib/sync'
+import { stringify, Options } from 'csv-stringify/lib/sync'
 import { FileMeta } from '@/@types/types'
-import * as channels from '@/common/channels'
+import * as channels from '@/assets/constants/channels'
 import FileMenuController from '@/main/menu/controllers/FileMenuController'
-import History from '@/main/models/History'
-import CSVFile from '@/main/models/CSVFile'
+import { getModule } from '@/main/modules'
 
-const csvFile = new CSVFile()
+const csvFile = getModule('csvFile')
+const history = getModule('history')
 
 const getWindow = (contents: WebContents): BrowserWindow => {
   const window = BrowserWindow.fromWebContents(contents)
@@ -40,10 +39,11 @@ ipcMain.handle(channels.CSV_PARSE, (e: IpcMainInvokeEvent, { data, meta }: chann
 })
 
 ipcMain.handle(channels.CSV_STRINGIFY, (e: IpcMainInvokeEvent, { data, meta }: channels.CSV_STRINGIFY): string => {
-  const options: csvStringify.Options = {
+  const options: Options = {
     ...meta,
     encoding: 'utf8',
     quote: meta.quoteChar,
+    quoted_match: /\s/,
     record_delimiter: meta.linefeed === 'CRLF' ? 'windows' : 'unix',
   }
 
@@ -57,7 +57,7 @@ ipcMain.on(channels.FILE_OPEN, (e: IpcMainEvent) => {
 ipcMain.on(channels.FILE_DROPPED, (e: IpcMainEvent, paths: Array<string>) => {
   const window = getWindow(e.sender)
   paths.forEach(async path => {
-    const csv = await csvFile.setWindow(window).open(path)
+    const csv = await csvFile.load(path)
     window.webContents.send(channels.FILE_LOADED, csv)
   })
 })
@@ -79,7 +79,7 @@ ipcMain.on(channels.FILE_RELOAD, (e: IpcMainEvent, path: string, meta: FileMeta)
     })
 
     if (selected === BUTTON_RELOAD) {
-      csvFile.setWindow(window).open(path, meta)
+      csvFile.load(path, meta)
     }
   } catch (e) {}
 })
@@ -127,6 +127,6 @@ ipcMain.handle(channels.FILE_DESTROY_CONFIRM, (e: IpcMainInvokeEvent, file: chan
   return selected === BUTTON_NO_SAVE
 })
 
-ipcMain.on(channels.TABS_SAVE, (e: IpcMainEvent, paths: channels.TABS_SAVE) => History.persistentTabHistory(paths))
+ipcMain.on(channels.TABS_SAVE, (e: IpcMainEvent, paths: channels.TABS_SAVE) => history.persistentTabHistory(paths))
 
 ipcMain.on(channels.APP_CLOSE, () => app.exit())

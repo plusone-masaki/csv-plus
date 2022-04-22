@@ -7,8 +7,33 @@ on:
       - develop
 
 jobs:
+  unit-test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: node_modules
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Yarn install
+        run: yarn
+      - name: Run test
+        run: yarn run test:unit
+
   build-win:
-    runs-on: windows-2019
+    runs-on: windows-latest
+    needs:
+      - unit-test
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
@@ -31,6 +56,8 @@ jobs:
 
   build-macos:
     runs-on: macos-10.15
+    needs:
+      - unit-test
     timeout-minutes: 30
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -64,6 +91,8 @@ jobs:
 
   build-linux:
     runs-on: ubuntu-20.04
+    needs:
+      - unit-test
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:

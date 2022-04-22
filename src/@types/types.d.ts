@@ -1,5 +1,5 @@
 import { TFunction } from 'i18next'
-import * as channels from '@/common/channels'
+import * as channels from '@/assets/constants/channels'
 import HandsOnTable from 'handsontable'
 import { TableInstance, CustomBordersPlugin } from '@/@types/handsontable'
 import UndoRedo from '@/renderer/plugins/UndoRedo'
@@ -18,6 +18,7 @@ declare global {
     const: {
       sep: '/'|'\\'
     }
+    platform: string
     api: {
       on: (channel: string, cb: (e: IpcRendererEvent, ...argv: any) => void) => IpcRenderer
       removeAllListeners: (channel: string) => IpcRenderer
@@ -52,8 +53,6 @@ export type SupportedEncoding =
   'EUC-KR' |
   'GB18030' |
   'ISO_2022_JP' |
-  'ISO_2022_CN' |
-  'ISO_2022_KR' |
   'ISO-8859-1' |
   'ISO-8859-2' |
   'ISO-8859-5' |

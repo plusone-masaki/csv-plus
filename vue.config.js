@@ -13,7 +13,7 @@ module.exports = {
       mainProcessWatch: ['src/main/**/*'],
       nodeIntegration: false,
       preload: {
-        preloadApp: 'src/main/preload/preload-app.ts',
+        'preload-app': 'src/main/preload/preload-app.ts',
       },
       builderOptions: {
         appId: 'tech.plus-one.csv-plus',

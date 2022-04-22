@@ -1,18 +1,15 @@
+import { EventEmitter } from 'events'
 import fs from 'fs'
 import * as crypt from 'crypto'
 import Stream from 'stream'
-import { EventEmitter } from 'events'
-import { BrowserWindow, dialog } from 'electron'
 import csvParse, { parse } from 'csv-parse'
+import hasBom from 'has-bom'
 import chardet from 'chardet'
-import iconv from 'iconv-lite'
-import * as hasBom from 'has-bom'
 import { Match } from 'chardet/lib/match'
-import { FileMeta, Linefeed, SupportedEncoding } from '@/@types/types'
-import * as channels from '@/common/channels'
-import * as files from '@/common/files'
+import { FileData, FileMeta, Linefeed, SupportedEncoding } from '@/@types/types'
+import * as files from '@/assets/constants/files'
 import { defaultLinefeed, linefeedChar } from '@/common/helpers'
-import History from '@/main/models/History'
+import iconv from '@/common/plugins/iconv'
 
 const DEFAULT_ENCODING = 'UTF-8'
 
@@ -26,43 +23,32 @@ const defaultFileMeta = (): FileMeta => ({
   hash: '',
 })
 
-export default class CSVFile {
-  readonly _ready?: Promise<boolean>
+export default class CSVFile extends EventEmitter {
+  public async load (filepath: string, meta?: FileMeta) {
+    this.emit('BEFORE_LOAD', filepath)
 
-  private _event: EventEmitter = new EventEmitter()
-  private _window: BrowserWindow|null = null
-
-  public constructor () {
-    const event = this._event
-    this._ready = new Promise(resolve => {
-      event.once('ready', () => resolve(true))
-    })
-  }
-
-  public setWindow (window: BrowserWindow) {
-    this._window = window
-    this._event.emit('ready')
-    return this
-  }
-
-  public async open (path: string, meta?: FileMeta) {
-    if (!await CSVFile._isFile(path)) {
-      dialog.showErrorBox('ファイルを開けませんでした', `ファイルが見つかりません。\n${path}`)
-      throw Error('File not found.')
+    if (!await CSVFile._isFile(filepath)) {
+      this.emit('FAILED_LOAD', filepath, 'ファイルが見つかりません。')
+      return
     }
-    await this.parse(path, meta || defaultFileMeta())
 
-    // 最近使ったファイルに追加
-    History.addRecentDocument(path)
+    try {
+      const payload = await this._parse(filepath, meta || defaultFileMeta())
+      this.emit('AFTER_LOAD', payload)
+      return payload
+    } catch (e) {
+      console.error(e)
+      this.emit('FAILED_LOAD', filepath, 'ファイル形式が間違っていないかご確認下さい。')
+    }
   }
 
   public save (path: string, data: string, options: FileMeta) {
+    this.emit('BEFORE_SAVE', path, data, options)
     const csv = data.replace(/\r\n|\r|\n/g, linefeedChar(options.linefeed))
     const buf = iconv.encode(csv, options.encoding, { addBOM: options.bom })
 
-    fs.writeFile(path, buf, error => {
-      if (error) throw error
-    })
+    fs.writeFileSync(path, buf)
+    this.emit('AFTER_SAVE', path, buf)
   }
 
   public calculateHash (data: string): string {
@@ -97,19 +83,20 @@ export default class CSVFile {
     let buffer: Buffer = Buffer.from('')
     return new Stream.Transform({
       transform (chunk: Buffer, _: BufferEncoding, next: Stream.TransformCallback) {
+        const endOfRow = chunk.lastIndexOf('\n')
+
         if (!meta.encoding) {
           meta.bom = !!chunk.length && hasBom(chunk)
 
-          const candidates = chardet.analyse(chunk)
+          const candidates = chardet.analyse(chunk.slice(0, endOfRow))
           if (candidates.some(match => match.name === DEFAULT_ENCODING)) {
             meta.encoding = DEFAULT_ENCODING
           } else {
             const match = candidates.reduce((acc: Match, encode: Match) => acc && acc.confidence >= encode.confidence ? acc : encode)
-            meta.encoding = match.name as SupportedEncoding
+            meta.encoding = ['ISO_2022_CN', 'ISO_2022_KR'].includes(match.name) ? 'UTF-8' : match.name as SupportedEncoding
           }
         }
 
-        const endOfRow = chunk.lastIndexOf('\n')
         if (endOfRow === -1) {
           this.push(iconv.decode(Buffer.concat([buffer, chunk]), meta.encoding))
         } else {
@@ -171,56 +158,43 @@ export default class CSVFile {
       data.some(cols => cols.length > files.MAX_COL_LENGTH)
   }
 
-  private async parse (path: string, meta: FileMeta) {
-    return new Promise(resolve => {
-      try {
-        meta.delimiter = meta.delimiter || CSVFile._guessDelimiter(path)
-        const options: csvParse.Options = {
-          bom: true,
-          delimiter: meta.delimiter,
-          relaxColumnCount: true,
-          relaxQuotes: true,
-        }
-
-        fs.createReadStream(path)
-          .pipe(this._decode(meta))
-          .pipe(this._detectLinefeed(meta))
-          .pipe(parse(options, async (error: Error | undefined, data: string[][]) => {
-            if (error) {
-              console.error(error)
-              dialog.showErrorBox('ファイルを開けませんでした', 'ファイル形式が間違っていないかご確認下さい')
-              resolve(null)
-            }
-
-            // 基準を越えるサイズの場合に列幅の自動計算をキャンセル
-            if (CSVFile._hasOverflow(data)) meta.colWidth = 200
-
-            // メタデータの補完
-            if (!meta.encoding) meta.encoding = DEFAULT_ENCODING
-
-            // ハッシュ値の計算
-            meta.hash = this.calculateHash(JSON.stringify(data))
-
-            const payload: channels.FILE_LOADED = {
-              label: path.split(process.platform === 'win32' ? '\\' : '/').pop() || '',
-              path,
-              data,
-              meta: {
-                _origin: meta,
-                ...meta,
-              },
-            }
-
-            await this._ready
-            if (this._window) {
-              this._window.webContents.send(channels.FILE_LOADED, payload)
-            }
-            resolve(null)
-          }))
-      } catch (e) {
-        console.error(e)
-        throw e
+  private async _parse (path: string, meta: FileMeta): Promise<FileData> {
+    return new Promise((resolve, reject) => {
+      meta.delimiter = meta.delimiter || CSVFile._guessDelimiter(path)
+      const options: csvParse.Options = {
+        bom: true,
+        delimiter: meta.delimiter,
+        relaxColumnCount: true,
+        relaxQuotes: true,
       }
+
+      fs.createReadStream(path)
+        .pipe(this._decode(meta))
+        .pipe(this._detectLinefeed(meta))
+        .pipe(parse(options, async (error: Error | undefined, data: string[][]) => {
+          if (error) return reject(error)
+
+          // 基準を越えるサイズの場合に列幅の自動計算をキャンセル
+          if (CSVFile._hasOverflow(data)) meta.colWidth = 200
+
+          // メタデータの補完
+          if (!meta.encoding) meta.encoding = DEFAULT_ENCODING
+
+          // ハッシュ値の計算
+          meta.hash = this.calculateHash(JSON.stringify(data))
+
+          const payload = {
+            label: path.split(process.platform === 'win32' ? '\\' : '/').pop() || '',
+            path,
+            data,
+            meta: {
+              _origin: meta,
+              ...meta,
+            },
+          }
+
+          resolve(payload)
+        }))
     })
   }
 }

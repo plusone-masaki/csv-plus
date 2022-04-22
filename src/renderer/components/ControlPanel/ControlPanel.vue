@@ -57,7 +57,7 @@ import {
   WritableComputedRef,
 } from 'vue'
 import { Options, Table } from '@/@types/types'
-import * as scMap from '@/common/shortcuts'
+import * as scMap from '@/assets/constants/shortcuts'
 import vModel from '@/renderer/helpers/v-model'
 import Shortcut from '@/renderer/plugins/Shortcut'
 import IconSwitch from '@/renderer/components/Common/IconSwitch.vue'

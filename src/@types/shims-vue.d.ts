@@ -1,6 +1,6 @@
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
-  const component: DefineComponent<{}, {}, any>
+  const component: DefineComponent<object, object, any>
   export default component
 }
 
@@ -23,3 +23,6 @@ declare module 'sanitize-html' {
   const sanitizeHtml: (str: string, options?: SanitizeOption) => string
   export default sanitizeHtml
 }
+
+declare module 'has-bom'
+declare module 'jconv'

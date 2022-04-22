@@ -1,7 +1,7 @@
 import { watch } from 'vue'
 import HandsOnTable from 'handsontable'
 import { Tab } from '@/@types/types'
-import * as shortcuts from '@/common/shortcuts'
+import * as shortcuts from '@/assets/constants/shortcuts'
 import { UseTab, State } from '@/renderer/pages/composables/useTabs'
 import shortcut from '@/renderer/plugins/Shortcut'
 
@@ -135,7 +135,7 @@ export default (useTab: UseTab) => {
       shortcut.addShortcutEvent(shortcuts.FILL_DOWN, () => jumpCell(tab, 'down', true))
       shortcut.addShortcutEvent(shortcuts.FILL_LEFT, () => jumpCell(tab, 'left', true))
       shortcut.addShortcutEvent(shortcuts.FILL_RIGHT, () => jumpCell(tab, 'right', true))
-      if (process.platform === 'darwin') {
+      if (window.platform === 'darwin') {
         shortcut.addShortcutEvent(shortcuts.COPY, () => table.getSelected() && document.execCommand('copy'))
         shortcut.addShortcutEvent(shortcuts.CUT, () => table.getSelected() && document.execCommand('cut'))
         shortcut.addShortcutEvent(shortcuts.PASTE, () => table.getSelected() && document.execCommand('paste'))
