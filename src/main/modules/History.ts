@@ -76,6 +76,10 @@ export default class History extends EventEmitter {
    * [最近開いたファイル]の履歴削除
    */
   public clearRecentDocuments (): void {
+    if (isMac) {
+      return app.clearRecentDocuments()
+    }
+
     this._recentDocuments = []
     this.persistentRecentDocuments()
     this.emit('CLEAR_RECENT_DOC')
