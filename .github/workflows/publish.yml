@@ -8,6 +8,10 @@ on:
 
 jobs:
   unit-test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, linux-latest]
     steps:
       - uses: actions/checkout@v2
       - name: Cache node modules
@@ -27,7 +31,7 @@ jobs:
         run: yarn run test:unit
 
   build-win:
-    runs-on: windows-2019
+    runs-on: windows-latest
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
