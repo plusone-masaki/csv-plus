@@ -4,6 +4,9 @@ import { app } from 'electron'
 
 // 履歴ディレクトリの作成
 const historyDir = pathModule.join(app.getPath('userData'), 'history')
+if (!fs.existsSync(app.getPath('userData'))) {
+  fs.mkdirSync(app.getPath('userData'))
+}
 if (!fs.existsSync(historyDir)) {
   fs.mkdirSync(historyDir)
 }
