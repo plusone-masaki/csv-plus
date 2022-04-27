@@ -86,7 +86,11 @@ export default class History extends EventEmitter {
   }
 
   private _loadPersistentHistory (filename: string): string {
-    const filepath = path.join(app.getPath('userData'), 'history', filename)
+    const historyDir = path.join(app.getPath('userData'), 'history')
+    const filepath = path.join(historyDir, filename)
+    if (!fs.existsSync(historyDir)) {
+      fs.mkdirSync(historyDir)
+    }
     if (!fs.existsSync(filepath)) {
       fs.writeFileSync(filepath, '')
     }
