@@ -25,6 +25,7 @@ contextBridge.exposeInMainWorld('api', {
   [channels.FILE_SAVE_AS]: (file: channels.FILE_SAVE) => ipcRenderer.send(channels.FILE_SAVE_AS, file),
   [channels.FILE_DESTROY_CONFIRM]: (item: channels.FILE_DESTROY_CONFIRM) => ipcRenderer.invoke(channels.FILE_DESTROY_CONFIRM, item),
   [channels.DATA_HASH]: (data: channels.DATA_HASH) => ipcRenderer.invoke(channels.DATA_HASH, data),
-  [channels.TABS_SAVE]: (data: string) => ipcRenderer.send(channels.TABS_SAVE, data),
+  [channels.TABS_SAVE]: (data: channels.TABS_SAVE) => ipcRenderer.send(channels.TABS_SAVE, data),
+  [channels.TABS_CHANGED]: (label: channels.TABS_CHANGED) => ipcRenderer.send(channels.TABS_CHANGED, label),
   [channels.MENU_SELECT_ALL]: (data: string) => ipcRenderer.send(channels.TABS_SAVE, data),
 })

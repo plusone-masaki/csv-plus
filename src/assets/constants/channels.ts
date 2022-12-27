@@ -33,9 +33,11 @@ export type DATA_HASH = string
 
 // Tabs
 export const TABS_SAVE = 'TABS_SAVE'
+export const TABS_CHANGED = 'TABS_CHANGED'
 export const TABS_LOADED = 'TABS_LOADED'
 
 export type TABS_SAVE = string
+export type TABS_CHANGED = string
 export type TABS_LOADED = string[]
 
 // Menus
