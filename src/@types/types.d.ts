@@ -33,6 +33,7 @@ declare global {
       [channels.FILE_DESTROY_CONFIRM]: (item: channels.FILE_DESTROY_CONFIRM) => Promise<boolean>
       [channels.DATA_HASH]: (data: channels.DATA_HASH) => Promise<string>
       [channels.TABS_SAVE]: (data: string) => Promise<void>
+      [channels.TABS_CHANGED]: (data: string) => Promise<void>
       [channels.MENU_SELECT_ALL]: (data: string) => Promise<void>
     }
   }

@@ -104,6 +104,7 @@ export default class UndoRedo {
         true,
       )
     }
+    this.table.instance!.render()
   }
 
   /**
@@ -183,7 +184,7 @@ export default class UndoRedo {
   }
 
   public undo () {
-    if (this._pointer <= this._histories[0].id) return
+    if (!this._histories[0] || this._pointer <= this._histories[0].id) return
 
     this._pointer--
     let lastDetails: ChangeDetail|undefined

@@ -1,7 +1,7 @@
 import * as path from 'path'
 import { app, protocol } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-// import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import '@/main/plugins/i18n'
 import * as browserWindow from '@/common/browserWindow'
 import * as channels from '@/assets/constants/channels'
@@ -121,14 +121,14 @@ if (!app.requestSingleInstanceLock()) {
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
   app.on('ready', async () => {
-    // if (isDevelopment && !process.env.IS_TEST) {
-    //   // Install Vue Devtools
-    //   try {
-    //     await installExtension(VUEJS_DEVTOOLS)
-    //   } catch (e) {
-    //     console.error('Vue Devtools failed to install:', e.toString())
-    //   }
-    // }
+    if (process.env.NODE_ENV !== 'production' && !process.env.IS_TEST) {
+      // Install Vue Devtools
+      try {
+        await installExtension(VUEJS_DEVTOOLS)
+      } catch (e) {
+        console.error('Vue Devtools failed to install:', e)
+      }
+    }
     return createWindow()
   })
 
