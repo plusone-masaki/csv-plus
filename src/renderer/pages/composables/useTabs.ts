@@ -98,6 +98,9 @@ export default (): UseTab => {
 
   // watch
   watch(() => state.tabs, () => persistentTabs(state.tabs))
+  watch(() => activeTab.value, (activeTab) => {
+    if (activeTab) window.api[channels.TABS_CHANGED](activeTab.file.label)
+  })
 
   // methods
   const onEdit = () => {

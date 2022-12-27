@@ -5,9 +5,10 @@ import {
 } from 'electron'
 import { FileData } from '@/@types/types'
 import * as channels from '@/assets/constants/channels'
-import FileMenuController from '@/main/menu/controllers/FileMenuController'
+import FileMenu from '@/main/menu/FileMenu'
 import { getModule } from '@/main/modules'
 
+const fileMenu = new FileMenu()
 const csvFile = getModule('csvFile')
 
 export default class EditorWindow extends BrowserWindow {
@@ -19,7 +20,7 @@ export default class EditorWindow extends BrowserWindow {
     })
     csvFile.on('AFTER_LOAD', (payload: FileData) => {
       this.webContents.send(channels.FILE_LOADED, payload)
-      FileMenuController.addRecentDocument(payload.path)
+      fileMenu.addRecentDocument(payload.path)
     })
   }
 

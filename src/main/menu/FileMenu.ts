@@ -2,13 +2,14 @@ import {
   dialog,
   BrowserWindow,
   MenuItem,
+  MenuItemConstructorOptions, Menu,
 } from 'electron'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as channels from '@/assets/constants/channels'
 import { FILE_FILTERS, FILE_FILTERS_TSV } from '@/assets/constants/files'
 import { FileMeta } from '@/@types/types'
-import { menu } from '@/main/menu'
+import { menu } from '@/main/menu/index'
 import { getModule } from '@/main/modules'
 
 const MAX_HISTORY_LENGTH = 10
@@ -17,11 +18,78 @@ const isMac = process.platform === 'darwin'
 const csvFile = getModule('csvFile')
 const history = getModule('history')
 
-export default class FileMenuController {
+export default class FileMenu {
+  public static createMenu () {
+    const menu = new FileMenu()
+
+    const isMac = process.platform === 'darwin'
+    const history = getModule('history')
+    const recentDocuments: () => MenuItemConstructorOptions = isMac
+      ? () => ({
+          id: 'recentDocuments',
+          role: 'recentDocuments',
+          label: '最近開いたファイル',
+          submenu: [{
+            label: '履歴を消去',
+            role: 'clearRecentDocuments',
+          }],
+        })
+      : () => {
+          const submenu = new Menu()
+          history.recentDocuments.forEach(doc => submenu.append(new MenuItem({
+            label: doc.path,
+            click: menu.openRecent,
+          })))
+          submenu.append(new MenuItem({
+            label: '履歴を消去',
+            click: menu.clearRecent,
+          }))
+          return {
+            id: 'recentDocuments',
+            label: '最近開いたファイル',
+            submenu,
+          }
+        }
+
+    return new MenuItem({
+      label: 'ファイル',
+      submenu: [
+        {
+          label: '新規作成',
+          accelerator: 'CmdOrCtrl+N',
+          click: menu.newFile,
+        },
+        { type: 'separator' },
+        {
+          label: 'ファイルを開く',
+          accelerator: 'CmdOrCtrl+O',
+          click: menu.open,
+        },
+        recentDocuments(),
+        { type: 'separator' },
+        {
+          label: '上書き保存',
+          accelerator: 'CmdOrCtrl+S',
+          click: menu.save,
+        },
+        {
+          label: '名前を付けて保存',
+          accelerator: 'CmdOrCtrl+Shift+S',
+          click: menu.saveAs,
+        },
+        {
+          label: '印刷',
+          accelerator: 'CmdOrCtrl+Shift+P',
+          click: menu.print,
+        },
+      ],
+    })
+  }
+
   /**
    * [新規作成]
    */
-  public static newFile (menu: MenuItem, window?: BrowserWindow) {
+  public newFile (menu: MenuItem, window?: BrowserWindow) {
     if (!window) return
     window.webContents.send(channels.FILE_NEW)
   }
@@ -29,9 +97,9 @@ export default class FileMenuController {
   /**
    * [ファイルを開く]
    */
-  public static open (window: BrowserWindow): void
-  public static open (menu: MenuItem, window?: BrowserWindow): void
-  public static open (menu: MenuItem|BrowserWindow, window?: BrowserWindow) {
+  public open (window: BrowserWindow): void
+  public open (menu: MenuItem, window?: BrowserWindow): void
+  public open (menu: MenuItem|BrowserWindow, window?: BrowserWindow) {
     window = window || menu as BrowserWindow
 
     const files = dialog.showOpenDialogSync(window, {
@@ -53,7 +121,7 @@ export default class FileMenuController {
   /**
    * 「最近開いたファイル」
    */
-  public static openRecent (menu: MenuItem, window?: BrowserWindow) {
+  public openRecent (menu: MenuItem, window?: BrowserWindow) {
     if (!window) return
     return csvFile.load(menu.label)
   }
@@ -61,7 +129,7 @@ export default class FileMenuController {
   /**
    * 「最近開いたファイル > 履歴の消去」
    */
-  public static clearRecent () {
+  public clearRecent () {
     history.clearRecentDocuments()
     const recentDocumentsMenu = menu.getMenuItemById('recentDocuments')
     recentDocumentsMenu!.submenu!.items
@@ -73,7 +141,7 @@ export default class FileMenuController {
   /**
    * [上書き保存]
    */
-  public static save (menu: MenuItem, window?: BrowserWindow) {
+  public save (menu: MenuItem, window?: BrowserWindow) {
     if (!window) return
     window.webContents.send(channels.FILE_SAVE)
   }
@@ -81,7 +149,7 @@ export default class FileMenuController {
   /**
    * [名前を付けて保存]
    */
-  public static saveAs (menu: MenuItem, window?: BrowserWindow) {
+  public saveAs (menu: MenuItem, window?: BrowserWindow) {
     if (!window) return
     window.webContents.send(channels.FILE_SAVE_AS)
   }
@@ -89,7 +157,7 @@ export default class FileMenuController {
   /**
    * [印刷]
    */
-  public static print (menu: MenuItem, window?: BrowserWindow) {
+  public print (menu: MenuItem, window?: BrowserWindow) {
     if (!window) return
     window.webContents.send(channels.MENU_PRINT)
   }
@@ -98,7 +166,7 @@ export default class FileMenuController {
    * [設定]
    * @todo 設定画面のHTML作成
    */
-  public static async openSettingsWindow (menu: MenuItem, window: BrowserWindow) {
+  public async openSettingsWindow (menu: MenuItem, window: BrowserWindow) {
     const settings = new BrowserWindow({
       parent: window,
       title: '設定',
@@ -125,14 +193,14 @@ export default class FileMenuController {
   /**
    * 保存処理の実行
    */
-  public static executeSave (channelName: string, file: channels.FILE_SAVE, window: BrowserWindow): boolean {
+  public executeSave (channelName: string, file: channels.FILE_SAVE, window: BrowserWindow): boolean {
     const meta = JSON.parse(file.meta) as FileMeta
     switch (channelName) {
       case channels.FILE_SAVE:
-        if (!FileMenuController._fileExists(file.path)) file.path = FileMenuController._selectPath(window, meta)
+        if (!this._fileExists(file.path)) file.path = this._selectPath(window, meta)
         break
       case channels.FILE_SAVE_AS:
-        file.path = FileMenuController._selectPath(window, meta, FileMenuController._fileExists(file.path) ? file.path : undefined)
+        file.path = this._selectPath(window, meta, this._fileExists(file.path) ? file.path : undefined)
         break
     }
 
@@ -151,14 +219,14 @@ export default class FileMenuController {
   /**
    * 「最近開いたファイル」に項目を追加
    */
-  public static addRecentDocument (filepath: string) {
+  public addRecentDocument (filepath: string) {
     history.addRecentDocument(filepath)
 
     if (isMac) return
 
     const recentDocument = new MenuItem({
       label: filepath,
-      click: FileMenuController.openRecent,
+      click: this.openRecent,
     })
 
     const menuItem = menu.getMenuItemById('recentDocuments')
@@ -176,7 +244,7 @@ export default class FileMenuController {
   /**
    * 「最近開いたファイル」から項目を削除
    */
-  public static removeRecentDocument (filepath: string) {
+  public removeRecentDocument (filepath: string) {
     const menuItem = menu.getMenuItemById('recentDocuments')
     if (!menuItem || !menuItem.submenu) return
 
@@ -188,7 +256,7 @@ export default class FileMenuController {
   /**
    * 保存する場所を選択
    */
-  private static _selectPath (window: BrowserWindow, meta: FileMeta, filepath?: string): string {
+  private _selectPath (window: BrowserWindow, meta: FileMeta, filepath?: string): string {
     return dialog.showSaveDialogSync(window, {
       title: '名前を付けて保存',
       defaultPath: filepath || history.recentDirectory,
@@ -203,7 +271,7 @@ export default class FileMenuController {
   /**
    * ファイルの存在確認
    */
-  private static _fileExists (filepath: string): boolean {
+  private _fileExists (filepath: string): boolean {
     try {
       return fs.statSync(filepath).isFile()
     } catch (e) {

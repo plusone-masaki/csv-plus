@@ -13,9 +13,10 @@ import { parse } from 'csv-parse/lib/sync'
 import { stringify, Options } from 'csv-stringify/lib/sync'
 import { FileMeta } from '@/@types/types'
 import * as channels from '@/assets/constants/channels'
-import FileMenuController from '@/main/menu/controllers/FileMenuController'
+import FileMenu from '@/main/menu/FileMenu'
 import { getModule } from '@/main/modules'
 
+const fileMenu = new FileMenu()
 const csvFile = getModule('csvFile')
 const history = getModule('history')
 
@@ -51,7 +52,7 @@ ipcMain.handle(channels.CSV_STRINGIFY, (e: IpcMainInvokeEvent, { data, meta }: c
 })
 
 ipcMain.on(channels.FILE_OPEN, (e: IpcMainEvent) => {
-  FileMenuController.open(getWindow(e.sender))
+  fileMenu.open(getWindow(e.sender))
 })
 
 ipcMain.on(channels.FILE_DROPPED, (e: IpcMainEvent, paths: Array<string>) => {
@@ -85,11 +86,11 @@ ipcMain.on(channels.FILE_RELOAD, (e: IpcMainEvent, path: string, meta: FileMeta)
 })
 
 ipcMain.on(channels.FILE_SAVE, (e: IpcMainEvent, file: channels.FILE_SAVE) => {
-  FileMenuController.executeSave(channels.FILE_SAVE, file, getWindow(e.sender))
+  fileMenu.executeSave(channels.FILE_SAVE, file, getWindow(e.sender))
 })
 
 ipcMain.on(channels.FILE_SAVE_AS, (e: IpcMainEvent, file: channels.FILE_SAVE_AS) => {
-  FileMenuController.executeSave(channels.FILE_SAVE_AS, file, getWindow(e.sender))
+  fileMenu.executeSave(channels.FILE_SAVE_AS, file, getWindow(e.sender))
 })
 
 ipcMain.handle(channels.DATA_HASH, (e: IpcMainInvokeEvent, data: channels.DATA_HASH) => {
@@ -121,12 +122,16 @@ ipcMain.handle(channels.FILE_DESTROY_CONFIRM, (e: IpcMainInvokeEvent, file: chan
   })
 
   // 保存するの場合 - 保存処理を行って true を返す
-  if (selected === BUTTON_SAVE) return FileMenuController.executeSave(channels.FILE_SAVE, file, getWindow(e.sender))
+  if (selected === BUTTON_SAVE) return fileMenu.executeSave(channels.FILE_SAVE, file, getWindow(e.sender))
   // 保存しないの場合 - 保存処理を行わず true を返す
   // キャンセルの場合 - false を返す
   return selected === BUTTON_NO_SAVE
 })
 
 ipcMain.on(channels.TABS_SAVE, (e: IpcMainEvent, paths: channels.TABS_SAVE) => history.persistentTabHistory(paths))
+ipcMain.on(channels.TABS_CHANGED, (e: IpcMainEvent, label: string) => {
+  const window = getWindow(e.sender)
+  window.setTitle(label + ' | CSV+')
+})
 
 ipcMain.on(channels.APP_CLOSE, () => app.exit())
