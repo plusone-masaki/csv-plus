@@ -17,7 +17,7 @@ class Search {
   private readonly customBordersPlugin: CustomBordersPlugin
   private readonly calculation: Calculation
   private readonly option: SearchOption
-  private readonly hasHeader: boolean
+  private readonly header: 'ALPHA' | 'NUMERIC' | 'ROW'
   private readonly data: string[][] = []
 
   private _keyword = ''
@@ -32,7 +32,7 @@ class Search {
     this.customBordersPlugin = table.getPlugin('customBorders') as any as CustomBordersPlugin
     this.calculation = tab.calculation
     this.option = tab.table.options.search
-    this.hasHeader = tab.table.options.hasHeader
+    this.header = tab.table.options.header
     this.data = tab.file.data
 
     this.query({ delay: false, preserve: true })
@@ -171,7 +171,7 @@ class Search {
     const data: [number, number, string][] = []
     const query = this.option.regexp ? new RegExp(this._keyword, this.option.matchCase ? '' : 'i') : this._keyword
     cells.forEach(async cell => {
-      const row = this.hasHeader ? cell.row + 1 : cell.row
+      const row = this.header === 'ROW' ? cell.row + 1 : cell.row
       data.push([row, cell.col, this.data[row][cell.col].replace(query, this.option.replace)])
     })
     this.table.setDataAtRowProp(data)
