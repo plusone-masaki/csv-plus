@@ -2,7 +2,7 @@ import { Tab, Table } from '@/@types/types'
 import * as operations from '@/assets/constants/operations'
 
 interface Cell {
-  hasHeader: boolean
+  header: 'ALPHA'|'NUMERIC'|'ROW'
   row?: number
   col?: number
   amount?: number
@@ -41,12 +41,13 @@ export default class UndoRedo {
    * @private
    */
   private _editCell (cell: Cell, data: string|string[]) {
+    const hasHeader = cell.header === 'ROW' ? 1 : 0
     if (typeof cell.row === 'number' && typeof cell.col === 'number' && typeof data === 'string') {
-      this.data[cell.row + Number(cell.hasHeader)][cell.col] = data
+      this.data[cell.row + hasHeader][cell.col] = data
     } else if (typeof cell.row === 'number' && typeof data !== 'string') {
-      this.data[cell.row + Number(cell.hasHeader)] = data
+      this.data[cell.row + hasHeader] = data
     } else if (typeof cell.col === 'number' && typeof data === 'string') {
-      for (let i = Number(cell.hasHeader); i < this.data.length; i++) {
+      for (let i = hasHeader; i < this.data.length; i++) {
         this.data[i][cell.col] = data
       }
     }
@@ -58,12 +59,13 @@ export default class UndoRedo {
   private _spliceRow (cell: Cell, amount: number): void
   private _spliceRow (cell: Cell, data: string[][]): void
   private _spliceRow (cell: Cell, data: number|string[][]): void {
+    const hasHeader = cell.header === 'ROW' ? 1 : 0
     if (typeof data === 'number') {
       // remove row
-      this.data.splice(cell.row! + Number(cell.hasHeader), data)
+      this.data.splice(cell.row! + hasHeader, data)
     } else {
       // insert row
-      this.data.splice(cell.row! + Number(cell.hasHeader), 0, ...data)
+      this.data.splice(cell.row! + hasHeader, 0, ...data)
     }
   }
 
@@ -94,8 +96,8 @@ export default class UndoRedo {
    */
   private _jumpToCell (detail: ChangeDetail) {
     if (typeof detail.row === 'number') {
-      const currentHeader = Number(this.table.options.hasHeader)
-      const hasHeader = Number(detail.hasHeader)
+      const currentHeader = this.table.options.header === 'ROW' ? 1 : 0
+      const hasHeader = detail.header === 'ROW' ? 1 : 0
       this.table.instance!.selectCell(
         detail.row - currentHeader + hasHeader,
         detail.col || 0,
