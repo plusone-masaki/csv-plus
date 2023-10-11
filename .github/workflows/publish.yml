@@ -67,7 +67,7 @@ jobs:
         run: yarn electron:build --publish always
 
   build-macos:
-    runs-on: macos-10.15
+    runs-on: macos-13
     strategy:
       matrix:
         node-version: [16.x]
