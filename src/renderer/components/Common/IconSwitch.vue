@@ -1,6 +1,6 @@
 <template lang="pug">
 span.icon-btn(
-  :class="{ active: modelValue }"
+  :class="{ active: modelValue === value }"
   :title="title"
   @click="onClick"
 )
@@ -21,14 +21,15 @@ export default defineComponent({
     SvgIcon,
   },
   props: {
-    modelValue: { type: Boolean as PropType<boolean>, default: false },
+    modelValue: { type: [String, Number, Boolean] as PropType<string|number|boolean>, default: false },
     icon: { type: String as PropType<string>, required: true },
     color: { type: String as PropType<string>, default: 'inherit' },
     title: { type: String as PropType<string|undefined>, default: undefined },
     size: { type: [String, Number] as PropType<number>, default: 24 },
+    value: { type: [String, Number, Boolean] as PropType<string|number|boolean>, default: true },
   },
   setup: (props, { emit }) => ({
-    onClick: () => emit('update:modelValue', !props.modelValue),
+    onClick: () => emit('update:modelValue', typeof props.modelValue === 'boolean' ? !props.modelValue : props.value),
   }),
 })
 </script>

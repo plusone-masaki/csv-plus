@@ -32,7 +32,7 @@ export type UseTab = {
 }
 
 const defaultOptions = (): Options => ({
-  hasHeader: false,
+  header: 'ALPHA',
   search: {
     enable: false,
     enableReplace: false,

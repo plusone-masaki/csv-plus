@@ -22,15 +22,22 @@ const sanitizeOption: SanitizeOption = {
 
 export default (props: { tab: Tab }, context: SetupContext) => {
   const wrapper = ref<HTMLDivElement>()
+  const headerRow = computed(() => props.tab.file.data[0].map((d: string) => d ? sanitize(d, sanitizeOption) : ''))
+  const colHeaders = computed(() => {
+    switch (props.tab.table.options.header) {
+      case 'ALPHA': return true
+      case 'NUMERIC': return (index: number) => (++index)
+      case 'ROW': return headerRow.value
+    }
+  })
+
   const settings = computed((): HandsOnTable.GridSettings => ({
     data: props.tab.file.data,
     autoColumnSize: { syncLimit: 10 },
     autoRowSize: false,
     autoWrapCol: false,
     autoWrapRow: false,
-    colHeaders: props.tab.table.options.hasHeader
-      ? props.tab.file.data[0].map((d: string) => d ? sanitize(d, sanitizeOption) : '') as string[]
-      : true,
+    colHeaders: colHeaders.value as any, // 型定義が間違っているのでキャスト
     colWidths: props.tab.file.meta.colWidth,
     columnSorting: true,
     contextMenu: true,

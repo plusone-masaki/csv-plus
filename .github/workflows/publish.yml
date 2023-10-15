@@ -12,8 +12,13 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
+        node-version: [14.x, 16.x]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
       - name: Cache node modules
         uses: actions/cache@v2
         env:
@@ -32,12 +37,19 @@ jobs:
 
   build-win:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
     needs:
       - unit-test
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
       - name: Cache node modules
         uses: actions/cache@v2
         env:
@@ -55,7 +67,10 @@ jobs:
         run: yarn electron:build --publish always
 
   build-macos:
-    runs-on: macos-10.15
+    runs-on: macos-13
+    strategy:
+      matrix:
+        node-version: [16.x]
     needs:
       - unit-test
     timeout-minutes: 30
@@ -65,7 +80,11 @@ jobs:
       APPLE_ID_PASS: ${{ secrets.APPLE_ID_PASS }}
       ASC_PROVIDER: ${{ secrets.ASC_PROVIDER }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
       - name: Cache node modules
         uses: actions/cache@v2
         env:
@@ -91,12 +110,19 @@ jobs:
 
   build-linux:
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [16.x]
     needs:
       - unit-test
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
       - name: Cache node modules
         uses: actions/cache@v2
         env:

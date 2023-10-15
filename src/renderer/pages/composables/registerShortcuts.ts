@@ -32,7 +32,7 @@ const getEdgeCell = (tab: Tab, direction: Direction, currentCell?: HandsOnTable.
   currentCell = currentCell || tab.table.instance?.getSelectedRange()?.shift()
   if (!currentCell) return 0
 
-  const data = tab.table.options.hasHeader ? tab.file.data.slice(1) : tab.file.data
+  const data = tab.table.options.header === 'ROW' ? tab.file.data.slice(1) : tab.file.data
   switch (direction) {
     case 'up': {
       const currentRow = Math.min(currentCell.from.row, currentCell.to.row)

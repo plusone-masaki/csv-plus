@@ -25,11 +25,26 @@ div.control-panel
 
   // シート操作
   toolbar
-    // Has header
+    // 列番号を英字に変更
     icon-switch.toolbar__icon(
-      v-model="options.hasHeader"
+      v-model="options.header"
+      :title="$t('shortcut.alphabet_header')"
+      icon="alpha-header"
+      value="ALPHA"
+    )
+    // 列番号を数字に変更
+    icon-switch.toolbar__icon(
+      v-model="options.header"
+      :title="$t('shortcut.numeric_header')"
+      icon="numeric-header"
+      value="NUMERIC"
+    )
+    // CSVの先頭行をヘッダに設定
+    icon-switch.toolbar__icon(
+      v-model="options.header"
       :title="$t('shortcut.set_header')"
       icon="table-header"
+      value="ROW"
     )
 
     toolbar-separator

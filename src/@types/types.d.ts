@@ -125,7 +125,7 @@ export interface SearchOption {
 }
 
 export interface Options {
-  hasHeader: boolean
+  header: 'ALPHA'|'NUMERIC'|'ROW'
   printMode: boolean
   search: SearchOption
 }
