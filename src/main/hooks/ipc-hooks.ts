@@ -8,9 +8,8 @@ import {
   IpcMainInvokeEvent,
   WebContents,
 } from 'electron'
-import csvParse from 'csv-parse'
-import { parse } from 'csv-parse/lib/sync'
-import { stringify, Options } from 'csv-stringify/lib/sync'
+import { parse, type Options as ParseOptions } from 'csv-parse/sync'
+import { stringify, type Options as StringifyOptions } from 'csv-stringify/sync'
 import { FileMeta } from '@/@types/types'
 import * as channels from '@/assets/constants/channels'
 import FileMenu from '@/main/menu/FileMenu'
@@ -27,7 +26,7 @@ const getWindow = (contents: WebContents): BrowserWindow => {
 }
 
 ipcMain.handle(channels.CSV_PARSE, (e: IpcMainInvokeEvent, { data, meta }: channels.CSV_PARSE): string[][] => {
-  const options: csvParse.Options = {
+  const options: ParseOptions = {
     ...meta,
     encoding: 'utf8',
     quote: meta.quoteChar,
@@ -40,7 +39,7 @@ ipcMain.handle(channels.CSV_PARSE, (e: IpcMainInvokeEvent, { data, meta }: chann
 })
 
 ipcMain.handle(channels.CSV_STRINGIFY, (e: IpcMainInvokeEvent, { data, meta }: channels.CSV_STRINGIFY): string => {
-  const options: Options = {
+  const options: StringifyOptions = {
     ...meta,
     encoding: 'utf8',
     quote: meta.quoteChar,

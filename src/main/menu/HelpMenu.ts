@@ -11,7 +11,7 @@ app.setAboutPanelOptions({
   applicationVersion: app.getVersion(),
   authors: ['Masaki Enomoto'],
   website: 'https://www.plus-one.tech',
-  iconPath: app.isPackaged ? path.join(process.resourcesPath, 'public/icon.png') : path.join(__static, 'icon.png'),
+  iconPath: app.isPackaged ? path.join(process.resourcesPath, 'public/icon.png') : 'icon.png',
 })
 
 export default class HelpMenu {
