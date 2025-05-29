@@ -6,7 +6,6 @@ import UndoRedo from '@/renderer/plugins/UndoRedo'
 
 declare global {
   const __: TFunction
-  const __static: string
 
   namespace NodeJS {
     export interface Global {

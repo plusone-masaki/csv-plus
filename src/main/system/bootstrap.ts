@@ -1,6 +1,5 @@
 import * as path from 'path'
 import { app, protocol } from 'electron'
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import '@/main/plugins/i18n'
 import * as browserWindow from '@/common/browserWindow'
@@ -17,7 +16,7 @@ const history = getModule('history')
 let window: EditorWindow
 let filepath: string
 
-async function createWindow () {
+const createWindow = async () => {
   // Create the browser window.
   window = EditorWindow.make({
     title: 'CSV+',
@@ -28,9 +27,9 @@ async function createWindow () {
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.resolve(__dirname, 'preload-app.js'),
+      preload: path.resolve(__dirname, '../preload/app.js'),
     },
-    icon: app.isPackaged ? path.join(process.resourcesPath, 'public/icon.png') : path.join(__static, 'icon.png'),
+    icon: app.isPackaged ? path.join(process.resourcesPath, 'public/icon.png') : 'icon.png',
   })
 
   browserHooks(window)
@@ -58,7 +57,6 @@ async function createWindow () {
     await window.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string)
     if (!process.env.IS_TEST) window.webContents.openDevTools()
   } else {
-    createProtocol('app')
     // Load the index.html when not in development
     await window.loadURL('app://./index.html')
   }

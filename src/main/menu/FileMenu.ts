@@ -1,8 +1,9 @@
 import {
   dialog,
-  BrowserWindow,
+  BaseWindow,
   MenuItem,
-  MenuItemConstructorOptions, Menu,
+  MenuItemConstructorOptions,
+  Menu, BrowserWindow,
 } from 'electron'
 import * as fs from 'fs'
 import * as path from 'path'
@@ -89,18 +90,18 @@ export default class FileMenu {
   /**
    * [新規作成]
    */
-  public newFile (menu: MenuItem, window?: BrowserWindow) {
+  public newFile (menu: MenuItem, window?: BaseWindow) {
     if (!window) return
-    window.webContents.send(channels.FILE_NEW)
+    (window as BrowserWindow).webContents.send(channels.FILE_NEW)
   }
 
   /**
    * [ファイルを開く]
    */
-  public open (window: BrowserWindow): void
-  public open (menu: MenuItem, window?: BrowserWindow): void
-  public open (menu: MenuItem|BrowserWindow, window?: BrowserWindow) {
-    window = window || menu as BrowserWindow
+  public open (window: BaseWindow): void
+  public open (menu: MenuItem, window?: BaseWindow): void
+  public open (menu: MenuItem|BaseWindow, window?: BaseWindow) {
+    window = window || menu as BaseWindow
 
     const files = dialog.showOpenDialogSync(window, {
       defaultPath: history.recentDirectory,
@@ -121,9 +122,9 @@ export default class FileMenu {
   /**
    * 「最近開いたファイル」
    */
-  public openRecent (menu: MenuItem, window?: BrowserWindow) {
+  public openRecent (menu: MenuItem, window?: BaseWindow) {
     if (!window) return
-    return csvFile.load(menu.label)
+    csvFile.load(menu.label)
   }
 
   /**
@@ -141,43 +142,38 @@ export default class FileMenu {
   /**
    * [上書き保存]
    */
-  public save (menu: MenuItem, window?: BrowserWindow) {
+  public save (menu: MenuItem, window?: BaseWindow) {
     if (!window) return
-    window.webContents.send(channels.FILE_SAVE)
+    (window as BrowserWindow).webContents.send(channels.FILE_SAVE)
   }
 
   /**
    * [名前を付けて保存]
    */
-  public saveAs (menu: MenuItem, window?: BrowserWindow) {
+  public saveAs (menu: MenuItem, window?: BaseWindow) {
     if (!window) return
-    window.webContents.send(channels.FILE_SAVE_AS)
+    (window as BrowserWindow).webContents.send(channels.FILE_SAVE_AS)
   }
 
   /**
    * [印刷]
    */
-  public print (menu: MenuItem, window?: BrowserWindow) {
+  public print (menu: MenuItem, window?: BaseWindow) {
     if (!window) return
-    window.webContents.send(channels.MENU_PRINT)
+    (window as BrowserWindow).webContents.send(channels.MENU_PRINT)
   }
 
   /**
    * [設定]
    * @todo 設定画面のHTML作成
    */
-  public async openSettingsWindow (menu: MenuItem, window: BrowserWindow) {
+  public async openSettingsWindow (menu: MenuItem, window: BaseWindow) {
     const settings = new BrowserWindow({
       parent: window,
       title: '設定',
       width: 640,
       height: 480,
       resizable: false,
-      webPreferences: {
-        // Use pluginOptions.nodeIntegration, leave this alone
-        // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-        nodeIntegration: false,
-      },
     })
     settings.menuBarVisible = false
 
@@ -193,7 +189,7 @@ export default class FileMenu {
   /**
    * 保存処理の実行
    */
-  public executeSave (channelName: string, file: channels.FILE_SAVE, window: BrowserWindow): boolean {
+  public executeSave (channelName: string, file: channels.FILE_SAVE, window: BaseWindow): boolean {
     const meta = JSON.parse(file.meta) as FileMeta
     switch (channelName) {
       case channels.FILE_SAVE:
@@ -209,7 +205,7 @@ export default class FileMenu {
     try {
       const fileMeta = JSON.parse(file.meta)
       csvFile.save(file.path, file.data, fileMeta)
-      window.webContents.send(channels.FILE_SAVE_COMPLETE, file.path)
+      ;(window as BrowserWindow).webContents.send(channels.FILE_SAVE_COMPLETE, file.path)
       return true
     } catch (e) {
       return false
@@ -256,7 +252,7 @@ export default class FileMenu {
   /**
    * 保存する場所を選択
    */
-  private _selectPath (window: BrowserWindow, meta: FileMeta, filepath?: string): string {
+  private _selectPath (window: BaseWindow, meta: FileMeta, filepath?: string): string {
     return dialog.showSaveDialogSync(window, {
       title: '名前を付けて保存',
       defaultPath: filepath || history.recentDirectory,
