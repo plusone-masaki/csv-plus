@@ -1,19 +1,20 @@
 import * as os from 'os'
 import * as pathModule from 'path'
+import { vi } from 'vitest'
 
 export const app = {
   getName: () => 'CSV+',
   getVersion: () => process.env.npm_package_version,
-  getPath: jest.fn((path: string) => pathModule.join(os.tmpdir(), 'test', path)),
-  setAboutPanelOptions: jest.fn(),
+  getPath: vi.fn((path: string) => pathModule.join(os.tmpdir(), 'test', path)),
+  setAboutPanelOptions: vi.fn(),
 }
 
 export const dialog = {
-  showMessageBox: jest.fn(),
-  showErrorBox: jest.fn(),
+  showMessageBox: vi.fn(),
+  showErrorBox: vi.fn(),
 }
 
-export const BrowserWindow = jest.fn()
+export const BrowserWindow = vi.fn()
 
 export default {
   app,
