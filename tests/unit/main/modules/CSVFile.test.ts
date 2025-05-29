@@ -1,9 +1,9 @@
 import * as os from 'os'
 import * as fs from 'fs'
 import * as path from 'path'
-import faker, { UsableLocale } from '@tests/utils/faker'
+import faker, { allLocales } from '@tests/utils/faker'
 import iconv from '@/common/plugins/iconv'
-import { stringify } from 'csv-stringify/lib/sync'
+import { stringify } from 'csv-stringify/sync'
 import { FileData, FileMeta, SupportedEncoding } from '@/@types/types'
 import { defaultLinefeed } from '@/common/helpers'
 import CSVFile from '@/main/modules/CSVFile'
@@ -13,7 +13,7 @@ const testData = [
   ['TSV', 'tsv', '\t'],
   ['Pipe(|)', 'psv', '|'],
 ]
-const encodings: [SupportedEncoding, UsableLocale][] = [
+const encodings: [SupportedEncoding, keyof typeof allLocales][] = [
   ['UTF-8', 'en'],
   ['UTF-16', 'en'],
   ['UTF-16LE', 'en'],
@@ -74,15 +74,15 @@ describe('Module: [CSVFile]', () => {
       describe('Encoding', () => {
         describe.each(encodings)('%s', (encoding, lang) => {
           let payload: FileData|undefined
-          faker.locale = lang
+          faker[lang].seed(19870807)
 
           const filepath = path.join(os.tmpdir(), 'test', `${encoding}.${ext}`)
           const data = [['name', 'email', 'tel']]
           for (let i = 0; i < 3; i++) {
             data.push([
-              `${faker.name.firstName()} ${faker.name.lastName()}`,
-              faker.internet.email(),
-              faker.phone.phoneNumber(),
+              `${faker[lang].person.firstName()} ${faker[lang].person.lastName()}`,
+              faker[lang].internet.email(),
+              faker[lang].phone.number(),
             ])
           }
           beforeAll(() => {

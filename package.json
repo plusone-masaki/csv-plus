@@ -18,7 +18,7 @@
   "scripts": {
     "dev": "electron-vite dev",
     "start": "electron-vite preview",
-    "test:unit": "vue-cli-service test:unit",
+    "test:unit": "vitest",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
     "electron:build": "vue-cli-service electron:build",
@@ -59,6 +59,7 @@
     "electron-notarize": "^1.2.2",
     "electron-vite": "^3.1.0",
     "jconv": "^0.1.5",
+    "jsdom": "^26.1.0",
     "pug": "^3.0.3",
     "pug-plain-loader": "^1.1.0",
     "regenerator-runtime": "^0.14.1",
@@ -66,7 +67,8 @@
     "sass-loader": "^16",
     "spectron": "^10.0.1",
     "tslib": "^2.8.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
   },
   "browserslist": [
     "> 1%",

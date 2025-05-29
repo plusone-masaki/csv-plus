@@ -1,3 +1,4 @@
+import { vi, MockInstance } from 'vitest'
 import { app, dialog, BrowserWindow } from 'electron'
 import ja from '@/assets/lang/ja.json'
 import UpdateChecker from '@/main/modules/UpdateChecker'
@@ -6,13 +7,13 @@ describe('Module: [UpdateChecker]', () => {
   beforeAll(() => app.whenReady)
 
   describe.skip('Current version is v0.1.0, Check update by bootstrap.', () => {
-    let dialogSpy: jest.SpyInstance
+    let dialogSpy: MockInstance
     beforeAll(() => {
-      jest.mock('electron', () => ({
-        ...jest.requireActual('@@/tests/mock/electron.ts'),
+      vi.mock('electron', () => ({
+        ...vi.importActual('@@/tests/unit/mocks/electron.ts'),
         app: { getVersion: () => '0.1.0' },
       }))
-      dialogSpy = jest.spyOn(dialog, 'showMessageBox')
+      dialogSpy = vi.spyOn(dialog, 'showMessageBox')
 
       const updateChecker = new UpdateChecker()
       const window = new BrowserWindow()
