@@ -65,7 +65,6 @@
     "regenerator-runtime": "^0.14.1",
     "sass": "^1.87.0",
     "sass-loader": "^16",
-    "spectron": "^10.0.1",
     "tslib": "^2.8.1",
     "typescript": "^5.8.3",
     "vitest": "^3.1.4"
